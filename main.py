@@ -1,55 +1,92 @@
 import pygame
 
-import game
-
+from input import *
 from image import *
 from sprite import *
+from gamesprite import *
 
-def main():
-    pygame.init()
 
-    image_manager = ImageMan.create()
-    image_manager.add(ImageNames.MOUSE, 'resources/mouse.png')
+class Game:
+    def __init__(self):
+        self.image_manager = ImageMan.create()
+        self.sprite_manager = SpriteMan.create()
+        self.gamesprite_manager = GameSpriteMan()
+        self.input_manager = InputMan.create()
+        self.screen = pygame.display.set_mode((0, 0), flags=pygame.RESIZABLE)
+        self.running = True
+        self.FPS = 30
+        self._init()
 
-    sprite_manager = SpriteMan.create()
-    sprite_manager.add(SpriteNames.MOUSE1, ImageNames.MOUSE, 35, 35, 200, 200)
-    sprite_manager.add(SpriteNames.MOUSE1, ImageNames.MOUSE, 50, 50, 300, 300)
-    sprite_manager.add(SpriteNames.MOUSE2, ImageNames.MOUSE, 50, 50, 400, 400)
-    sprite_manager.add(SpriteNames.MOUSE2, ImageNames.MOUSE, 50, 50, 500, 500)
+    def _init(self):
+        # images
+        self.image_manager.add(ImageNames.MOUSE, 'resources/mouse.png')
+        self.image_manager.add(ImageNames.BOX, ((44, 44, 55), (50, 50)))
 
-    # Set up the drawing window
-    screen = pygame.display.set_mode((0, 0), flags=pygame.RESIZABLE)
+        # sprites
+        self.sprite_manager.add(SpriteNames.MOUSE1, ImageNames.MOUSE, 35, 35, 200, 200)
+        self.sprite_manager.add(SpriteNames.MOUSE1, ImageNames.MOUSE, 50, 50, 300, 300)
+        self.sprite_manager.add(SpriteNames.MOUSE2, ImageNames.MOUSE, 50, 50, 400, 400)
+        self.sprite_manager.add(SpriteNames.MOUSE2, ImageNames.MOUSE, 50, 50, 500, 500)
+        self.sprite_manager.add(SpriteNames.BOX, ImageNames.BOX, 50, 50, 100, 100)
 
-    # Fill the background with white
-    screen.fill((0, 0, 0))
+        mouse_sprite = GameSprite(SpriteNames.MOUSE2, ImageNames.MOUSE, (52, 27), (200, 200))
+        self.gamesprite_manager.add([mouse_sprite])
 
-    # Run until the user asks to quit
-    running = True
-    while running:
+        # input
+        lmouse_subject = LMouseClickCircle()
+        rmouse_subject = RMouseClickCircle()
+        self.input_manager.lmouse.attach(lmouse_subject)
+        self.input_manager.rmouse.attach(rmouse_subject)
 
-        # Did the user click the window close button?
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
+        # timer
+        self.timer_manager = TimerMan.create()
 
-        # the main game loop
-        #game.run(screen)
-
-        # update the sprites
-        sprite_manager.update()
-
-        # clear the display
-        screen.fill((0, 0, 0))
+    def draw(self):
 
         # render sprites and stuff
-        sprite_manager.draw(screen)
+        self.gamesprite_manager.draw(self.screen)
 
         # update the display
         pygame.display.update()
 
-    # Done!
-    pygame.quit()
+        # clear the display
+        self.screen.fill((0, 0, 0))
+
+    def update(self):
+        # input
+        self.input_manager.update(self)
+
+        # update the sprites
+        self.gamesprite_manager.update()
+
+        # update the timer events
+        self.timer_manager.update(self, pygame.time.get_ticks())
+
+    def run(self):
+        pygame.init()
+
+        # Fill the background with black
+        self.screen.fill((0, 0, 0))
+
+        # get clock for FPS
+        clock = pygame.time.Clock()
+
+        # main event loop
+        while self.running:
+
+            # update objects
+            self.update()
+
+            # draw objects
+            self.draw()
+
+            # tick tock
+            clock.tick(self.FPS)
+
+        # quit
+        pygame.quit()
+
 
 if __name__ == '__main__':
-    main()
+    Game().run()
 

@@ -19,16 +19,16 @@ class LinkMan:
         raise NotImplementedError('this is a singleton class')
 
     def create(self):
-        raise NotImplementedError('this is a singleton class')
+        raise NotImplementedError('this is an abstract method')
 
     def compare(self, a, b):
-        raise NotImplementedError('this is a singleton class')
+        raise NotImplementedError('this is an abstract method')
 
     def wash(self):
-        raise NotImplementedError('this is a singleton class')
+        raise NotImplementedError('this is an abstract method')
 
     def _get_instance(self):
-        raise NotImplementedError('this is a singleton class')
+        raise NotImplementedError('this is an abstract method')
 
     def base_add(self, link):
         head = self.instance.head

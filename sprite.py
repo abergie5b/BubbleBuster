@@ -1,4 +1,3 @@
-
 from link import *
 from image import *
 
@@ -8,6 +7,8 @@ from enum import Enum
 class SpriteNames(Enum):
     MOUSE1 = 1
     MOUSE2 = 2
+    BOX = 3
+    CIRCLE = 3
 
 
 class Sprite(Link):
@@ -15,6 +16,7 @@ class Sprite(Link):
         super().__init__()
         self.name = name
         self.image = ImageMan.instance.base_find(image_name)
+        self.rect = self.image.surface.get_rect()
 
         # dimensions
         self.width = width
@@ -31,7 +33,7 @@ class Sprite(Link):
         self.delta = 2
 
     def draw(self, screen):
-        screen.blit(self.image.surface, 
+        screen.blit(self.image.surface,
                     (self.posx, self.posy)
         )
 
@@ -40,6 +42,7 @@ class Sprite(Link):
         if self.posx >= width or self.posx <= 0:
             self.delta *= -1
         self.posx += self.delta
+
 
 class SpriteMan(LinkMan):
     instance = None
