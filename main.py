@@ -5,17 +5,17 @@ import game
 from image import *
 from sprite import *
 
-def draw(screen):
-    SpriteMan.draw(screen)
-
 def main():
     pygame.init()
 
-    ImageMan.create()
-    ImageMan.add(ImageNames.MOUSE, 'resources/mouse.png')
+    image_manager = ImageMan.create()
+    image_manager.add(ImageNames.MOUSE, 'resources/mouse.png')
 
-    SpriteMan.create()
-    SpriteMan.add(SpriteNames.MOUSE, ImageNames.MOUSE, 35, 50, 200, 200)
+    sprite_manager = SpriteMan.create()
+    sprite_manager.add(SpriteNames.MOUSE1, ImageNames.MOUSE, 35, 35, 200, 200)
+    sprite_manager.add(SpriteNames.MOUSE1, ImageNames.MOUSE, 50, 50, 300, 300)
+    sprite_manager.add(SpriteNames.MOUSE2, ImageNames.MOUSE, 50, 50, 400, 400)
+    sprite_manager.add(SpriteNames.MOUSE2, ImageNames.MOUSE, 50, 50, 500, 500)
 
     # Set up the drawing window
     screen = pygame.display.set_mode((0, 0), flags=pygame.RESIZABLE)
@@ -33,10 +33,16 @@ def main():
                 running = False
 
         # the main game loop
-        game.run(screen)
+        #game.run(screen)
+
+        # update the sprites
+        sprite_manager.update()
+
+        # clear the display
+        screen.fill((0, 0, 0))
 
         # render sprites and stuff
-        draw(screen)
+        sprite_manager.draw(screen)
 
         # update the display
         pygame.display.update()
