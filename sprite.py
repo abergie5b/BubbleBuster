@@ -10,6 +10,62 @@ class SpriteNames(Enum):
     BOX = 3
     CIRCLE = 3
 
+class BoxSprite(Link):
+    def __init__(self, name, rect, width, height, x, y):
+        super().__init__()
+        self.name = name
+        self.rect = rect
+
+        # dimensions
+        self.width = width
+        self.height = height
+
+        # position
+        self.posx = x
+        self.posy = y
+
+        # for collisions
+        self.colx = x
+        self.coly = y
+
+        self.delta = 2
+
+    def draw(self, screen):
+        screen.blit(self.rect,
+                    (self.posx, self.posy)
+        )
+
+
+class BoxSpriteMan(LinkMan):
+    instance = None
+
+    @staticmethod
+    def create():
+        if not BoxSpriteMan.instance:
+            BoxSpriteMan.instance = BoxSpriteMan.__new__(BoxSpriteMan)
+            BoxSpriteMan.instance.head = None
+        return BoxSpriteMan.instance
+
+    def compare(self, a, b):
+        return a.name == b
+
+    def add(self, sprite_name, rect, width, height, x, y):
+        sprite = BoxSprite(sprite_name, rect, width, height, x, y)
+        #sprite.rect = pygame.transform.scale(sprite.rect, (width, height))
+        self.base_add(sprite)
+
+    def draw(self, screen):
+        head = self.instance.head
+        while head:
+            head.draw(screen)
+            head = head.next
+
+    def update(self):
+        head = self.instance.head
+        while head:
+            head.move()
+            head = head.next
+
 
 class Sprite(Link):
     def __init__(self, name, image_name, width, height, x, y):

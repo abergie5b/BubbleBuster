@@ -11,6 +11,7 @@ class Game:
         self.image_manager = ImageMan.create()
         self.sprite_manager = SpriteMan.create()
         self.gamesprite_manager = GameSpriteMan()
+        self.boxsprite_manager = BoxSpriteMan.create()
         self.input_manager = InputMan.create()
         self.screen = pygame.display.set_mode((0, 0), flags=pygame.RESIZABLE)
         self.running = True
@@ -45,6 +46,8 @@ class Game:
 
         # render sprites and stuff
         self.gamesprite_manager.draw(self.screen)
+        self.sprite_manager.draw(self.screen)
+        self.boxsprite_manager.draw(self.screen)
 
         # update the display
         pygame.display.update()
@@ -53,11 +56,13 @@ class Game:
         self.screen.fill((0, 0, 0))
 
     def update(self):
-        # input
+        # input updates
         self.input_manager.update(self)
 
         # update the sprites
         self.gamesprite_manager.update()
+        self.sprite_manager.update()
+        self.boxsprite_manager.update()
 
         # update the timer events
         self.timer_manager.update(self, pygame.time.get_ticks())

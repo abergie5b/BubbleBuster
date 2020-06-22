@@ -1,4 +1,5 @@
 from link import *
+from sprite import *
 
 import pygame
 from enum import Enum
@@ -19,22 +20,30 @@ class ClickExplodeCommand(Link):
     def __init__(self, x, y):
         self.x = x
         self.y = y
+        self.width = 2
+        self.radius = 10
         self.delta = 5
         self.lives = 10
-        self.radius = 10
+        self.color = (255, 255, 255)
+        #self.circle = None
 
     def execute(self, delta_time, *args):
-        screen = args[0].screen
-        print('drawing circle at %d %d with radius %d lives %d' % (self.x, self.y, self.radius, self.lives))
-        pygame.draw.circle(screen, 
-                           (255, 255, 255), 
+        game = args[0]
+        print('updating circle at %d %d with radius %d lives %d' % (self.x, self.y, self.radius, self.lives))
+        pygame.draw.circle(game.screen,
+                           self.color,
                            (self.x, self.y), 
-                           self.radius
+                           self.radius,
+                           self.width
         )
+        #game.boxsprite_manager.add(SpriteNames.CIRCLE, self.circle, self.width, self.radius*2, self.x, self.y)
         self.radius += self.delta
         self.lives -= 1
         if self.lives:
             TimerMan.instance.add(self, delta_time)
+        #else:
+        #    game.boxsprite_manager.base_remove(self.circle)
+
 
 class TimeEvent(Link):
     def __init__(self, command, delta_time):
