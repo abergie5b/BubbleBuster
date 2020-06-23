@@ -1,8 +1,6 @@
-from link import *
-from subject import *
-from gamesprite import *
-from sprite import *
-from timer import *
+from link import Link, LinkMan
+from subject import Subject
+from timer import TimerMan, ClickExplodeCommand
 
 import pygame
 from enum import Enum
@@ -28,9 +26,7 @@ class LMouseClickCircle(InputObserver):
         pass
 
     def notify(self, screen, xcurs, ycurs):
-        #circle = GameSprite(SpriteNames.CIRCLE, ImageNames.CIRCLE, (1, 1), (xcurs, ycurs))
-        #GameSpriteMan.add(circle)
-        print('notifying left mouse click at %d %d' % (xcurs, ycurs))
+        #print('notifying left mouse click at %d %d' % (xcurs, ycurs))
         click_explode = ClickExplodeCommand(xcurs, ycurs)
         TimerMan.instance.add(click_explode, 0)
 
@@ -39,7 +35,7 @@ class RMouseClickCircle(InputObserver):
         pass
 
     def notify(self, screen, xcurs, ycurs):
-        print('notifying right mouse click at %d %d' % (xcurs, ycurs))
+        #print('notifying right mouse click at %d %d' % (xcurs, ycurs))
         click_explode = ClickExplodeCommand(xcurs, ycurs)
         TimerMan.instance.add(click_explode, 0)
 
@@ -90,9 +86,6 @@ class InputMan(LinkMan):
 
             self.lmouse_prev = event.button == BUTTON.LEFT.value
             self.rmouse_prev = event.button == BUTTON.RIGHT.value
-
-        if event.type == pygame.MOUSEMOTION:
-            print("mouse at %d,%d" % (xcurs, ycurs))
 
         if event.type == pygame.QUIT:
             game.running = False

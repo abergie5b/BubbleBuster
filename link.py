@@ -1,3 +1,18 @@
+import pygame
+
+class SpriteLink(pygame.sprite.DirtySprite):
+    def __init__(self):
+        pygame.sprite.DirtySprite.__init__(self)
+        self.next = None
+        self.prev = None
+
+    def wash(self):
+        self.next = None
+        self.prev = None
+
+    def print(self):
+        raise NotImplementedError('this method is abstract')
+
 
 class Link:
     def __init__(self):
@@ -10,6 +25,11 @@ class Link:
 
     def print(self):
         raise NotImplementedError('this method is abstract')
+
+
+class SpriteLinkMan(pygame.sprite.Group):
+    def __init__(self, *sprites):
+        pygame.sprite.Group.__init__(self, *sprites)
 
 
 class LinkMan:
@@ -40,22 +60,25 @@ class LinkMan:
         self.instance.head.prev = link
         self.instance.head = link
 
+    def base_remove_single(self, head):
+        if head.next and not head.prev:
+            head = head.next
+            head.prev = None
+            self.instance.head = head
+        elif head.next and head.prev:
+            head.next.prev = head.prev
+            head.prev.next = head.next
+        else:
+            if not head.prev: # only one on list
+                self.instance.head = None
+            else:
+                head.prev.next = None
+
     def base_remove(self, link):
         head = self.instance.head
         while head:
             if head == link:
-                if head.next and not head.prev:
-                    head = head.next
-                    head.prev = None
-                    self.instance.head = head
-                elif head.next and head.prev:
-                    head.next.prev = head.prev
-                    head.prev.next = head.next
-                else:
-                    if not head.prev: # only one on list
-                        self.instance.head = None
-                    else:
-                        head.prev.next = None
+                self.base_remove_single(head)
                 return
             head = head.next
 

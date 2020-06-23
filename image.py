@@ -7,6 +7,7 @@ class ImageNames(Enum):
     MOUSE = 1
     BOX = 2
     CIRCLE = 3
+    EXPLODE = 4
 
 
 class Image(Link):
@@ -38,3 +39,5 @@ class ImageMan(LinkMan):
         image = Image(name, data)
         self.base_add(image)
 
+    def find(self, image):
+        return self.base_find(image)

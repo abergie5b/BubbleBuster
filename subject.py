@@ -1,7 +1,8 @@
+from link import *
 
-class Subject:
+class Subject(Link):
     def __init__(self):
-        raise NotImplementedError('this is a base class')
+        super().__init__()
 
     def attach(self, observer):
         observer.subject = self
@@ -28,3 +29,15 @@ class Subject:
         elif not observer.next: # first
             observer.prev.next = None
 
+
+class CollisionSubject(Subject):
+    def __init__(self):
+        self.objA = None
+        self.objB = None
+        self.head = None
+
+    def notify(self):
+        head = self.head
+        while head:
+            head.notify()
+            head = head.next

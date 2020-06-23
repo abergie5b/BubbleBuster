@@ -4,7 +4,7 @@ class SpriteBatchNames(enum.Enum):
     MOUSE = 1
 
 
-class SpriteBatch(Link):
+class SpriteBatch(LinkMan):
     def __init__(self, name):
         self.name = name
 
