@@ -71,7 +71,7 @@ class Game:
         )
 
         # player
-        player = Player(PlayerNames.PLAYERONE, NUMBER_OF_BUBBLES, PLAYER_EXPLOSIONS, PLAYER_LIVES)
+        player = Player(PlayerNames.PLAYERONE, PLAYER_EXPLOSIONS, PLAYER_LIVES, NUMBER_OF_BUBBLES)
         self.playerone = self.player_manager.add(player)
 
         # fonts

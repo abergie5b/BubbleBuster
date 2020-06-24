@@ -1,6 +1,8 @@
 from link import Link, LinkMan
+from settings import DEBUG
 
 from enum import Enum
+
 
 class PlayerNames(Enum):
     PLAYERONE = 1
@@ -20,6 +22,8 @@ class Player(Link):
         self.bubbles -= 1
         points = multiplier * 1000//circle.height
         self.score +=  points
+        if DEBUG:
+            print('updating player score %d, points: %d' % (self.score, points))
         return points
 
 

@@ -28,7 +28,6 @@ class LMouseClickCircle(InputObserver):
         pass
 
     def notify(self, screen, xcurs, ycurs):
-        #print('notifying left mouse click at %d %d' % (xcurs, ycurs))
         click_explode = ClickExplodeCommand(xcurs, ycurs)
         TimerMan.instance.add(click_explode, 0)
         player = PlayerMan.instance.find(PlayerNames.PLAYERONE)
@@ -41,7 +40,6 @@ class RMouseClickCircle(InputObserver):
         pass
 
     def notify(self, screen, xcurs, ycurs):
-        #print('notifying right mouse click at %d %d' % (xcurs, ycurs))
         click_explode = ClickExplodeCommand(xcurs, ycurs)
         TimerMan.instance.add(click_explode, 0)
         player = PlayerMan.instance.find(PlayerNames.PLAYERONE)

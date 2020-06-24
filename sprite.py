@@ -5,6 +5,7 @@ from groups import GroupMan, GroupNames
 import timer
 from player import PlayerMan, PlayerNames
 from font import Font, FontMan, FontNames
+from settings import DEBUG
 
 import pygame
 from random import randint
@@ -148,12 +149,19 @@ class CircleSprite(BoxSprite):
             # there must be 
             # a better way
             if head.pSprite.name == BoxSpriteNames.CIRCLE and pygame.sprite.collide_circle(self, head.pSprite):
-                head.pSprite.color = (255, 0, 0)
+
                 multiplier += 1
+                head.pSprite.color = (255, 0, 0)
+
+                if DEBUG:
+                    print('colliding circle destroyed, multiplier: %d' % multiplier)
+                
                 font_multiplier = FontMan.instance.find(FontNames.MULTIPLIER_TITLE)
                 font_multiplier.text = multiplier
+
                 command = timer.DestroySpriteCommand(head.pSprite, multiplier=multiplier)
                 timer.TimerMan.instance.add(command, 100)
+
                 head.pSprite.collision_enabled = False
             head = head.next
 
@@ -174,6 +182,7 @@ class CircleSprite(BoxSprite):
 
         #timer.TimerMan.instance.add(timer.DestroySpriteCommand(sprite), 180)
 
+        self.collision_enabled = False
         BoxSpriteMan.instance.remove(self)
         CollisionPairMan.instance.remove(self)
         group_manager = GroupMan.instance.find(GroupNames.CIRCLE)
@@ -196,7 +205,8 @@ class ExplosionSprite(BoxSprite):
         pass
 
     def accept(self, circle):
-        #print('explosion collided with circle', circle)
+        if DEBUG:
+            print('explosion collided with circle', circle)
         player = PlayerMan.instance.find(PlayerNames.PLAYERONE)
         font = FontMan.instance.find(FontNames.SCORE)
         font.text = player.score
