@@ -148,21 +148,22 @@ class CircleSprite(BoxSprite):
         while head:
             # there must be 
             # a better way
-            if head.pSprite.name == BoxSpriteNames.CIRCLE and pygame.sprite.collide_circle(self, head.pSprite):
+            if head.pSprite.collision_enabled:
+                if head.pSprite.name == BoxSpriteNames.CIRCLE and pygame.sprite.collide_circle(self, head.pSprite):
 
-                multiplier += 1
-                head.pSprite.color = (255, 0, 0)
+                    multiplier += 1
+                    head.pSprite.color = (255, 0, 0)
 
-                if DEBUG:
-                    print('colliding circle destroyed, multiplier: %d' % multiplier)
-                
-                font_multiplier = FontMan.instance.find(FontNames.MULTIPLIER_TITLE)
-                font_multiplier.text = multiplier
+                    if DEBUG:
+                        print('colliding circle %s destroyed, multiplier: %d' % (head.pSprite, multiplier))
+                    
+                    font_multiplier = FontMan.instance.find(FontNames.MULTIPLIER_TITLE)
+                    font_multiplier.text = multiplier
 
-                command = timer.DestroySpriteCommand(head.pSprite, multiplier=multiplier)
-                timer.TimerMan.instance.add(command, 100)
+                    command = timer.DestroySpriteCommand(head.pSprite, multiplier=multiplier)
+                    timer.TimerMan.instance.add(command, 100)
 
-                head.pSprite.collision_enabled = False
+                    head.pSprite.collision_enabled = False
             head = head.next
 
     def destroy(self, multiplier=1):

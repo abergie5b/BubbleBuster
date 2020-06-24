@@ -64,14 +64,14 @@ class Game:
 
         # sprites
         circle_factory = CircleFactory(self.circle_group)
-        circle_factory.generate_random(NUMBER_OF_BUBBLES, 
-                                       max_xy=(SCREEN_WIDTH-BUBBLE_MAXH, 
-                                               SCREEN_HEIGHT-BUBBLE_MAXH), 
-                                       max_h=BUBBLE_MAXH
+        circle_factory.generate_random(GameSettings.NUMBER_OF_BUBBLES, 
+                                       max_xy=(SCREEN_WIDTH-GameSettings.BUBBLE_MAXH, 
+                                               SCREEN_HEIGHT-GameSettings.BUBBLE_MAXH), 
+                                       max_h=GameSettings.BUBBLE_MAXH
         )
 
         # player
-        player = Player(PlayerNames.PLAYERONE, PLAYER_EXPLOSIONS, PLAYER_LIVES, NUMBER_OF_BUBBLES)
+        player = Player(PlayerNames.PLAYERONE, GameSettings.PLAYER_EXPLOSIONS, GameSettings.PLAYER_LIVES, GameSettings.NUMBER_OF_BUBBLES)
         self.playerone = self.player_manager.add(player)
 
         # fonts
@@ -93,7 +93,7 @@ class Game:
         FontMan.instance.add(Font(FontNames.MULTIPLIER_TITLE, 'Comic Sans', 16, 0, (255, 255, 255), (MENU_OFFSETX, MENU_OFFSETY)))
         MENU_OFFSETY += MENU_STARTY
         FontMan.instance.add(Font(FontNames.NULL, 'Comic Sans', 16, 'Bubbles: ', (255, 255, 255), (MENU_STARTX, MENU_OFFSETY)))
-        FontMan.instance.add(Font(FontNames.BUBBLES, 'Comic Sans', 16, NUMBER_OF_BUBBLES, (255, 255, 255), (MENU_OFFSETX, MENU_OFFSETY)))
+        FontMan.instance.add(Font(FontNames.BUBBLES, 'Comic Sans', 16, GameSettings.NUMBER_OF_BUBBLES, (255, 255, 255), (MENU_OFFSETX, MENU_OFFSETY)))
         MENU_OFFSETY += MENU_STARTY
         FontMan.instance.add(Font(FontNames.NULL, 'Comic Sans', 16, 'Time: ', (255, 255, 255), (MENU_STARTX, MENU_OFFSETY)))
         self.font_timedisplay = FontMan.instance.add(Font(FontNames.TIME, 'Comic Sans', 16, self.timer_manager.instance.current_time, (255, 255, 255), (MENU_OFFSETX, MENU_OFFSETY)))

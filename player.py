@@ -23,7 +23,9 @@ class Player(Link):
         points = multiplier * 1000//circle.height
         self.score +=  points
         if DEBUG:
-            print('updating player score %d, points: %d' % (self.score, points))
+            print('updating score %d, circleh: %d mult: %d points: %d bubbles: %d' % (
+                  self.score, circle.height, multiplier, points, self.bubbles)
+            )
         return points
 
 

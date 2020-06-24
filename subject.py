@@ -6,6 +6,7 @@ class Subject(Link):
 
     def attach(self, observer):
         observer.subject = self
+        head = self.head
         if not self.head:
             observer.next = None
             observer.prev = None

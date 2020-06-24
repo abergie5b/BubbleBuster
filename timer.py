@@ -4,7 +4,7 @@ from collision import CollisionPairMan, CollisionCirclePair
 from groups import GroupMan, GroupNames
 from font import FontMan, FontNames
 from player import PlayerMan, PlayerNames
-from settings import *
+from settings import GameSettings
 
 import pygame
 from enum import Enum
@@ -43,15 +43,15 @@ class ClickExplodeCommand(Command):
         self.x = x
         self.y = y
         self.width = 2
-        self.radius = EXPLOSION_RADIUS
-        self.delta = EXPLOSION_RADIUS_DELTA
-        self.lives = EXPLOSION_MAX_LIVES
+        self.radius = GameSettings.EXPLOSION_RADIUS
+        self.delta = GameSettings.EXPLOSION_RADIUS_DELTA
+        self.lives = GameSettings.EXPLOSION_MAX_LIVES
         self.color = (255, 255, 255)
         self.rect = None
         self.circle_group = GroupMan.instance.find(GroupNames.CIRCLE)
 
     def execute(self, delta_time):
-        if self.lives == EXPLOSION_MAX_LIVES:
+        if self.lives == GameSettings.EXPLOSION_MAX_LIVES:
             self.rect = BoxSpriteMan.instance.add(BoxSpriteNames.EXPLOSION, 
                                                   self.width, 
                                                   self.radius*2, 
