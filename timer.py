@@ -1,5 +1,5 @@
 from link import Link, LinkMan
-from sprite import BoxSpriteMan, BoxSpriteNames
+import sprite as sp
 from collision import CollisionPairMan, CollisionCirclePair
 from groups import GroupMan, GroupNames
 from font import FontMan, FontNames
@@ -52,7 +52,7 @@ class ClickExplodeCommand(Command):
 
     def execute(self, delta_time):
         if self.lives == GameSettings.EXPLOSION_MAX_LIVES:
-            self.rect = BoxSpriteMan.instance.add(BoxSpriteNames.EXPLOSION, 
+            self.rect = sp.BoxSpriteMan.instance.add(sp.BoxSpriteNames.EXPLOSION, 
                                                   self.width, 
                                                   self.radius*2, 
                                                   self.x, 
@@ -68,7 +68,43 @@ class ClickExplodeCommand(Command):
         if self.lives:
             TimerMan.instance.add(self, delta_time)
         else:
-            BoxSpriteMan.instance.remove(self.rect)
+            sp.BoxSpriteMan.instance.remove(self.rect)
+            CollisionPairMan.instance.remove(self.rect)
+            node = self.circle_group.find(self.rect)
+            self.circle_group.remove(node)
+
+
+class ClickMiniExplodeCommand(Command):
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.width = 2
+        self.radius = GameSettings.EXPLOSION_RADIUS // 2
+        self.delta = GameSettings.EXPLOSION_RADIUS_DELTA // 2
+        self.lives = GameSettings.EXPLOSION_MAX_LIVES // 2
+        self.color = (255, 255, 255)
+        self.rect = None
+        self.circle_group = GroupMan.instance.find(GroupNames.CIRCLE)
+
+    def execute(self, delta_time):
+        if self.lives == GameSettings.EXPLOSION_MAX_LIVES // 2:
+            self.rect = sp.BoxSpriteMan.instance.add(sp.BoxSpriteNames.EXPLOSION, 
+                                                  self.width, 
+                                                  self.radius*2, 
+                                                  self.x, 
+                                                  self.y, 
+                                                  color=self.color
+            )
+            self.circle_group.add(self.rect)
+
+        self.rect.radius = self.radius = self.radius + self.delta
+        self.rect.height = self.radius*2
+        self.lives -= 1
+
+        if self.lives:
+            TimerMan.instance.add(self, delta_time)
+        else:
+            sp.BoxSpriteMan.instance.remove(self.rect)
             CollisionPairMan.instance.remove(self.rect)
             node = self.circle_group.find(self.rect)
             self.circle_group.remove(node)
@@ -86,15 +122,10 @@ class TimeEvent(Link):
 
 
 class TimerMan(LinkMan):
-    instance = None
-
-    @staticmethod
-    def create():
-        if not TimerMan.instance:
-            TimerMan.instance = TimerMan.__new__(TimerMan)
-            TimerMan.instance.head = None
-            TimerMan.instance.current_time = 0
-        return TimerMan.instance
+    def __init__(self):
+        super().__init__()
+        self.head = None
+        self.current_time = 0
 
     def add(self, command, delta_time):
         event = TimeEvent(command, delta_time)
@@ -109,4 +140,8 @@ class TimerMan(LinkMan):
                 head.process()
                 self.base_remove(head)
             head = next_
+
+    @staticmethod
+    def set_active(manager):
+        TimerMan.instance = manager
 

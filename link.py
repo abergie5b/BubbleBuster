@@ -78,10 +78,10 @@ class Manager:
 
 
 class LinkMan(Manager):
-    instance = None 
+    instance = None
 
     def __init__(self):
-        raise NotImplementedError('this is a singleton class')
+        self.head = None
 
     def create(self):
         raise NotImplementedError('this is an abstract method')
@@ -93,7 +93,7 @@ class LinkMan(Manager):
         raise NotImplementedError('this is an abstract method')
 
     def _get_instance(self):
-        raise NotImplementedError('this is an abstract method')
+        return instance
 
     def print(self):
         head = self.head
@@ -101,4 +101,6 @@ class LinkMan(Manager):
             head.print()
             head = head.next
 
-
+    @staticmethod
+    def set_active(manager):
+        instance = manager

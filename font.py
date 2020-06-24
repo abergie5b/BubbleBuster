@@ -13,6 +13,12 @@ class FontNames(Enum):
     MULTIPLIER = 7
     MULTIPLIER_TITLE = 8
     BUBBLES = 9
+    PLAY = 10
+    MENUTITLE = 11
+    RULES = 12
+    HIGHSCORES = 13
+    EXIT = 14
+    SETTINGS = 15
 
 
 class Font(Link):
@@ -35,16 +41,8 @@ class Font(Link):
         pass
 
 
-
 class FontMan(LinkMan):
     instance = None
-
-    @staticmethod
-    def create():
-        if not FontMan.instance:
-            FontMan.instance = FontMan.__new__(FontMan)
-            FontMan.instance.head = None
-        return FontMan.instance
 
     def compare(self, a, b):
         return a.font_name == b or a == b
@@ -70,3 +68,7 @@ class FontMan(LinkMan):
 
     def find(self, font):
         return self.base_find(font)
+
+    @staticmethod
+    def set_active(manager):
+        FontMan.instance = manager

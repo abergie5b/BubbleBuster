@@ -5,7 +5,7 @@ from groups import GroupMan, GroupNames
 import timer
 from player import PlayerMan, PlayerNames
 from font import Font, FontMan, FontNames
-from settings import DEBUG
+from settings import DEBUG, InterfaceSettings
 
 import pygame
 from random import randint
@@ -16,18 +16,8 @@ class SpriteNames(Enum):
 
 class BoxSpriteNames(Enum):
     BOX = 1
-    CIRCLEA = 2
-    CIRCLEB = 3
-    CIRCLEC = 4
-    CIRCLED = 5
-    CIRCLEE = 6
-    CIRCLEF = 7
-    CIRCLEG = 8
-    CIRCLEH = 9
-    CIRCLEI =10 
-    CIRCLEJ = 11
-    EXPLOSION = 12
-    CIRCLE = 13
+    EXPLOSION = 2
+    CIRCLE = 3
 
 class LineSpriteNames(Enum):
     WALL_LEFT = 1
@@ -37,6 +27,7 @@ class LineSpriteNames(Enum):
 
 
 class BoxSprite(SpriteLink):
+    instance = None
     def __init__(self, name, width, height, x, y, color=(255, 255, 255)):
         super().__init__()
         self.name = name
@@ -65,17 +56,6 @@ class BoxSprite(SpriteLink):
                                      self.rect,
                                      self.width
         )
-
-    def move(self):
-        width, height = pygame.display.get_surface().get_size()
-        if self.posx >= width or self.posx <= 0:
-            self.delta *= -1
-        self.posx += self.delta
-
-    def update(self):
-        #self.move()
-        pass
-
 
 
 class LineSprite(SpriteLink):
@@ -167,12 +147,10 @@ class CircleSprite(BoxSprite):
             head = head.next
 
     def destroy(self, multiplier=1):
-        #sprite = Sprite(SpriteNames.EXPLODE, ImageNames.EXPLODE, 50, 50, self.posx, self.posy)
-        #SpriteMan.instance.add_sprite(sprite)
         player = PlayerMan.instance.find(PlayerNames.PLAYERONE)
         points = player.update_score(self, multiplier=multiplier)
 
-        font_pointsvalue = FontMan.instance.add(Font(FontNames.MULTIPLIER, 'Comic Sans', 18, points, (255, 255, 255), (self.posx, self.posy)))
+        font_pointsvalue = FontMan.instance.add(Font(FontNames.MULTIPLIER, InterfaceSettings.FONTSTYLE, 18, points, (255, 255, 255), (self.posx, self.posy)))
         timer.TimerMan.instance.add(timer.RemoveFontCommand(font_pointsvalue), 250)
 
         font_bubbles = FontMan.instance.find(FontNames.BUBBLES)
@@ -180,8 +158,6 @@ class CircleSprite(BoxSprite):
 
         font = FontMan.instance.find(FontNames.SCORE)
         font.text = player.score
-
-        #timer.TimerMan.instance.add(timer.DestroySpriteCommand(sprite), 180)
 
         self.collision_enabled = False
         BoxSpriteMan.instance.remove(self)
@@ -216,13 +192,6 @@ class ExplosionSprite(BoxSprite):
 
 class BoxSpriteMan(LinkMan):
     instance = None
-
-    @staticmethod
-    def create():
-        if not BoxSpriteMan.instance:
-            BoxSpriteMan.instance = BoxSpriteMan.__new__(BoxSpriteMan)
-            BoxSpriteMan.instance.head = None
-        return BoxSpriteMan.instance
 
     def compare(self, a, b):
         return a.name == b or a == b
@@ -264,6 +233,10 @@ class BoxSpriteMan(LinkMan):
     def find(self, sprite):
         return self.base_find(sprite)
 
+    @staticmethod
+    def set_active(manager):
+        BoxSpriteMan.instance = manager
+
 
 class Sprite(Link):
     def __init__(self, name, image_name, width, height, x, y):
@@ -304,14 +277,6 @@ class Sprite(Link):
 
 
 class SpriteMan(LinkMan):
-    instance = None
-
-    @staticmethod
-    def create():
-        if not SpriteMan.instance:
-            SpriteMan.instance = SpriteMan.__new__(SpriteMan)
-            SpriteMan.instance.head = None
-        return SpriteMan.instance
 
     def compare(self, a, b):
         return a.name == b

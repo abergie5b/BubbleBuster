@@ -1,4 +1,4 @@
-from link import Manager
+from link import LinkMan
 from collision import CollisionPairMan, CollisionCirclePair
 import sprite as sp
 from spritenode import SpriteNodeMan
@@ -10,7 +10,7 @@ class GroupNames(Enum):
     WALL = 2
 
 
-class Group(Manager):
+class Group(LinkMan):
     def __init__(self, name):
         self.head = None
         self.name = name
@@ -52,15 +52,8 @@ class CircleGroup(Group):
         return self.nodeman.base_find(circle)
 
 
-class GroupMan(Manager):
+class GroupMan(LinkMan):
     instance = None
-
-    @staticmethod
-    def create():
-        if not GroupMan.instance:
-            GroupMan.instance = GroupMan.__new__(GroupMan)
-            GroupMan.instance.head = None
-        return GroupMan.instance
 
     def add(self, group):
         self.base_add(group)
@@ -71,3 +64,6 @@ class GroupMan(Manager):
     def find(self, group):
         return self.base_find(group)
  
+    @staticmethod
+    def set_active(manager):
+        GroupMan.instance = manager

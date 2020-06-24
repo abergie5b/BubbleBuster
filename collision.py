@@ -3,6 +3,30 @@ import pygame
 from subject import *
 from link import *
 
+def intersect(rectA, rectB):
+    status = False
+    if (rectA.width == 0 and rectA.height == 0):
+        return status
+    if (rectB.width == 0 and rectB.height == 0):
+        return status
+    
+    aminx = rectA.x - rectA.width / 2
+    amaxx = rectA.x + rectA.width / 2
+    aminy = rectA.y - rectA.height / 2
+    amaxy = rectA.y + rectA.height / 2
+
+    bminx = rectB.x - rectB.width / 2
+    bmaxx = rectB.x + rectB.width / 2
+    bminy = rectB.y - rectB.height / 2
+    bmaxy = rectB.y + rectB.height / 2
+
+    if bmaxx < aminx or bminx > amaxx or bmaxy < aminy or bminy > amaxy:
+        status = False
+    else:
+        status = True
+    return status
+
+
 class CollisionPair(Subject):
     def __init__(self, objA, objB):
         super().__init__()
@@ -66,3 +90,7 @@ class CollisionPairMan(LinkMan):
         while head:
             head.process()
             head = head.next
+
+    @staticmethod
+    def set_active(manager):
+        CollisionPairMan.instance = manager

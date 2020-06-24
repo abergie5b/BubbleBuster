@@ -1,5 +1,6 @@
 from link import Link, LinkMan
 from settings import DEBUG
+import scene
 
 from enum import Enum
 
@@ -18,6 +19,11 @@ class Player(Link):
         self.lives = lives
         self.score = 0
 
+    def update(self):
+        if self.explosions <= 0:
+            scene.SceneContext.instance.reset()
+            scene.SceneContext.instance.set_state(scene.SceneNames.MENU)
+
     def update_score(self, circle, multiplier=1):
         self.bubbles -= 1
         points = multiplier * 1000//circle.height
@@ -30,14 +36,6 @@ class Player(Link):
 
 
 class PlayerMan(LinkMan):
-    instance = None
-
-    @staticmethod
-    def create():
-        if not PlayerMan.instance:
-            PlayerMan.instance = PlayerMan.__new__(PlayerMan)
-            PlayerMan.instance.head = None
-        return PlayerMan.instance
 
     def add(self, player):
         self.base_add(player)
@@ -51,3 +49,13 @@ class PlayerMan(LinkMan):
 
     def find(self, player):
         return self.base_find(player)
+
+    def update(self):
+        head = self.head
+        while head:
+            head.update()
+            head = head.next
+
+    @staticmethod
+    def set_active(manager):
+        PlayerMan.instance = manager

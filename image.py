@@ -23,15 +23,6 @@ class Image(Link):
 
 
 class ImageMan(LinkMan):
-    instance = None
-
-    @staticmethod
-    def create():
-        if not ImageMan.instance:
-            ImageMan.instance = ImageMan.__new__(ImageMan)
-            ImageMan.instance.head = None
-        return ImageMan.instance
-
     def compare(self, a, b):
         return a.name == b
 
@@ -41,3 +32,8 @@ class ImageMan(LinkMan):
 
     def find(self, image):
         return self.base_find(image)
+
+    @staticmethod
+    def set_active(manager):
+        ImageMan.instance = manager
+

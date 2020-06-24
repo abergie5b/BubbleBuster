@@ -4,8 +4,9 @@ from random import randint
 
 
 class CircleFactory:
-    def __init__(self, group):
+    def __init__(self, group, manager):
         self.group = group
+        self.manager = manager
 
     def generate_random(self, number_of_circles, max_xy=(800, 600), max_h=120):
             maxx, maxy = max_xy
@@ -24,5 +25,5 @@ class CircleFactory:
         x, y = posxy
         w, h = wh
         sprite = CircleSprite(BoxSpriteNames.CIRCLE, w, h, x, y, color=color)
-        BoxSpriteMan.instance.add_sprite(sprite)
+        self.manager.add_sprite(sprite)
         self.group.add(sprite)
