@@ -1,6 +1,8 @@
 from link import Link, LinkMan
 from subject import Subject
 from timer import TimerMan, ClickExplodeCommand
+from player import PlayerMan, PlayerNames
+from font import FontMan, FontNames
 
 import pygame
 from enum import Enum
@@ -29,6 +31,10 @@ class LMouseClickCircle(InputObserver):
         #print('notifying left mouse click at %d %d' % (xcurs, ycurs))
         click_explode = ClickExplodeCommand(xcurs, ycurs)
         TimerMan.instance.add(click_explode, 0)
+        player = PlayerMan.instance.find(PlayerNames.PLAYERONE)
+        player.explosions -= 1
+        font = FontMan.instance.find(FontNames.EXPLOSIONS)
+        font.text = player.explosions
 
 class RMouseClickCircle(InputObserver):
     def __init__(self):
@@ -38,7 +44,10 @@ class RMouseClickCircle(InputObserver):
         #print('notifying right mouse click at %d %d' % (xcurs, ycurs))
         click_explode = ClickExplodeCommand(xcurs, ycurs)
         TimerMan.instance.add(click_explode, 0)
-
+        player = PlayerMan.instance.find(PlayerNames.PLAYERONE)
+        player.explosions -= 1
+        font = FontMan.instance.find(FontNames.EXPLOSIONS)
+        font.text = player.explosions
 
 class InputSubject(Subject):
     def __init__(self):

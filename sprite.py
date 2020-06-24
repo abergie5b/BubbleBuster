@@ -1,7 +1,10 @@
 from link import Link, LinkMan, SpriteLink
 from image import ImageMan, ImageNames
-import timer
 from collision import CollisionPairMan
+from groups import GroupMan, GroupNames
+import timer
+from player import PlayerMan, PlayerNames
+from font import Font, FontMan, FontNames
 
 import pygame
 from random import randint
@@ -17,7 +20,13 @@ class BoxSpriteNames(Enum):
     CIRCLEC = 4
     CIRCLED = 5
     CIRCLEE = 6
-    EXPLOSION = 7
+    CIRCLEF = 7
+    CIRCLEG = 8
+    CIRCLEH = 9
+    CIRCLEI =10 
+    CIRCLEJ = 11
+    EXPLOSION = 12
+    CIRCLE = 13
 
 class LineSpriteNames(Enum):
     WALL_LEFT = 1
@@ -66,9 +75,6 @@ class BoxSprite(SpriteLink):
         #self.move()
         pass
 
-    def destroy(self):
-        BoxSpriteMan.instance.remove(self)
-        CollisionPairMan.instance.remove(self)
 
 
 class LineSprite(SpriteLink):
@@ -100,6 +106,7 @@ class LineSprite(SpriteLink):
     def accept(self, circle):
         circle.deltax *= -1
         circle.deltay *= -1
+        # why do need to call this twice huh?
         circle.move()
         circle.update()
 
@@ -129,10 +136,52 @@ class CircleSprite(BoxSprite):
         self.deltay *= -1
         circle.deltax *= -1
         circle.deltay *= -1
-        self.move()
-        circle.move()
-        self.update()
-        circle.update()
+        # resolve collisions for me please
+        while pygame.sprite.collide_circle(self, circle):
+            self.update()
+            circle.update()
+
+    def destroy_colliding_circles(self, multiplier):
+        circle_group = GroupMan.instance.find(GroupNames.CIRCLE)
+        head = circle_group.nodeman.head
+        while head:
+            # there must be 
+            # a better way
+            if head.pSprite.name == BoxSpriteNames.CIRCLE and pygame.sprite.collide_circle(self, head.pSprite):
+                head.pSprite.color = (255, 0, 0)
+                multiplier += 1
+                font_multiplier = FontMan.instance.find(FontNames.MULTIPLIER_TITLE)
+                font_multiplier.text = multiplier
+                command = timer.DestroySpriteCommand(head.pSprite, multiplier=multiplier)
+                timer.TimerMan.instance.add(command, 100)
+                head.pSprite.collision_enabled = False
+            head = head.next
+
+    def destroy(self, multiplier=1):
+        #sprite = Sprite(SpriteNames.EXPLODE, ImageNames.EXPLODE, 50, 50, self.posx, self.posy)
+        #SpriteMan.instance.add_sprite(sprite)
+        player = PlayerMan.instance.find(PlayerNames.PLAYERONE)
+        points = player.update_score(self, multiplier=multiplier)
+
+        font_pointsvalue = FontMan.instance.add(Font(FontNames.MULTIPLIER, 'Comic Sans', 18, points, (255, 255, 255), (self.posx, self.posy)))
+        timer.TimerMan.instance.add(timer.RemoveFontCommand(font_pointsvalue), 250)
+
+        font_bubbles = FontMan.instance.find(FontNames.BUBBLES)
+        font_bubbles.text = player.bubbles
+
+        font = FontMan.instance.find(FontNames.SCORE)
+        font.text = player.score
+
+        #timer.TimerMan.instance.add(timer.DestroySpriteCommand(sprite), 180)
+
+        BoxSpriteMan.instance.remove(self)
+        CollisionPairMan.instance.remove(self)
+        group_manager = GroupMan.instance.find(GroupNames.CIRCLE)
+
+        node = group_manager.find(self)
+        if node: # what the
+            group_manager.remove(node)
+        self.destroy_colliding_circles(multiplier)
 
 
 class ExplosionSprite(BoxSprite):
@@ -148,21 +197,20 @@ class ExplosionSprite(BoxSprite):
 
     def accept(self, circle):
         #print('explosion collided with circle', circle)
-        sprite = Sprite(SpriteNames.EXPLODE, ImageNames.EXPLODE, 50, 50, circle.posx, circle.posy)
-        SpriteMan.instance.add_sprite(sprite)
-        timer.TimerMan.instance.add(timer.DestroySpriteCommand(sprite), 180)
-        circle.destroy()
+        player = PlayerMan.instance.find(PlayerNames.PLAYERONE)
+        font = FontMan.instance.find(FontNames.SCORE)
+        font.text = player.score
+        circle.destroy(multiplier=1)
 
 
 class BoxSpriteMan(LinkMan):
     instance = None
 
     @staticmethod
-    def create(game):
+    def create():
         if not BoxSpriteMan.instance:
             BoxSpriteMan.instance = BoxSpriteMan.__new__(BoxSpriteMan)
             BoxSpriteMan.instance.head = None
-            BoxSpriteMan.instance.game = game
         return BoxSpriteMan.instance
 
     def compare(self, a, b):
@@ -171,15 +219,7 @@ class BoxSpriteMan(LinkMan):
     def add(self, sprite_name, width, height, x, y, color=(255, 255, 255)):
         if sprite_name == BoxSpriteNames.BOX:
             sprite = BoxSprite(sprite_name, width, height, x, y, color=color)
-        elif sprite_name == BoxSpriteNames.CIRCLEA:
-            sprite = CircleSprite(sprite_name, width, height, x, y, color=color)
-        elif sprite_name == BoxSpriteNames.CIRCLEB:
-            sprite = CircleSprite(sprite_name, width, height, x, y, color=color)
-        elif sprite_name == BoxSpriteNames.CIRCLEC:
-            sprite = CircleSprite(sprite_name, width, height, x, y, color=color)
-        elif sprite_name == BoxSpriteNames.CIRCLED:
-            sprite = CircleSprite(sprite_name, width, height, x, y, color=color)
-        elif sprite_name == BoxSpriteNames.CIRCLEE:
+        elif sprite_name == BoxSpriteNames.CIRCLE:
             sprite = CircleSprite(sprite_name, width, height, x, y, color=color)
         elif sprite_name == BoxSpriteNames.EXPLOSION:
             sprite = ExplosionSprite(sprite_name, width, height, x, y, color=color)
@@ -196,20 +236,19 @@ class BoxSpriteMan(LinkMan):
         return sprite
 
     def draw(self, screen):
-        head = self.instance.head
+        head = self.head
         while head:
             head.draw(screen)
             head = head.next
 
     def update(self):
-        head = self.instance.head
+        head = self.head
         while head:
             head.update()
             head = head.next
 
     def remove(self, sprite):
         self.base_remove(sprite)
-        CollisionPairMan.instance.remove(sprite)
 
     def find(self, sprite):
         return self.base_find(sprite)
@@ -235,6 +274,10 @@ class Sprite(Link):
         self.coly = y
 
         self.delta = 2
+
+    @staticmethod
+    def copy(sprite):
+        return Sprite(sprite.name, sprite.image.name, sprite.width, sprite.height, sprite.posx, sprite.posy)
 
     def draw(self, screen):
         screen.blit(self.image.surface,
@@ -276,14 +319,15 @@ class SpriteMan(LinkMan):
         return sprite
 
     def draw(self, screen):
-        head = self.instance.head
+        head = self.head
         while head:
             head.draw(screen)
             head = head.next
 
     def update(self):
-        head = self.instance.head
+        head = self.head
         while head:
             head.update()
             head = head.next
+
 

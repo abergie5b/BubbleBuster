@@ -1,11 +1,13 @@
 from link import Link, LinkMan
 from sprite import BoxSpriteMan, BoxSpriteNames
 from collision import CollisionPairMan, CollisionCirclePair
+from groups import GroupMan, GroupNames
+from font import FontMan, FontNames
+from player import PlayerMan, PlayerNames
+from settings import *
 
 import pygame
 from enum import Enum
-
-EXPLOSION_MAX_LIVES = 10
 
 class TimeEventNames(Enum):
     CLICKEXPLODE = 1
@@ -19,27 +21,36 @@ class Command(Link):
         raise NotImplementedError('this is an abstract method')
 
 
-class DestroySpriteCommand(Link):
-    def __init__(self, sprite):
+class DestroySpriteCommand(Command):
+    def __init__(self, sprite, multiplier=1):
         self.sprite = sprite
+        self.multiplier = multiplier
 
     def execute(self, delta_time):
-        self.sprite.destroy()
+        self.sprite.destroy(multiplier=self.multiplier)
 
 
-class ClickExplodeCommand(Link):
+class RemoveFontCommand(Command):
+    def __init__(self, font):
+        self.font = font
+
+    def execute(self, delta_time):
+        FontMan.instance.remove(self.font)
+
+
+class ClickExplodeCommand(Command):
     def __init__(self, x, y):
         self.x = x
         self.y = y
         self.width = 2
-        self.radius = 10
-        self.delta = 5
+        self.radius = EXPLOSION_RADIUS
+        self.delta = EXPLOSION_RADIUS_DELTA
         self.lives = EXPLOSION_MAX_LIVES
         self.color = (255, 255, 255)
         self.rect = None
+        self.circle_group = GroupMan.instance.find(GroupNames.CIRCLE)
 
     def execute(self, delta_time):
-        #print('updating circle at %d %d with radius %d lives %d' % (self.x, self.y, self.radius, self.lives))
         if self.lives == EXPLOSION_MAX_LIVES:
             self.rect = BoxSpriteMan.instance.add(BoxSpriteNames.EXPLOSION, 
                                                   self.width, 
@@ -48,18 +59,7 @@ class ClickExplodeCommand(Link):
                                                   self.y, 
                                                   color=self.color
             )
-            # todo - bind self.rect to a circle group
-            self.collision_pairA = CollisionCirclePair(self.rect, BoxSpriteMan.instance.find(BoxSpriteNames.CIRCLEA))
-            self.collision_pairB = CollisionCirclePair(self.rect, BoxSpriteMan.instance.find(BoxSpriteNames.CIRCLEB))
-            self.collision_pairC = CollisionCirclePair(self.rect, BoxSpriteMan.instance.find(BoxSpriteNames.CIRCLEC))
-            self.collision_pairD = CollisionCirclePair(self.rect, BoxSpriteMan.instance.find(BoxSpriteNames.CIRCLED))
-            self.collision_pairE = CollisionCirclePair(self.rect, BoxSpriteMan.instance.find(BoxSpriteNames.CIRCLEE))
-
-            CollisionPairMan.instance.add(self.collision_pairA)
-            CollisionPairMan.instance.add(self.collision_pairB)
-            CollisionPairMan.instance.add(self.collision_pairC)
-            CollisionPairMan.instance.add(self.collision_pairD)
-            CollisionPairMan.instance.add(self.collision_pairE)
+            self.circle_group.add(self.rect)
 
         self.rect.radius = self.radius = self.radius + self.delta
         self.rect.height = self.radius*2
@@ -70,6 +70,8 @@ class ClickExplodeCommand(Link):
         else:
             BoxSpriteMan.instance.remove(self.rect)
             CollisionPairMan.instance.remove(self.rect)
+            node = self.circle_group.find(self.rect)
+            self.circle_group.remove(node)
 
 
 class TimeEvent(Link):

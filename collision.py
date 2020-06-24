@@ -8,7 +8,6 @@ class CollisionPair(Subject):
         super().__init__()
         self.objA = objA
         self.objB = objB
-        self.enabled = True
 
     def collide(self):
         raise NotImplementedError("this is an abstract method")
@@ -19,14 +18,16 @@ class CollisionPair(Subject):
 
 class CollisionRectPair(CollisionPair):
     def collide(self):
-        if self.enabled and pygame.sprite.collide_rect(self.objA, self.objB):
-            self.objA.accept(self.objB)
+        if self.objA.collision_enabled and self.objB.collision_enabled:
+            if pygame.sprite.collide_rect(self.objA, self.objB):
+                self.objA.accept(self.objB)
 
 
 class CollisionCirclePair(CollisionPair):
     def collide(self):
-        if self.enabled and pygame.sprite.collide_circle(self.objA, self.objB):
-            self.objA.accept(self.objB)
+        if self.objA.collision_enabled and self.objB.collision_enabled:
+            if pygame.sprite.collide_circle(self.objA, self.objB):
+                self.objA.accept(self.objB)
 
 
 class CollisionPairMan(LinkMan):
@@ -47,11 +48,17 @@ class CollisionPairMan(LinkMan):
         if collision_pair.objA != None and collision_pair.objB != None:
             self.base_add(collision_pair)
 
+    def add_groups(self, groupA, groupB, pair_function):
+        for a in groupA:
+            for b in groupB:
+                self.add(pair_function(a, b))
+
     def remove(self, sprite):
         head = self.head
         while head:
+            pair = head
             if sprite == head.objA or sprite == head.objB:
-                self.base_remove_single(head)
+                self.base_remove_single(pair)
             head = head.next
 
     def process(self):
