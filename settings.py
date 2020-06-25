@@ -14,8 +14,8 @@ class InterfaceSettings:
 
 class GameSettings:
     # BUBBLE SETTINGS
-    NUMBER_OF_BUBBLES = 25
-    BUBBLE_MAXH = 50
+    NUMBER_OF_BUBBLES = 50
+    BUBBLE_MAXH = 100
 
     # PLAYER SETTINGS
     PLAYER_EXPLOSIONS = 50

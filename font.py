@@ -27,7 +27,7 @@ class FontNames(Enum):
     SMALLEXPLOSIONCOST = 20
     LARGEEXPLOSIONCOST = 21
     NUMBEROFBUBBLES = 22
-
+    TOAST = 23
 
 
 class Font(Link):

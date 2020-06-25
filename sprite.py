@@ -125,26 +125,32 @@ class CircleSprite(BoxSprite):
     def destroy_colliding_circles(self, multiplier):
         circle_group = GroupMan.instance.find(GroupNames.CIRCLE)
         head = circle_group.nodeman.head
+        found = False
         while head:
             # there must be 
             # a better way
             if head.pSprite.collision_enabled:
                 if head.pSprite.name == BoxSpriteNames.CIRCLE and pygame.sprite.collide_circle(self, head.pSprite):
 
+                    found = True
                     multiplier += 1
                     head.pSprite.color = (255, 0, 0)
 
                     if DEBUG:
                         print('colliding circle %s destroyed, multiplier: %d' % (head.pSprite, multiplier))
                     
-                    font_multiplier = FontMan.instance.find(FontNames.MULTIPLIER_TITLE)
-                    font_multiplier.text = multiplier
+                    fadeout_command = timer.TimerMan.instance.find(timer.TimeEventNames.FADEOUTTOAST)
+                    timer.TimerMan.instance.remove(fadeout_command)
+                    font_multiplier = FontMan.instance.find(FontNames.TOAST)
+                    font_multiplier.text = str('Multiplier! %d' % multiplier)
+                    font_multiplier.color = InterfaceSettings.FONTCOLOR
 
                     command = timer.DestroySpriteCommand(head.pSprite, multiplier=multiplier)
                     timer.TimerMan.instance.add(command, 100)
 
                     head.pSprite.collision_enabled = False
             head = head.next
+        return found
 
     def destroy(self, multiplier=1):
         player = PlayerMan.instance.find(PlayerNames.PLAYERONE)
@@ -167,8 +173,12 @@ class CircleSprite(BoxSprite):
         node = group_manager.find(self)
         if node: # what the
             group_manager.remove(node)
-        self.destroy_colliding_circles(multiplier)
+        found = self.destroy_colliding_circles(multiplier)
 
+        fadeout_command = timer.TimerMan.instance.find(timer.TimeEventNames.FADEOUTTOAST)
+        if found and not fadeout_command:
+            font_multiplier = FontMan.instance.find(FontNames.TOAST)
+            timer.TimerMan.instance.add(timer.FadeOutFontCommand(font_multiplier, InterfaceSettings.FONTCOLOR), 1000)
 
 class ExplosionSprite(BoxSprite):
     def draw(self, screen):

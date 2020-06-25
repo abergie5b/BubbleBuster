@@ -11,7 +11,10 @@ from enum import Enum
 
 class TimeEventNames(Enum):
     CLICKEXPLODE = 1
-
+    FADEOUTTOAST = 2
+    DESTROYSPRITE = 3
+    MINICLICKEXPLODE = 4
+    REMOVEFONT = 5
 
 class Command(Link):
     def __init__(self):
@@ -25,14 +28,37 @@ class DestroySpriteCommand(Command):
     def __init__(self, sprite, multiplier=1):
         self.sprite = sprite
         self.multiplier = multiplier
+        self.name = TimeEventNames.DESTROYSPRITE
 
     def execute(self, delta_time):
         self.sprite.destroy(multiplier=self.multiplier)
 
 
+class FadeOutFontCommand(Command):
+    def __init__(self, font, original_color):
+        self.font = font
+        self.original_color = original_color
+        self.name = TimeEventNames.FADEOUTTOAST
+
+    def execute(self, delta_time):
+        r = self.font.color[0]
+        g = self.font.color[1]
+        b = self.font.color[2]
+        r = r - 1 if r else r
+        g = g - 1 if g else g
+        b = b - 1 if b else b
+        self.font.color = (r, g, b)
+        if r or g or b:
+            TimerMan.instance.add(self, 1)
+        else:
+            self.font.color = self.original_color
+            self.font.text = ''
+
+
 class RemoveFontCommand(Command):
     def __init__(self, font):
         self.font = font
+        self.name = TimeEventNames.REMOVEFONT
 
     def execute(self, delta_time):
         FontMan.instance.remove(self.font)
@@ -49,6 +75,7 @@ class ClickExplodeCommand(Command):
         self.color = (255, 255, 255)
         self.rect = None
         self.circle_group = GroupMan.instance.find(GroupNames.CIRCLE)
+        self.name = TimeEventNames.CLICKEXPLODE
 
     def execute(self, delta_time):
         if self.lives == GameSettings.EXPLOSION_MAX_LIVES:
@@ -85,6 +112,7 @@ class ClickMiniExplodeCommand(Command):
         self.color = (255, 255, 255)
         self.rect = None
         self.circle_group = GroupMan.instance.find(GroupNames.CIRCLE)
+        self.name = TimeEventNames.MINICLICKEXPLODE
 
     def execute(self, delta_time):
         if self.lives == GameSettings.EXPLOSION_MAX_LIVES // 2:
@@ -130,6 +158,15 @@ class TimerMan(LinkMan):
     def add(self, command, delta_time):
         event = TimeEvent(command, delta_time)
         self.base_add(event)
+
+    def compare(self, a, b):
+        return a.command.name == b
+
+    def find(self, command):
+        return self.base_find(command)
+
+    def remove(self, command):
+        self.base_remove(command)
 
     def update(self, game, time):
         self.current_time = time

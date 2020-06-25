@@ -17,6 +17,7 @@ class Player(Link):
         self.bubbles = bubbles
         self.explosions = explosions
         self.lives = lives
+        self.current_level = 1
         self.score = 0
 
     def update(self):

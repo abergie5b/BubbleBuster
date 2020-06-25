@@ -269,7 +269,6 @@ class SceneRules(Scene):
         self.font_manager.draw(self.screen)
 
     def handle(self):
-
         # make some bubbles
         circle_factory = CircleFactory(self.circle_group, self.boxsprite_manager)
         circle_factory.generate_random(10,
@@ -482,23 +481,26 @@ class ScenePlay(Scene):
         MENU_STARTY = 15
         MENU_OFFSETY = 15
         MENU_OFFSETX = 100
-        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, 'Explosions: ', (255, 255, 255), (MENU_STARTX, MENU_STARTY)))
-        self.font_manager.add(Font(FontNames.EXPLOSIONS, InterfaceSettings.FONTSTYLE, 16, self.playerone.explosions, (255, 255, 255), (MENU_OFFSETX, MENU_STARTY)))
+
+        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 18, 'Explosions: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
+        self.font_manager.add(Font(FontNames.EXPLOSIONS, InterfaceSettings.FONTSTYLE, 18, self.playerone.explosions, InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_STARTY)))
         MENU_OFFSETY += MENU_STARTY
-        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, 'Lives: ', (255, 255, 255), (MENU_STARTX, MENU_OFFSETY)))
-        self.font_manager.add(Font(FontNames.LIVES, InterfaceSettings.FONTSTYLE, 16, self.playerone.lives, (255, 255, 255), (MENU_OFFSETX, MENU_OFFSETY)))
+        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 18, 'Lives: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
+        self.font_manager.add(Font(FontNames.LIVES, InterfaceSettings.FONTSTYLE, 18, self.playerone.lives, InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_OFFSETY)))
         MENU_OFFSETY += MENU_STARTY
-        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, 'Score: ', (255, 255, 255), (MENU_STARTX, MENU_OFFSETY)))
-        self.font_manager.add(Font(FontNames.SCORE, InterfaceSettings.FONTSTYLE, 16, self.playerone.score, (255, 255, 255), (MENU_OFFSETX, MENU_OFFSETY)))
+        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 18, 'Score: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
+        self.font_manager.add(Font(FontNames.SCORE, InterfaceSettings.FONTSTYLE, 18, self.playerone.score, InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_OFFSETY)))
+        #MENU_OFFSETY += MENU_STARTY
+        #self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 18, 'Multiplier: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
+        #self.font_manager.add(Font(FontNames.MULTIPLIER_TITLE, InterfaceSettings.FONTSTYLE, 18, 0, InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_OFFSETY)))
         MENU_OFFSETY += MENU_STARTY
-        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, 'Multiplier: ', (255, 255, 255), (MENU_STARTX, MENU_OFFSETY)))
-        self.font_manager.add(Font(FontNames.MULTIPLIER_TITLE, InterfaceSettings.FONTSTYLE, 16, 0, (255, 255, 255), (MENU_OFFSETX, MENU_OFFSETY)))
+        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 18, 'Bubbles: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
+        self.font_manager.add(Font(FontNames.BUBBLES, InterfaceSettings.FONTSTYLE, 18, GameSettings.NUMBER_OF_BUBBLES, InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_OFFSETY)))
         MENU_OFFSETY += MENU_STARTY
-        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, 'Bubbles: ', (255, 255, 255), (MENU_STARTX, MENU_OFFSETY)))
-        self.font_manager.add(Font(FontNames.BUBBLES, InterfaceSettings.FONTSTYLE, 16, GameSettings.NUMBER_OF_BUBBLES, (255, 255, 255), (MENU_OFFSETX, MENU_OFFSETY)))
-        MENU_OFFSETY += MENU_STARTY
-        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, 'Time: ', (255, 255, 255), (MENU_STARTX, MENU_OFFSETY)))
-        self.font_timedisplay = self.font_manager.add(Font(FontNames.TIME, InterfaceSettings.FONTSTYLE, 16, self.timer_manager.current_time, (255, 255, 255), (MENU_OFFSETX, MENU_OFFSETY)))
+        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 18, 'Time: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
+        self.font_timedisplay = self.font_manager.add(Font(FontNames.TIME, InterfaceSettings.FONTSTYLE, 18, self.timer_manager.current_time, InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_OFFSETY)))
+
+        self.font_manager.add(Font(FontNames.TOAST, InterfaceSettings.FONTSTYLE, 18, '', InterfaceSettings.FONTCOLOR, (SCREEN_WIDTH-100, SCREEN_HEIGHT-25)))
 
         # sprites
         circle_factory = CircleFactory(self.circle_group, self.boxsprite_manager)
