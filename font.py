@@ -1,6 +1,7 @@
 from link import Link, LinkMan
 
 import pygame
+import pygame.freetype as pft
 from enum import Enum
 
 class FontNames(Enum):
@@ -19,6 +20,14 @@ class FontNames(Enum):
     HIGHSCORES = 13
     EXIT = 14
     SETTINGS = 15
+    BUBBLESMAXH = 16
+    NUMBEROFEXPLOSIONS = 17
+    EXPLOSIONDURATION = 18
+    EXPLOSIONRADIUS = 19
+    SMALLEXPLOSIONCOST = 20
+    LARGEEXPLOSIONCOST = 21
+    NUMBEROFBUBBLES = 22
+
 
 
 class Font(Link):
@@ -35,6 +44,26 @@ class Font(Link):
 
     def draw(self, screen):
         surface = self.font.render(str(self.text), True, self.color)
+        screen.blit(surface, self.posxy)
+
+    def update(self):
+        pass
+
+
+class FreeTypeFont(Link):
+    def __init__(self, font_name, font_style, font_size, text, color, posxy):
+        super().__init__()
+        self.font_name = font_name
+        self.font_style = font_style
+        self.font_size = font_size
+        self.font = pft.SysFont(font_style, font_size)
+        self.text = text
+        self.color = pygame.Color(*color)
+        self.posxy = posxy
+        self.posx, self.posy = posxy
+
+    def draw(self, screen):
+        surface, rect = self.font.render(str(self.text), self.color)
         screen.blit(surface, self.posxy)
 
     def update(self):
