@@ -87,6 +87,7 @@ class SceneContext:
         self.scene_over = SceneOver(game)
         self.scene_rules = SceneRules(game)
         self.scene_settings = SceneSettings(game)
+        self.scene_highscores = SceneHighScores(game)
         # start in menu
         self.scene_state = self.scene_menu
         self.scene_state.transition()
@@ -98,6 +99,7 @@ class SceneContext:
         self.scene_over = SceneOver(self.game)
         self.scene_rules = SceneRules(self.game)
         self.scene_settings = SceneSettings(self.game)
+        self.scene_highscores = SceneHighScores(self.game)
 
     def set_state(self, name):
         if name == SceneNames.MENU:
@@ -144,10 +146,10 @@ class SceneMenu(Scene):
         MENU_OFFSETY = 45
         MENU_OFFSETX = 100
 
-        fontplay = self.font_manager.add(Font(FontNames.PLAY, InterfaceSettings.FONTSTYLE, 32, 'Play', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
+        fontplay = self.font_manager.add(Font(FontNames.PLAY, InterfaceSettings.FONTSTYLE, 32, 'Start Game', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
 
         MENU_STARTY += MENU_OFFSETY
-        fontrules = self.font_manager.add(Font(FontNames.RULES, InterfaceSettings.FONTSTYLE, 32, 'Rules', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
+        fontrules = self.font_manager.add(Font(FontNames.RULES, InterfaceSettings.FONTSTYLE, 32, 'How to Play', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
 
         MENU_STARTY += MENU_OFFSETY
         fontsettings = self.font_manager.add(Font(FontNames.SETTINGS, InterfaceSettings.FONTSTYLE, 32, 'Settings', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
@@ -214,14 +216,79 @@ class SceneRules(Scene):
     def __init__(self, game):
         super().__init__(game)
 
+        MENU_STARTX = SCREEN_WIDTH // 4
+        MENU_STARTY = SCREEN_HEIGHT // 4
+        MENU_OFFSETY = 45
+        MENU_OFFSETX = 300
+        MENU_OFFSETX_ARROW = 50
+
+        descriptionA = 'Click to spend explosions and pop all the bubbles'
+        descriptionB = 'Left click for cheap small booms, right click for expensive big booms'
+        descriptionC = 'Earn stacking multiplier bonus for blowing up adjacent bubbles'
+        descriptionD = 'Get more points for popping smaller bubbles'
+        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, descriptionA, InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
+
+        MENU_STARTY += MENU_OFFSETY
+        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, descriptionB, InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
+
+        MENU_STARTY += MENU_OFFSETY
+        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, descriptionC, InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
+
+        MENU_STARTY += MENU_OFFSETY
+        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, descriptionD, InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
+
+        MENU_STARTY += 200
+        #self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 32, 'Left Mouse Click', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
+        #self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 32, 'Small Explosion', InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX, MENU_STARTY)))
+
+        #MENU_STARTY += MENU_OFFSETY
+        #self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 32, 'Right Mouse Click', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
+        #self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 32, 'Large Explosion', InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX, MENU_STARTY)))
+
+        MENU_STARTY += MENU_OFFSETY
+        fontmenu = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 32, 'Back to Menu', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
+
+        self.input_manager.mousecursor.attach(MouseHoverHighlightObserver(fontmenu, None))
+        self.input_manager.lmouse.attach(MouseClickObserver(fontmenu, SceneNames.MENU))
+
     def update(self):
-        pass
+        # font
+        self.font_manager.update()
+
+        # sprites
+        self.boxsprite_manager.update()
+
+        # input
+        self.input_manager.update(self.game)
+
+        # collisions
+        self.collisionpair_manager.process()
 
     def draw(self):
-        pass
+        self.boxsprite_manager.draw(self.screen)
+        self.font_manager.draw(self.screen)
 
     def handle(self):
-        pass
+
+        # make some bubbles
+        circle_factory = CircleFactory(self.circle_group, self.boxsprite_manager)
+        circle_factory.generate_random(10,
+                                       max_xy=(SCREEN_WIDTH-GameSettings.BUBBLE_MAXH, 
+                                               SCREEN_HEIGHT-GameSettings.BUBBLE_MAXH), 
+                                       max_h=GameSettings.BUBBLE_MAXH
+        )
+
+        self.font_manager.add(Font(FontNames.MENUTITLE, 
+                                   InterfaceSettings.FONTSTYLE,
+                                   72, 
+                                   'How to Play', 
+                                   InterfaceSettings.FONTCOLOR, 
+                                   (SCREEN_WIDTH//7, SCREEN_HEIGHT//10)
+                              )
+        )
+
+        # collision pairs
+        self.collisionpair_manager.add_groups(self.wall_group, self.circle_group, CollisionRectPair)
 
 
 class SceneSettings(Scene):
