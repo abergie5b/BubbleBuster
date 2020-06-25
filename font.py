@@ -28,6 +28,8 @@ class FontNames(Enum):
     LARGEEXPLOSIONCOST = 21
     NUMBEROFBUBBLES = 22
     TOAST = 23
+    BUBBLEPOPDELAY = 24
+    LEVEL = 25
 
 
 class Font(Link):

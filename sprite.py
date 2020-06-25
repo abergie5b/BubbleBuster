@@ -160,7 +160,9 @@ class CircleSprite(BoxSprite):
                     font_multiplier.color = InterfaceSettings.FONTCOLOR
 
                     command = timer.DestroySpriteCommand(head.pSprite, explosion=explosion)
-                    timer.TimerMan.instance.add(command, 100)
+                    timer.TimerMan.instance.add(command, GameSettings.BUBBLEPOPDELAY)
+
+                    ExplosionSprite.instance.last_collision = timer.TimerMan.instance.current_time
 
                     head.pSprite.collision_enabled = False
             head = head.next
@@ -170,8 +172,8 @@ class CircleSprite(BoxSprite):
         player = PlayerMan.instance.find(PlayerNames.PLAYERONE)
         points = player.update_score(self, multiplier=explosion.multiplier)
 
-        font_pointsvalue = FontMan.instance.add(Font(FontNames.MULTIPLIER, InterfaceSettings.FONTSTYLE, 18, points, (255, 255, 255), (self.posx, self.posy)))
-        timer.TimerMan.instance.add(timer.RemoveFontCommand(font_pointsvalue), 250)
+        font_pointsvalue = FontMan.instance.add(Font(FontNames.MULTIPLIER, InterfaceSettings.FONTSTYLE, 16, points, (255, 255, 255), (self.posx, self.posy)))
+        timer.TimerMan.instance.add(timer.RemoveFontCommand(font_pointsvalue), 500)
 
         font_bubbles = FontMan.instance.find(FontNames.BUBBLES)
         font_bubbles.text = player.bubbles
@@ -198,6 +200,7 @@ class CircleSprite(BoxSprite):
 
 
 class ExplosionSprite(BoxSprite):
+    instance = None
     def draw(self, screen):
         self.rect = pygame.draw.circle(screen, 
                                        self.color, 
@@ -209,6 +212,8 @@ class ExplosionSprite(BoxSprite):
         pass
 
     def accept(self, circle):
+        ExplosionSprite.instance = self
+        ExplosionSprite.instance.last_collision = timer.TimerMan.instance.current_time
         if DEBUG:
             print('explosion collided with circle', circle)
         player = PlayerMan.instance.find(PlayerNames.PLAYERONE)

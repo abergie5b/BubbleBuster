@@ -179,6 +179,12 @@ class InputMan(LinkMan):
         if event.type == pygame.KEYDOWN:
 
             if event.key == pygame.K_ESCAPE:
+                if game.scene_context.scene_state.name == scene.SceneNames.PLAY:
+                    player = game.scene_context.scene_play.playerone
+                    player.reset()
+                    GameSettings.init()
+                    scene.SceneContext.instance.reset()
+
                 scene.SceneContext.instance.set_state(scene.SceneNames.MENU)
 
         self.mousecursor.notify(game.screen, xcurs, ycurs)

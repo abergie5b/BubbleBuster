@@ -1,7 +1,7 @@
 import pygame
 
 from scene import SceneContext
-from settings import SCREEN_HEIGHT, SCREEN_WIDTH
+from settings import SCREEN_HEIGHT, SCREEN_WIDTH, GameSettings
 
 class Game:
     def __init__(self):
@@ -12,6 +12,7 @@ class Game:
         self.running = True
         self.FPS = 90
 
+        GameSettings.init()
         self.scene_context = SceneContext(self)
 
     def draw(self):

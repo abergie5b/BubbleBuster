@@ -16,9 +16,9 @@ class CircleFactory:
                 self.create_circle(posxy, wh, self.get_random_color())
 
     def get_random_color(self):
-        r = randint(50, 150)
-        g = randint(50, 225)
-        b = randint(50, 225)
+        r = randint(75, 200)
+        g = randint(75, 225)
+        b = randint(75, 225)
         return (r, g, b)
 
     def create_circle(self, posxy, wh, color):

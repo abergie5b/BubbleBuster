@@ -5,6 +5,7 @@ from groups import GroupMan, GroupNames
 from font import FontMan, FontNames
 from player import PlayerMan, PlayerNames
 from settings import GameSettings
+import scene
 
 import pygame
 from enum import Enum
@@ -15,6 +16,7 @@ class TimeEventNames(Enum):
     DESTROYSPRITE = 3
     MINICLICKEXPLODE = 4
     REMOVEFONT = 5
+    SWITCHSCENE = 6
 
 class Command(Link):
     def __init__(self):
@@ -22,6 +24,16 @@ class Command(Link):
 
     def execute(self, delta_time, *args):
         raise NotImplementedError('this is an abstract method')
+
+
+class SwitchSceneCommand(Command):
+    def __init__(self, destination, player=None):
+        self.name = TimeEventNames.SWITCHSCENE
+        self.destination = destination
+        self.player = player
+
+    def execute(self, delta_time):
+        scene.SceneContext.instance.set_state(self.destination, player=self.player)
 
 
 class DestroySpriteCommand(Command):

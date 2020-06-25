@@ -1,5 +1,7 @@
+import timer
 from link import Link, LinkMan
-from settings import DEBUG
+from settings import DEBUG, GameSettings
+import sprite as sp
 import scene
 
 from enum import Enum
@@ -21,9 +23,38 @@ class Player(Link):
         self.score = 0
 
     def update(self):
-        if self.explosions <= 0:
-            scene.SceneContext.instance.reset()
-            scene.SceneContext.instance.set_state(scene.SceneNames.MENU)
+        if self.bubbles <= 0:
+            self.current_level += 1
+            GameSettings.NUMBER_OF_BUBBLES += 10
+            GameSettings.BUBBLE_MAXH -= 10
+            self.reset()
+            # next level
+            #scene.SceneContext.instance.set_state(scene.SceneNames.SCENESWITCH, self)
+            if DEBUG:
+                print('next level activated %d with %d bubbles and %d max height' % (self.current_level, self.bubbles, GameSettings.BUBBLE_MAXH))
+            timer.TimerMan.instance.add(timer.SwitchSceneCommand(scene.SceneNames.SCENESWITCH, player=self), 1000)
+        elif self.explosions <= 0: 
+            current_time = timer.TimerMan.instance.current_time
+            last_collision = sp.ExplosionSprite.instance.last_collision
+            # this depends how long it takes for the explosions
+            # GameSettings.EXPLOSION_MAX_LIVES is not exactly frame by frame
+            # and not measured in time
+            # so better to make it large just in case
+            totally_random_number = 100
+            if current_time - last_collision > GameSettings.BUBBLEPOPDELAY + GameSettings.EXPLOSION_MAX_LIVES * totally_random_number:
+                if DEBUG:
+                    print('game over, switching back to menu current_time: %d last_collision: %d diff: %d' %
+                        (current_time, last_collision, current_time - last_collision))
+                self.reset()
+                GameSettings.init()
+                scene.SceneContext.instance.reset()
+                # die
+                timer.TimerMan.instance.add(timer.SwitchSceneCommand(scene.SceneNames.MENU), 1000)
+
+    def reset(self):
+        # reset these 
+        self.bubbles = GameSettings.NUMBER_OF_BUBBLES
+        self.explosions = GameSettings.PLAYER_EXPLOSIONS
 
     def update_score(self, circle, multiplier=1):
         self.bubbles -= 1
