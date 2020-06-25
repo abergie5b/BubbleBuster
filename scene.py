@@ -8,6 +8,7 @@ from factory import CircleFactory
 from font import Font, FontMan, FontNames
 from player import Player, PlayerMan, PlayerNames
 from settings import *
+from sound import Music, SoundMan, SoundNames, Sound
 
 import pygame
 from enum import Enum
@@ -34,6 +35,7 @@ class Scene:
         self.font_manager = FontMan()
         self.player_manager = PlayerMan()
         self.timer_manager = TimerMan()
+        self.sound_manager = SoundMan()
 
         # all scenes have circle and wall groups
         self.circle_group = CircleGroup(GroupNames.CIRCLE)
@@ -72,6 +74,7 @@ class Scene:
         FontMan.set_active(self.font_manager)
         PlayerMan.set_active(self.player_manager)
         TimerMan.set_active(self.timer_manager)
+        SoundMan.set_active(self.sound_manager)
 
     def handle(self):
         raise NotImplementedError("this is an abstract class")
@@ -90,8 +93,9 @@ class SceneContext:
         self.scene_highscores = SceneHighScores(game)
         # start in menu
         self.scene_state = self.scene_menu
-        self.scene_state.transition()
         SceneContext.instance = self
+        self.scene_state.handle()
+        self.scene_state.transition()
 
     def reset(self):
         self.scene_menu = SceneMenu(self.game)
@@ -123,19 +127,22 @@ class SceneContext:
 class SceneMenu(Scene):
     def __init__(self, game):
         super().__init__(game)
+
+        # zounds
+        self.sound_manager.add(SoundNames.BUBBLEPOP, 'resources/bubble_pop.wav')
         
         # make some bubbles
         circle_factory = CircleFactory(self.circle_group, self.boxsprite_manager)
         circle_factory.generate_random(10,
-                                       max_xy=(SCREEN_WIDTH-GameSettings.BUBBLE_MAXH, 
-                                               SCREEN_HEIGHT-GameSettings.BUBBLE_MAXH), 
-                                       max_h=GameSettings.BUBBLE_MAXH
+                                       max_xy=(SCREEN_WIDTH-100, 
+                                               SCREEN_HEIGHT-100), 
+                                       max_h=100
         )
 
         self.font_manager.add(Font(FontNames.MENUTITLE, 
                                    InterfaceSettings.FONTSTYLE,
-                                   96, 
-                                   'Bubble Busters', 
+                                   72, 
+                                   'Bubble Buster', 
                                    InterfaceSettings.FONTCOLOR, 
                                    (SCREEN_WIDTH//7, SCREEN_HEIGHT//6)
                               )
@@ -196,6 +203,8 @@ class SceneMenu(Scene):
 
     def handle(self):
         SceneContext.instance.reset()
+        musicmenu = Music(SoundNames.MUSICMENU, 'resources/bubbling.wav')
+        musicmenu.play()
 
 
 class SceneOver(Scene):
@@ -216,28 +225,34 @@ class SceneRules(Scene):
     def __init__(self, game):
         super().__init__(game)
 
-        MENU_STARTX = SCREEN_WIDTH // 4
-        MENU_STARTY = SCREEN_HEIGHT // 4
+        # zounds
+        self.sound_manager.add(SoundNames.BUBBLEPOP, 'resources/settings_bubbles.wav')
+
+        # zounds
+        self.sound_manager.add(SoundNames.BUBBLEPOP, 'resources/bubble_pop.wav')
+
+        MENU_STARTX = SCREEN_WIDTH // 8
+        MENU_STARTY = SCREEN_HEIGHT // 3
         MENU_OFFSETY = 45
         MENU_OFFSETX = 300
         MENU_OFFSETX_ARROW = 50
 
         descriptionA = 'Click to spend explosions and pop all the bubbles'
-        descriptionB = 'Left click for cheap small booms, right click for expensive big booms'
-        descriptionC = 'Earn stacking multiplier bonus for blowing up adjacent bubbles'
+        descriptionB = 'Left click for cheap small booms, right click for expensive big booms!'
+        descriptionC = 'Earn bonus for blowing up stacked bubbles'
         descriptionD = 'Get more points for popping smaller bubbles'
-        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, descriptionA, InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
+
+        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, descriptionA, InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
 
         MENU_STARTY += MENU_OFFSETY
-        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, descriptionB, InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
+        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, descriptionB, InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
 
         MENU_STARTY += MENU_OFFSETY
-        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, descriptionC, InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
+        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, descriptionC, InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
 
         MENU_STARTY += MENU_OFFSETY
-        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, descriptionD, InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
+        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, descriptionD, InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
 
-        MENU_STARTY += 200
         #self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 32, 'Left Mouse Click', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
         #self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 32, 'Small Explosion', InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX, MENU_STARTY)))
 
@@ -245,8 +260,8 @@ class SceneRules(Scene):
         #self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 32, 'Right Mouse Click', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
         #self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 32, 'Large Explosion', InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX, MENU_STARTY)))
 
-        MENU_STARTY += MENU_OFFSETY
-        fontmenu = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 32, 'Back to Menu', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
+        MENU_STARTY += MENU_OFFSETY + 100
+        fontmenu = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, 'Back to Menu', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
 
         self.input_manager.mousecursor.attach(MouseHoverHighlightObserver(fontmenu, None))
         self.input_manager.lmouse.attach(MouseClickObserver(fontmenu, SceneNames.MENU))
@@ -269,12 +284,15 @@ class SceneRules(Scene):
         self.font_manager.draw(self.screen)
 
     def handle(self):
+        musicmenu = Music(SoundNames.MUSICMENU, 'resources/settings_bubbles.wav')
+        musicmenu.play()
+
         # make some bubbles
         circle_factory = CircleFactory(self.circle_group, self.boxsprite_manager)
         circle_factory.generate_random(10,
-                                       max_xy=(SCREEN_WIDTH-GameSettings.BUBBLE_MAXH, 
-                                               SCREEN_HEIGHT-GameSettings.BUBBLE_MAXH), 
-                                       max_h=GameSettings.BUBBLE_MAXH
+                                       max_xy=(SCREEN_WIDTH-100, 
+                                               SCREEN_HEIGHT-100), 
+                                       max_h=100
         )
 
         self.font_manager.add(Font(FontNames.MENUTITLE, 
@@ -294,12 +312,15 @@ class SceneSettings(Scene):
     def __init__(self, game):
         super().__init__(game)
 
+        # zounds
+        self.sound_manager.add(SoundNames.BUBBLEPOP, 'resources/bubble_pop.wav')
+
         # make some bubbles
         circle_factory = CircleFactory(self.circle_group, self.boxsprite_manager)
         circle_factory.generate_random(10,
-                                       max_xy=(SCREEN_WIDTH-GameSettings.BUBBLE_MAXH, 
-                                               SCREEN_HEIGHT-GameSettings.BUBBLE_MAXH), 
-                                       max_h=GameSettings.BUBBLE_MAXH
+                                       max_xy=(SCREEN_WIDTH-100,
+                                               SCREEN_HEIGHT-100),
+                                       max_h=100
         )
 
         self.font_manager.add(Font(FontNames.MENUTITLE, 
@@ -307,65 +328,65 @@ class SceneSettings(Scene):
                                    72, 
                                    'Settings', 
                                    InterfaceSettings.FONTCOLOR, 
-                                   (SCREEN_WIDTH//7, SCREEN_HEIGHT//10)
+                                   (SCREEN_WIDTH//7, SCREEN_HEIGHT//12)
                               )
         )
 
         MENU_STARTX = SCREEN_WIDTH // 4
-        MENU_STARTY = SCREEN_HEIGHT // 4
+        MENU_STARTY = SCREEN_HEIGHT // 3
         MENU_OFFSETY = 45
-        MENU_OFFSETX = 300
-        MENU_OFFSETX_ARROW = 50
+        MENU_OFFSETX = 350
+        MENU_OFFSETX_ARROW = 75
 
-        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 32, 'Number of Bubbles', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
-        self.font_manager.add(Font(FontNames.NUMBEROFBUBBLES, InterfaceSettings.FONTSTYLE, 32, GameSettings.NUMBER_OF_BUBBLES, InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX, MENU_STARTY)))
-        numberofbubblesup = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, '↑', InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX+MENU_OFFSETX_ARROW, MENU_STARTY)))
-        numberofbubblesdown = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, '↓', InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX+MENU_OFFSETX_ARROW, MENU_STARTY+10)))
+        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, 'Number of Bubbles', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
+        self.font_manager.add(Font(FontNames.NUMBEROFBUBBLES, InterfaceSettings.FONTSTYLE, 24, GameSettings.NUMBER_OF_BUBBLES, InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX, MENU_STARTY)))
+        numberofbubblesup = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, 'o', InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX+MENU_OFFSETX_ARROW, MENU_STARTY)))
+        numberofbubblesdown = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, 'o', InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX+MENU_OFFSETX_ARROW, MENU_STARTY+10)))
 
         MENU_STARTY += MENU_OFFSETY
-        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 32, 'Bubble Max Height', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
-        self.font_manager.add(Font(FontNames.BUBBLESMAXH, InterfaceSettings.FONTSTYLE, 32, GameSettings.BUBBLE_MAXH, InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX, MENU_STARTY)))
+        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, 'Bubble Max Height', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
+        self.font_manager.add(Font(FontNames.BUBBLESMAXH, InterfaceSettings.FONTSTYLE, 24, GameSettings.BUBBLE_MAXH, InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX, MENU_STARTY)))
         bubblesmaxheightup = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, '↑', InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX+MENU_OFFSETX_ARROW, MENU_STARTY)))
         bubblesmaxheightdown = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, '↓', InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX+MENU_OFFSETX_ARROW, MENU_STARTY+10)))
 
         MENU_STARTY += MENU_OFFSETY
-        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 32, '# of Explosions', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
-        self.font_manager.add(Font(FontNames.NUMBEROFEXPLOSIONS, InterfaceSettings.FONTSTYLE, 32, GameSettings.PLAYER_EXPLOSIONS, InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX, MENU_STARTY)))
+        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, '# of Explosions', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
+        self.font_manager.add(Font(FontNames.NUMBEROFEXPLOSIONS, InterfaceSettings.FONTSTYLE, 24, GameSettings.PLAYER_EXPLOSIONS, InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX, MENU_STARTY)))
         numberofexplosionsup = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, '↑', InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX+MENU_OFFSETX_ARROW, MENU_STARTY)))
         numberofexplosionsdown = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, '↓', InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX+MENU_OFFSETX_ARROW, MENU_STARTY+10)))
 
         MENU_STARTY += MENU_OFFSETY
-        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 32, 'Explosion Duration', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
-        self.font_manager.add(Font(FontNames.EXPLOSIONDURATION, InterfaceSettings.FONTSTYLE, 32, GameSettings.EXPLOSION_MAX_LIVES, InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX, MENU_STARTY)))
+        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, 'Explosion Duration', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
+        self.font_manager.add(Font(FontNames.EXPLOSIONDURATION, InterfaceSettings.FONTSTYLE, 24, GameSettings.EXPLOSION_MAX_LIVES, InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX, MENU_STARTY)))
         explosiondurationup = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, '↑', InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX+MENU_OFFSETX_ARROW, MENU_STARTY)))
         explosiondurationdown = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, '↓', InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX+MENU_OFFSETX_ARROW, MENU_STARTY+10)))
 
         MENU_STARTY += MENU_OFFSETY
-        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 32, 'Explosion Radius', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
-        self.font_manager.add(Font(FontNames.EXPLOSIONRADIUS, InterfaceSettings.FONTSTYLE, 32, GameSettings.EXPLOSION_RADIUS, InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX, MENU_STARTY)))
+        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, 'Explosion Radius', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
+        self.font_manager.add(Font(FontNames.EXPLOSIONRADIUS, InterfaceSettings.FONTSTYLE, 24, GameSettings.EXPLOSION_RADIUS, InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX, MENU_STARTY)))
         explosionradiusup = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, '↑', InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX+MENU_OFFSETX_ARROW, MENU_STARTY)))
         explosionradiusdown = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, '↓', InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX+MENU_OFFSETX_ARROW, MENU_STARTY+10)))
 
         MENU_STARTY += MENU_OFFSETY
-        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 32, 'Small Explosion Cost', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
-        self.font_manager.add(Font(FontNames.SMALLEXPLOSIONCOST, InterfaceSettings.FONTSTYLE, 32, GameSettings.SMALLEXPLOSIONCOST, InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX, MENU_STARTY)))
+        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, 'Small Explosion Cost', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
+        self.font_manager.add(Font(FontNames.SMALLEXPLOSIONCOST, InterfaceSettings.FONTSTYLE, 24, GameSettings.SMALLEXPLOSIONCOST, InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX, MENU_STARTY)))
         smallexplosioncostup = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, '↑', InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX+MENU_OFFSETX_ARROW, MENU_STARTY)))
         smallexplosioncostdown = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, '↓', InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX+MENU_OFFSETX_ARROW, MENU_STARTY+10)))
 
         MENU_STARTY += MENU_OFFSETY
-        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 32, 'Large Explosion Cost', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
-        self.font_manager.add(Font(FontNames.LARGEEXPLOSIONCOST, InterfaceSettings.FONTSTYLE, 32, GameSettings.LARGEEXPLOSIONCOST, InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX, MENU_STARTY)))
+        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, 'Large Explosion Cost', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
+        self.font_manager.add(Font(FontNames.LARGEEXPLOSIONCOST, InterfaceSettings.FONTSTYLE, 24, GameSettings.LARGEEXPLOSIONCOST, InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX, MENU_STARTY)))
         largeexplosioncostup = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, '↑', InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX+MENU_OFFSETX_ARROW, MENU_STARTY)))
         largeexplosioncostdown = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, '↓', InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX+MENU_OFFSETX_ARROW, MENU_STARTY+10)))
 
         MENU_STARTY += MENU_OFFSETY
-        fontmenu = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 32, 'Back to Menu', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
+        fontmenu = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, 'Back to Menu', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
 
         self.input_manager.mousecursor.attach(MouseHoverHighlightObserver(fontmenu, None))
         self.input_manager.lmouse.attach(MouseClickObserver(fontmenu, SceneNames.MENU))
 
-        self.input_manager.lmouse.attach(MouseClickSettingsObserver(numberofbubblesup, 'NUMBER_OF_BUBBLES', FontNames.NUMBEROFBUBBLES, 25))
-        self.input_manager.lmouse.attach(MouseClickSettingsObserver(numberofbubblesdown, 'NUMBER_OF_BUBBLES', FontNames.NUMBEROFBUBBLES, -25))
+        self.input_manager.lmouse.attach(MouseClickSettingsObserver(numberofbubblesup, 'NUMBER_OF_BUBBLES', FontNames.NUMBEROFBUBBLES, 10))
+        self.input_manager.lmouse.attach(MouseClickSettingsObserver(numberofbubblesdown, 'NUMBER_OF_BUBBLES', FontNames.NUMBEROFBUBBLES, -10))
 
         self.input_manager.lmouse.attach(MouseClickSettingsObserver(bubblesmaxheightup, 'BUBBLE_MAXH', FontNames.BUBBLESMAXH, 10))
         self.input_manager.lmouse.attach(MouseClickSettingsObserver(bubblesmaxheightdown, 'BUBBLE_MAXH', FontNames.BUBBLESMAXH, -10))
@@ -407,7 +428,9 @@ class SceneSettings(Scene):
         self.font_manager.draw(self.screen)
 
     def handle(self):
-        pass
+        musicmenu = Music(SoundNames.MUSICMENU, 'resources/settings_bubbles.wav')
+        musicmenu.play()
+
 
 
 class SceneHighScores(Scene):
@@ -429,6 +452,10 @@ class ScenePlay(Scene):
         super().__init__(game)
         # images
         #self.image_manager.add(ImageNames.EXPLODE, 'resources/explode.png')
+
+        # zounds
+        self.sound_manager.add(SoundNames.SMALLEXPLODE, 'resources/small_explode.wav')
+        self.sound_manager.add(SoundNames.LARGEEXPLODE, 'resources/large_explode.wav')
 
         # input
         self.input_manager.lmouse.attach(LMouseClickCircleObserver())
@@ -468,6 +495,9 @@ class ScenePlay(Scene):
         self.font_manager.draw(self.screen)
 
     def handle(self):
+        musicmenu = Music(SoundNames.MUSICMENU, 'resources/bubbles.wav')
+        musicmenu.play()
+
         # player
         player = Player(PlayerNames.PLAYERONE, 
                         GameSettings.PLAYER_EXPLOSIONS, 
@@ -479,34 +509,28 @@ class ScenePlay(Scene):
         # fonts
         MENU_STARTX = 10
         MENU_STARTY = 15
-        MENU_OFFSETY = 15
-        MENU_OFFSETX = 100
+        MENU_OFFSETY = 20
+        MENU_OFFSETX = 150
 
-        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 18, 'Explosions: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
-        self.font_manager.add(Font(FontNames.EXPLOSIONS, InterfaceSettings.FONTSTYLE, 18, self.playerone.explosions, InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_STARTY)))
+        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, 'Score: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
+        self.font_manager.add(Font(FontNames.SCORE, InterfaceSettings.FONTSTYLE, 16, self.playerone.score, InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_STARTY)))
         MENU_OFFSETY += MENU_STARTY
-        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 18, 'Lives: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
-        self.font_manager.add(Font(FontNames.LIVES, InterfaceSettings.FONTSTYLE, 18, self.playerone.lives, InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_OFFSETY)))
+        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, 'Bubbles: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
+        self.font_manager.add(Font(FontNames.BUBBLES, InterfaceSettings.FONTSTYLE, 16, GameSettings.NUMBER_OF_BUBBLES, InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_OFFSETY)))
         MENU_OFFSETY += MENU_STARTY
-        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 18, 'Score: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
-        self.font_manager.add(Font(FontNames.SCORE, InterfaceSettings.FONTSTYLE, 18, self.playerone.score, InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_OFFSETY)))
-        #MENU_OFFSETY += MENU_STARTY
-        #self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 18, 'Multiplier: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
-        #self.font_manager.add(Font(FontNames.MULTIPLIER_TITLE, InterfaceSettings.FONTSTYLE, 18, 0, InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_OFFSETY)))
+        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, 'Explosions: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
+        self.font_manager.add(Font(FontNames.EXPLOSIONS, InterfaceSettings.FONTSTYLE, 16, self.playerone.explosions, InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_OFFSETY)))
         MENU_OFFSETY += MENU_STARTY
-        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 18, 'Bubbles: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
-        self.font_manager.add(Font(FontNames.BUBBLES, InterfaceSettings.FONTSTYLE, 18, GameSettings.NUMBER_OF_BUBBLES, InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_OFFSETY)))
-        MENU_OFFSETY += MENU_STARTY
-        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 18, 'Time: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
-        self.font_timedisplay = self.font_manager.add(Font(FontNames.TIME, InterfaceSettings.FONTSTYLE, 18, self.timer_manager.current_time, InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_OFFSETY)))
+        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, 'Time: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
+        self.font_timedisplay = self.font_manager.add(Font(FontNames.TIME, InterfaceSettings.FONTSTYLE, 16, self.timer_manager.current_time, InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_OFFSETY)))
 
-        self.font_manager.add(Font(FontNames.TOAST, InterfaceSettings.FONTSTYLE, 18, '', InterfaceSettings.FONTCOLOR, (SCREEN_WIDTH-100, SCREEN_HEIGHT-25)))
+        self.font_manager.add(Font(FontNames.TOAST, InterfaceSettings.FONTSTYLE, 16, '', InterfaceSettings.FONTCOLOR, (SCREEN_WIDTH-150, SCREEN_HEIGHT-25)))
 
         # sprites
         circle_factory = CircleFactory(self.circle_group, self.boxsprite_manager)
         circle_factory.generate_random(GameSettings.NUMBER_OF_BUBBLES, 
-                                       max_xy=(SCREEN_WIDTH-GameSettings.BUBBLE_MAXH*2, 
-                                               SCREEN_HEIGHT-GameSettings.BUBBLE_MAXH*2), 
+                                       max_xy=(SCREEN_WIDTH-GameSettings.BUBBLE_MAXH, 
+                                               SCREEN_HEIGHT-GameSettings.BUBBLE_MAXH), 
                                        max_h=GameSettings.BUBBLE_MAXH
         )
 

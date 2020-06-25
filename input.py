@@ -1,12 +1,13 @@
 from link import Link, LinkMan
 from subject import Subject
-from timer import TimerMan, ClickExplodeCommand, ClickMiniExplodeCommand
+from timer import TimerMan, ClickExplodeCommand
 from player import PlayerMan, PlayerNames
 from font import FontMan, FontNames
 from collision import intersect
 from settings import InterfaceSettings
 import scene
 from settings import GameSettings
+from sound import SoundMan, SoundNames
 
 import pygame
 from enum import Enum
@@ -70,6 +71,8 @@ class MouseClickObserver(InputObserver):
         self.rectB.x = xcurs
         self.rectB.y = ycurs
         if intersect(self.rectA, self.rectB):
+            bubblepop = SoundMan.instance.find(SoundNames.BUBBLEPOP)
+            bubblepop.play()
             scene.SceneContext.instance.set_state(self.scene_change)
 
 
@@ -103,10 +106,17 @@ class LMouseClickCircleObserver(InputObserver):
         player = PlayerMan.instance.find(PlayerNames.PLAYERONE)
         if player and player.explosions >= GameSettings.SMALLEXPLOSIONCOST:
             player.explosions -= GameSettings.SMALLEXPLOSIONCOST
-            click_explode = ClickMiniExplodeCommand(xcurs, ycurs)
+            click_explode = ClickExplodeCommand(xcurs, 
+                                                ycurs, 
+                                                GameSettings.EXPLOSION_RADIUS//2,
+                                                GameSettings.EXPLOSION_RADIUS_DELTA//2,
+                                                GameSettings.EXPLOSION_MAX_LIVES//2
+            )
             TimerMan.instance.add(click_explode, 0)
             font = FontMan.instance.find(FontNames.EXPLOSIONS)
             font.text = player.explosions
+            sound = SoundMan.instance.find(SoundNames.SMALLEXPLODE)
+            sound.play()
 
 
 class RMouseClickCircleObserver(InputObserver):
@@ -114,10 +124,17 @@ class RMouseClickCircleObserver(InputObserver):
         player = PlayerMan.instance.find(PlayerNames.PLAYERONE)
         if player and player.explosions >= GameSettings.LARGEEXPLOSIONCOST:
             player.explosions -= GameSettings.LARGEEXPLOSIONCOST
-            click_explode = ClickExplodeCommand(xcurs, ycurs)
+            click_explode = ClickExplodeCommand(xcurs, 
+                                                ycurs, 
+                                                GameSettings.EXPLOSION_RADIUS,
+                                                GameSettings.EXPLOSION_RADIUS_DELTA,
+                                                GameSettings.EXPLOSION_MAX_LIVES
+            )
             TimerMan.instance.add(click_explode, 0)
             font = FontMan.instance.find(FontNames.EXPLOSIONS)
             font.text = player.explosions
+            sound = SoundMan.instance.find(SoundNames.LARGEEXPLODE)
+            sound.play()
 
 
 class InputSubject(Subject):

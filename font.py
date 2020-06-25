@@ -36,7 +36,7 @@ class Font(Link):
         self.font_name = font_name
         self.font_style = font_style
         self.font_size = font_size
-        self.font = pygame.font.SysFont(font_style, font_size)
+        self.font = pygame.font.Font(font_style, font_size)
         self.text = text
         self.color = color
         self.posxy = posxy

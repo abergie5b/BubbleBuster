@@ -49,6 +49,7 @@ class BoxSprite(SpriteLink):
         self.color = color
 
         self.delta = 2
+        self.multiplier = 1
 
     def draw(self, screen):
         self.rect = pygame.draw.rect(screen,
@@ -117,44 +118,44 @@ class CircleSprite(BoxSprite):
         self.deltay *= -1
         circle.deltax *= -1
         circle.deltay *= -1
-        # resolve collisions for me please
+        # resolve collisions for me please please
         while pygame.sprite.collide_circle(self, circle):
             self.update()
             circle.update()
 
-    def destroy_colliding_circles(self, multiplier):
+    def destroy_colliding_circles(self, explosion):
+        # explosion None ??
         circle_group = GroupMan.instance.find(GroupNames.CIRCLE)
         head = circle_group.nodeman.head
-        found = False
         while head:
             # there must be 
             # a better way
             if head.pSprite.collision_enabled:
                 if head.pSprite.name == BoxSpriteNames.CIRCLE and pygame.sprite.collide_circle(self, head.pSprite):
 
-                    found = True
-                    multiplier += 1
+                    explosion.multiplier += 1
                     head.pSprite.color = (255, 0, 0)
 
                     if DEBUG:
-                        print('colliding circle %s destroyed, multiplier: %d' % (head.pSprite, multiplier))
+                        print('colliding circle %s destroyed, multiplier: %d' % (head.pSprite, explosion.multiplier))
                     
                     fadeout_command = timer.TimerMan.instance.find(timer.TimeEventNames.FADEOUTTOAST)
                     timer.TimerMan.instance.remove(fadeout_command)
+
                     font_multiplier = FontMan.instance.find(FontNames.TOAST)
-                    font_multiplier.text = str('Multiplier! %d' % multiplier)
+                    font_multiplier.text = str('Multiplier! %d' % explosion.multiplier)
                     font_multiplier.color = InterfaceSettings.FONTCOLOR
 
-                    command = timer.DestroySpriteCommand(head.pSprite, multiplier=multiplier)
+                    command = timer.DestroySpriteCommand(head.pSprite, explosion=explosion)
                     timer.TimerMan.instance.add(command, 100)
 
                     head.pSprite.collision_enabled = False
             head = head.next
-        return found
 
-    def destroy(self, multiplier=1):
+    def destroy(self, explosion):
+        # what if explosion None huhh
         player = PlayerMan.instance.find(PlayerNames.PLAYERONE)
-        points = player.update_score(self, multiplier=multiplier)
+        points = player.update_score(self, multiplier=explosion.multiplier)
 
         font_pointsvalue = FontMan.instance.add(Font(FontNames.MULTIPLIER, InterfaceSettings.FONTSTYLE, 18, points, (255, 255, 255), (self.posx, self.posy)))
         timer.TimerMan.instance.add(timer.RemoveFontCommand(font_pointsvalue), 250)
@@ -165,20 +166,21 @@ class CircleSprite(BoxSprite):
         font = FontMan.instance.find(FontNames.SCORE)
         font.text = player.score
 
-        self.collision_enabled = False
         BoxSpriteMan.instance.remove(self)
         CollisionPairMan.instance.remove(self)
-        group_manager = GroupMan.instance.find(GroupNames.CIRCLE)
 
+        group_manager = GroupMan.instance.find(GroupNames.CIRCLE)
         node = group_manager.find(self)
         if node: # what the
             group_manager.remove(node)
-        found = self.destroy_colliding_circles(multiplier)
+
+        self.destroy_colliding_circles(explosion)
 
         fadeout_command = timer.TimerMan.instance.find(timer.TimeEventNames.FADEOUTTOAST)
-        if found and not fadeout_command:
+        if explosion.multiplier > 1 and not fadeout_command:
             font_multiplier = FontMan.instance.find(FontNames.TOAST)
             timer.TimerMan.instance.add(timer.FadeOutFontCommand(font_multiplier, InterfaceSettings.FONTCOLOR), 1000)
+
 
 class ExplosionSprite(BoxSprite):
     def draw(self, screen):
@@ -197,7 +199,7 @@ class ExplosionSprite(BoxSprite):
         player = PlayerMan.instance.find(PlayerNames.PLAYERONE)
         font = FontMan.instance.find(FontNames.SCORE)
         font.text = player.score
-        circle.destroy(multiplier=1)
+        circle.destroy(explosion=self)
 
 
 class BoxSpriteMan(LinkMan):

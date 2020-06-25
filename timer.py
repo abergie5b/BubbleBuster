@@ -25,13 +25,14 @@ class Command(Link):
 
 
 class DestroySpriteCommand(Command):
-    def __init__(self, sprite, multiplier=1):
+    def __init__(self, sprite, explosion=None):
         self.sprite = sprite
-        self.multiplier = multiplier
+        self.explosion = explosion
         self.name = TimeEventNames.DESTROYSPRITE
 
     def execute(self, delta_time):
-        self.sprite.destroy(multiplier=self.multiplier)
+        multiplier = self.explosion.multiplier if self.explosion else 1
+        self.sprite.destroy(explosion=self.explosion)
 
 
 class FadeOutFontCommand(Command):
@@ -65,57 +66,21 @@ class RemoveFontCommand(Command):
 
 
 class ClickExplodeCommand(Command):
-    def __init__(self, x, y):
+    def __init__(self, x, y, radius, radius_delta, lives):
         self.x = x
         self.y = y
         self.width = 2
-        self.radius = GameSettings.EXPLOSION_RADIUS
-        self.delta = GameSettings.EXPLOSION_RADIUS_DELTA
-        self.lives = GameSettings.EXPLOSION_MAX_LIVES
+        self.radius = radius
+        self.delta = radius_delta
+        self.original_lives = lives
+        self.lives = lives
         self.color = (255, 255, 255)
         self.rect = None
         self.circle_group = GroupMan.instance.find(GroupNames.CIRCLE)
         self.name = TimeEventNames.CLICKEXPLODE
 
     def execute(self, delta_time):
-        if self.lives == GameSettings.EXPLOSION_MAX_LIVES:
-            self.rect = sp.BoxSpriteMan.instance.add(sp.BoxSpriteNames.EXPLOSION, 
-                                                  self.width, 
-                                                  self.radius*2, 
-                                                  self.x, 
-                                                  self.y, 
-                                                  color=self.color
-            )
-            self.circle_group.add(self.rect)
-
-        self.rect.radius = self.radius = self.radius + self.delta
-        self.rect.height = self.radius*2
-        self.lives -= 1
-
-        if self.lives:
-            TimerMan.instance.add(self, delta_time)
-        else:
-            sp.BoxSpriteMan.instance.remove(self.rect)
-            CollisionPairMan.instance.remove(self.rect)
-            node = self.circle_group.find(self.rect)
-            self.circle_group.remove(node)
-
-
-class ClickMiniExplodeCommand(Command):
-    def __init__(self, x, y):
-        self.x = x
-        self.y = y
-        self.width = 2
-        self.radius = GameSettings.EXPLOSION_RADIUS // 2
-        self.delta = GameSettings.EXPLOSION_RADIUS_DELTA // 2
-        self.lives = GameSettings.EXPLOSION_MAX_LIVES // 2
-        self.color = (255, 255, 255)
-        self.rect = None
-        self.circle_group = GroupMan.instance.find(GroupNames.CIRCLE)
-        self.name = TimeEventNames.MINICLICKEXPLODE
-
-    def execute(self, delta_time):
-        if self.lives == GameSettings.EXPLOSION_MAX_LIVES // 2:
+        if self.lives == self.original_lives:
             self.rect = sp.BoxSpriteMan.instance.add(sp.BoxSpriteNames.EXPLOSION, 
                                                   self.width, 
                                                   self.radius*2, 
