@@ -456,6 +456,10 @@ class ScenePlay(Scene):
         # zounds
         self.sound_manager.add(SoundNames.SMALLEXPLODE, 'resources/small_explode.wav')
         self.sound_manager.add(SoundNames.LARGEEXPLODE, 'resources/large_explode.wav')
+        self.sound_manager.add(SoundNames.BUBBLE_MINIPOP, 'resources/bubble_mini_pop.wav')
+        self.sound_manager.add(SoundNames.BUBBLE_SMALLPOP, 'resources/bubble_small_pop.wav')
+        self.sound_manager.add(SoundNames.BUBBLE_MEDIUMPOP, 'resources/bubble_medium_pop.wav')
+        self.sound_manager.add(SoundNames.BUBBLE_LARGEPOP, 'resources/bubble_large_pop.wav')
 
         # input
         self.input_manager.lmouse.attach(LMouseClickCircleObserver())

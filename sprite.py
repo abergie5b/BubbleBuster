@@ -5,7 +5,8 @@ from groups import GroupMan, GroupNames
 import timer
 from player import PlayerMan, PlayerNames
 from font import Font, FontMan, FontNames
-from settings import DEBUG, InterfaceSettings
+from settings import DEBUG, InterfaceSettings, GameSettings
+from sound import SoundMan, SoundNames
 
 import pygame
 from random import randint
@@ -98,6 +99,7 @@ class CircleSprite(BoxSprite):
         super().__init__(*args, **kwargs)
         self.deltax = randint(-self.delta, self.delta)
         self.deltay = randint(-self.delta, self.delta)
+        self.hratio = self.height / GameSettings.BUBBLE_MAXH
 
     def move(self):
         self.posx += self.deltax
@@ -112,6 +114,17 @@ class CircleSprite(BoxSprite):
 
     def update(self):
         self.move()
+
+    def play_sound(self):
+        if self.hratio >= 0.75:
+            sound = SoundMan.instance.find(SoundNames.BUBBLE_LARGEPOP)
+        elif self.hratio >= 0.5:
+            sound = SoundMan.instance.find(SoundNames.BUBBLE_MEDIUMPOP)
+        elif self.hratio >= 0.25:
+            sound = SoundMan.instance.find(SoundNames.BUBBLE_SMALLPOP)
+        else:
+            sound = SoundMan.instance.find(SoundNames.BUBBLE_MINIPOP)
+        sound.play()
 
     def accept(self, circle):
         self.deltax *= -1
@@ -165,6 +178,8 @@ class CircleSprite(BoxSprite):
 
         font = FontMan.instance.find(FontNames.SCORE)
         font.text = player.score
+
+        self.play_sound()
 
         BoxSpriteMan.instance.remove(self)
         CollisionPairMan.instance.remove(self)

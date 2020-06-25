@@ -8,6 +8,10 @@ class SoundNames(Enum):
     BUBBLEPOP = 2
     SMALLEXPLODE = 3
     LARGEEXPLODE = 4
+    BUBBLE_MINIPOP = 5
+    BUBBLE_SMALLPOP = 6
+    BUBBLE_MEDIUMPOP = 7
+    BUBBLE_LARGEPOP = 8
 
 
 class Sound(Link):
