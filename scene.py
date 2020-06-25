@@ -605,5 +605,5 @@ class SceneSwitch(Scene):
                               )
         )
         SceneContext.instance.reset(player=player)
-        self.timer_manager.add(FadeOutFontCommand(menutitle, InterfaceSettings.FONTCOLOR), 1500)
+        self.timer_manager.add(FadeOutFontCommand(menutitle, InterfaceSettings.FONTCOLOR), 1000)
         self.timer_manager.add(SwitchSceneCommand(SceneNames.PLAY), 3000)
