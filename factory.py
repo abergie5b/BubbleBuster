@@ -12,7 +12,7 @@ class CircleFactory:
             maxx, maxy = max_xy
             for x in range(number_of_circles):
                 w, h = (1, randint(max_h//6, max_h))
-                posxy = (randint(h//2, maxx-h-1), randint(h//2, maxy-h-1))
+                posxy = (randint(h//2, maxx-h-5), randint(h//2, maxy-h-5))
                 self.create_circle(posxy, (w, h), self.get_random_color())
 
     def get_random_color(self):

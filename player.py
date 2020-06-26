@@ -13,12 +13,11 @@ class PlayerNames(Enum):
 
 
 class Player(Link):
-    def __init__(self, name, explosions, lives, bubbles):
+    def __init__(self, name, explosions, bubbles):
         super().__init__()
         self.name = name
         self.bubbles = bubbles
         self.explosions = explosions
-        self.lives = lives
         self.current_level = 1
         self.score = 0
 

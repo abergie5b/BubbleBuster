@@ -473,7 +473,6 @@ class ScenePlay(Scene):
             # player
             player = Player(PlayerNames.PLAYERONE, 
                             GameSettings.PLAYER_EXPLOSIONS, 
-                            GameSettings.PLAYER_LIVES, 
                             GameSettings.NUMBER_OF_BUBBLES
             )
         self.playerone = self.player_manager.add(player)
