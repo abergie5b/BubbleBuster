@@ -172,8 +172,8 @@ class CircleSprite(BoxSprite):
         player = PlayerMan.instance.find(PlayerNames.PLAYERONE)
         points = player.update_score(self, multiplier=explosion.multiplier)
 
-        font_pointsvalue = FontMan.instance.add(Font(FontNames.MULTIPLIER, InterfaceSettings.FONTSTYLE, 16, points, (255, 255, 255), (self.posx, self.posy)))
-        timer.TimerMan.instance.add(timer.RemoveFontCommand(font_pointsvalue), 500)
+        font_pointsvalue = FontMan.instance.add(Font(FontNames.MULTIPLIER, InterfaceSettings.FONTSTYLE, 18, points, (255, 255, 255), (self.posx, self.posy)))
+        timer.TimerMan.instance.add(timer.RemoveFontCommand(font_pointsvalue), 1000)
 
         font_bubbles = FontMan.instance.find(FontNames.BUBBLES)
         font_bubbles.text = player.bubbles

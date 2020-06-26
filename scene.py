@@ -147,8 +147,8 @@ class SceneMenu(Scene):
         # make some bubbles
         circle_factory = CircleFactory(self.circle_group, self.boxsprite_manager)
         circle_factory.generate_random(10,
-                                       max_xy=(SCREEN_WIDTH-100, 
-                                               SCREEN_HEIGHT-100), 
+                                       max_xy=(SCREEN_WIDTH, 
+                                               SCREEN_HEIGHT), 
                                        max_h=100
         )
 
@@ -303,8 +303,8 @@ class SceneRules(Scene):
         # make some bubbles
         circle_factory = CircleFactory(self.circle_group, self.boxsprite_manager)
         circle_factory.generate_random(10,
-                                       max_xy=(SCREEN_WIDTH-100, 
-                                               SCREEN_HEIGHT-100), 
+                                       max_xy=(SCREEN_WIDTH, 
+                                               SCREEN_HEIGHT), 
                                        max_h=100
         )
 
@@ -331,8 +331,8 @@ class SceneSettings(Scene):
         # make some bubbles
         circle_factory = CircleFactory(self.circle_group, self.boxsprite_manager)
         circle_factory.generate_random(10,
-                                       max_xy=(SCREEN_WIDTH-100,
-                                               SCREEN_HEIGHT-100),
+                                       max_xy=(SCREEN_WIDTH,
+                                               SCREEN_HEIGHT),
                                        max_h=100
         )
 
@@ -519,8 +519,8 @@ class ScenePlay(Scene):
         # sprites
         circle_factory = CircleFactory(self.circle_group, self.boxsprite_manager)
         circle_factory.generate_random(GameSettings.NUMBER_OF_BUBBLES, 
-                                       max_xy=(SCREEN_WIDTH-GameSettings.BUBBLE_MAXH, 
-                                               SCREEN_HEIGHT-GameSettings.BUBBLE_MAXH), 
+                                       max_xy=(SCREEN_WIDTH, 
+                                               SCREEN_HEIGHT), 
                                        max_h=GameSettings.BUBBLE_MAXH
         )
 
@@ -561,8 +561,8 @@ class SceneSwitch(Scene):
         # make some bubbles
         circle_factory = CircleFactory(self.circle_group, self.boxsprite_manager)
         circle_factory.generate_random(10,
-                                       max_xy=(SCREEN_WIDTH-100, 
-                                               SCREEN_HEIGHT-100), 
+                                       max_xy=(SCREEN_WIDTH, 
+                                               SCREEN_HEIGHT), 
                                        max_h=100
         )
 
