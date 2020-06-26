@@ -1,5 +1,5 @@
-from link import Link, LinkMan
-from settings import GameSettings
+from bubblebuster.link import Link, LinkMan
+from bubblebuster.settings import GameSettings
 
 from enum import Enum
 

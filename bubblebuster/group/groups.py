@@ -1,7 +1,7 @@
-from link import LinkMan
-from collision import CollisionPairMan, CollisionCirclePair
-import sprite as sp
-from spritenode import SpriteNodeMan
+from bubblebuster.link import LinkMan
+from bubblebuster.collision import CollisionPairMan, CollisionCirclePair
+import bubblebuster.sprite as sp
+from bubblebuster.sprite import SpriteNodeMan
 
 from enum import Enum
 
@@ -38,7 +38,7 @@ class CircleGroup(Group):
         # so add the new circle to the collision man
         head = self.nodeman.head
         while head:
-            # hotfix
+            # hotfix to disable circles colliding with themselves
             sprite = head.pSprite
             if circle.name == sp.BoxSpriteNames.EXPLOSION and sprite.name == sp.BoxSpriteNames.CIRCLE:
                 CollisionPairMan.instance.add(CollisionCirclePair(circle, sprite))

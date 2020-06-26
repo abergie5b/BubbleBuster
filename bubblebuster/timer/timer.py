@@ -1,11 +1,12 @@
-from link import Link, LinkMan
-import sprite as sp
-from collision import CollisionPairMan, CollisionCirclePair
-from groups import GroupMan, GroupNames
-from font import FontMan, FontNames
-from player import PlayerMan, PlayerNames
-from settings import GameSettings
-import scene
+from bubblebuster.link import Link, LinkMan
+from bubblebuster.collision import CollisionPairMan, CollisionCirclePair
+from bubblebuster.group import GroupMan, GroupNames
+from bubblebuster.font import FontMan, FontNames
+from bubblebuster.player import PlayerMan, PlayerNames
+from bubblebuster.settings import GameSettings
+import bubblebuster.scene as scene
+import bubblebuster.sprite as sp
+import bubblebuster.input as input
 
 import pygame
 from enum import Enum
@@ -27,13 +28,20 @@ class Command(Link):
 
 
 class SwitchSceneCommand(Command):
-    def __init__(self, destination, player=None):
+    def __init__(self, destination, player=None, onkeypress=None):
         self.name = TimeEventNames.SWITCHSCENE
         self.destination = destination
         self.player = player
+        self.onkeypress = onkeypress
 
     def execute(self, delta_time):
-        scene.SceneContext.instance.set_state(self.destination, player=self.player)
+        if self.onkeypress:
+            self.onkeypress = False
+            input.InputMan.instance.lmouse.attach(input.KeyPressObserver(self, delta_time))
+            input.InputMan.instance.rmouse.attach(input.KeyPressObserver(self, delta_time))
+            input.InputMan.instance.keypress.attach(input.KeyPressObserver(self, delta_time))
+        else:
+            scene.SceneContext.instance.set_state(self.destination, player=self.player)
 
 
 class DestroySpriteCommand(Command):

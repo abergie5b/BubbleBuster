@@ -1,13 +1,13 @@
-from link import Link, LinkMan
-from subject import Subject
-from timer import TimerMan, ClickExplodeCommand
-from player import PlayerMan, PlayerNames
-from font import FontMan, FontNames
-from collision import intersect
-from settings import InterfaceSettings
-import scene
-from settings import GameSettings
-from sound import SoundMan, SoundNames
+from bubblebuster.link import Link, LinkMan
+from bubblebuster.timer import TimerMan, ClickExplodeCommand
+from bubblebuster.player import PlayerMan, PlayerNames
+from bubblebuster.font import FontMan, FontNames
+from bubblebuster.collision import intersect
+from bubblebuster.settings import InterfaceSettings
+from bubblebuster.settings import GameSettings
+from bubblebuster.sound import SoundMan, SoundNames
+import bubblebuster.scene as scene
+import bubblebuster.input.subject as subject
 
 import pygame
 from enum import Enum
@@ -55,8 +55,17 @@ class MouseClickSettingsObserver(InputObserver):
                 font.text = str(value)
 
 
+class KeyPressObserver(InputObserver):
+    def __init__(self, command, delta_time):
+        self.command = command
+        self.delta_time = delta_time
+
+    def notify(self, screen, xcurs, ycurs):
+        self.command.execute(self.delta_time)
+
+
 class MouseClickObserver(InputObserver):
-    def __init__(self, font, scene_change):
+    def __init__(self, font, scene_change, player=None):
         self.font = font
         self.width, self.height = font.font.size(self.font.text)
         self.rectA = pygame.Rect(self.font.posx+self.width//2, 
@@ -66,6 +75,7 @@ class MouseClickObserver(InputObserver):
         )
         self.rectB = pygame.Rect(0, 0, 1, 1)
         self.scene_change = scene_change
+        self.player = player
 
     def notify(self, screen, xcurs, ycurs):
         self.rectB.x = xcurs
@@ -73,7 +83,7 @@ class MouseClickObserver(InputObserver):
         if intersect(self.rectA, self.rectB):
             bubblepop = SoundMan.instance.find(SoundNames.BUBBLEPOP)
             bubblepop.play()
-            scene.SceneContext.instance.set_state(self.scene_change)
+            scene.SceneContext.instance.set_state(self.scene_change, player=self.player)
 
 
 class MouseClickExitObserver(MouseClickObserver):
@@ -108,6 +118,8 @@ class LMouseClickCircleObserver(InputObserver):
             sound = SoundMan.instance.find(SoundNames.SMALLEXPLODE)
             sound.play()
             player.explosions -= GameSettings.SMALLEXPLOSIONCOST
+            player.stats_explosions += GameSettings.SMALLEXPLOSIONCOST
+            player.stats_explosionsround += GameSettings.SMALLEXPLOSIONCOST
             click_explode = ClickExplodeCommand(xcurs, 
                                                 ycurs, 
                                                 GameSettings.EXPLOSION_RADIUS//2,
@@ -126,6 +138,8 @@ class RMouseClickCircleObserver(InputObserver):
             sound = SoundMan.instance.find(SoundNames.LARGEEXPLODE)
             sound.play()
             player.explosions -= GameSettings.LARGEEXPLOSIONCOST
+            player.stats_explosions += GameSettings.LARGEEXPLOSIONCOST
+            player.stats_explosionsround += GameSettings.LARGEEXPLOSIONCOST
             click_explode = ClickExplodeCommand(xcurs, 
                                                 ycurs, 
                                                 GameSettings.EXPLOSION_RADIUS,
@@ -137,7 +151,7 @@ class RMouseClickCircleObserver(InputObserver):
             font.text = player.explosions
 
 
-class InputSubject(Subject):
+class InputSubject(subject.Subject):
     def __init__(self):
         self.objA = None
         self.objB = None
@@ -159,6 +173,7 @@ class InputMan(LinkMan):
         self.rmouse = InputSubject()
         self.rmouse_prev = False
 
+        self.keypress = InputSubject()
         self.mousecursor = InputSubject()
 
     def update(self, game):
@@ -179,13 +194,17 @@ class InputMan(LinkMan):
         if event.type == pygame.KEYDOWN:
 
             if event.key == pygame.K_ESCAPE:
-                if game.scene_context.scene_state.name == scene.SceneNames.PLAY:
+                current_scene_name = game.scene_context.scene_state.name
+                if current_scene_name == scene.SceneNames.PLAY or scene.SceneNames.SCENESWITCH:
                     player = game.scene_context.scene_play.playerone
-                    player.reset()
                     GameSettings.init()
+                    player.reset()
                     scene.SceneContext.instance.reset()
 
                 scene.SceneContext.instance.set_state(scene.SceneNames.MENU)
+
+            self.keypress.notify(game.screen, xcurs, ycurs)
+                
 
         self.mousecursor.notify(game.screen, xcurs, ycurs)
 

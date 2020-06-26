@@ -1,4 +1,4 @@
-from link import *
+from bubblebuster.link import *
 
 class Subject(Link):
     def __init__(self):

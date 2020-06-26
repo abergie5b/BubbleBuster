@@ -1,7 +1,7 @@
 import pygame
 
-from subject import *
-from link import *
+import bubblebuster.input.subject as subject
+from bubblebuster.link import *
 
 def intersect(rectA, rectB):
     status = False
@@ -27,7 +27,7 @@ def intersect(rectA, rectB):
     return status
 
 
-class CollisionPair(Subject):
+class CollisionPair(subject.Subject):
     def __init__(self, objA, objB):
         super().__init__()
         self.objA = objA

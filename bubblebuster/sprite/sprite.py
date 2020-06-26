@@ -1,12 +1,12 @@
-from link import Link, LinkMan, SpriteLink
-from image import ImageMan, ImageNames
-from collision import CollisionPairMan
-from groups import GroupMan, GroupNames
-import timer
-from player import PlayerMan, PlayerNames
-from font import Font, FontMan, FontNames
-from settings import DEBUG, InterfaceSettings, GameSettings
-from sound import SoundMan, SoundNames
+from bubblebuster.link import Link, LinkMan, SpriteLink
+from bubblebuster.image import ImageMan, ImageNames
+from bubblebuster.collision import CollisionPairMan
+import bubblebuster.group as group
+import bubblebuster.timer as timer
+from bubblebuster.player import PlayerMan, PlayerNames
+from bubblebuster.font import Font, FontMan, FontNames
+from bubblebuster.settings import DEBUG, InterfaceSettings, GameSettings
+from bubblebuster.sound import SoundMan, SoundNames
 
 import pygame
 from random import randint
@@ -25,39 +25,6 @@ class LineSpriteNames(Enum):
     WALL_RIGHT = 2
     WALL_TOP = 3
     WALL_BOTTOM = 4
-
-
-class BoxSprite(SpriteLink):
-    instance = None
-    def __init__(self, name, width, height, x, y, color=(255, 255, 255)):
-        super().__init__()
-        self.name = name
-        self.rect = pygame.Rect(x, y, width, height)
-
-        # dimensions
-        self.width = width
-        self.height = height
-        self.radius = self.height // 2 # for circles
-
-        # position
-        self.posx = x
-        self.posy = y
-
-        # for collisions
-        self.colx = x
-        self.coly = y
-
-        self.color = color
-
-        self.delta = 2
-        self.multiplier = 1
-
-    def draw(self, screen):
-        self.rect = pygame.draw.rect(screen,
-                                     self.color,
-                                     self.rect,
-                                     self.width
-        )
 
 
 class LineSprite(SpriteLink):
@@ -94,23 +61,65 @@ class LineSprite(SpriteLink):
         circle.update()
 
 
+class BoxSprite(SpriteLink):
+    instance = None
+    def __init__(self, name, width, height, x, y, color=(255, 255, 255), alpha=255):
+        super().__init__()
+        self.name = name
+        self.surface = pygame.Surface((width, height), pygame.SRCALPHA)
+        self.rect = self.surface.get_rect()
+
+        # dimensions
+        self.width = width
+        self.height = height
+        self.radius = self.height // 2 # for circles
+
+        # position
+        self.posx = x
+        self.posy = y
+
+        # for collisions
+        self.colx = x
+        self.coly = y
+
+        self.color = color
+        self.alpha = alpha
+
+        self.delta = 2
+        self.multiplier = 1
+
+    def draw(self, screen):
+        self.rect = pygame.draw.rect(self.surface,
+                                     self.color,
+                                     self.rect,
+                                     self.width
+        )
+        screen.blit(self.surface, (self.posx, self.posy))
+
+
 class CircleSprite(BoxSprite):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.deltax = randint(-self.delta, self.delta)
         self.deltay = randint(-self.delta, self.delta)
         self.hratio = self.height / GameSettings.BUBBLE_MAXH
+        #self.image = pygame.image.load('resources/bubble_transparent.png').convert_alpha()
+        #self.surface = self.image.subsurface(pygame.Rect(54, 50, 238, 238))
 
     def move(self):
         self.posx += self.deltax
         self.posy += self.deltay
 
     def draw(self, screen):
-        self.rect = pygame.draw.circle(screen, 
+        self.rect = pygame.draw.circle(screen,
                                        self.color, 
                                        (self.posx, self.posy), 
                                        self.height//2,
                                        self.width)
+
+        #screen.blit(self.surface, (self.posx, self.posy))
+        #screen.blit(self.image, (self.posx, self.posy))
+        #self.rect = screen.blit(self.surface, (self.posx, self.posy))
 
     def update(self):
         self.move()
@@ -138,7 +147,7 @@ class CircleSprite(BoxSprite):
 
     def destroy_colliding_circles(self, explosion):
         # explosion None ??
-        circle_group = GroupMan.instance.find(GroupNames.CIRCLE)
+        circle_group = group.GroupMan.instance.find(group.GroupNames.CIRCLE)
         head = circle_group.nodeman.head
         while head:
             # there must be 
@@ -181,12 +190,15 @@ class CircleSprite(BoxSprite):
         font = FontMan.instance.find(FontNames.SCORE)
         font.text = player.score
 
+        font = FontMan.instance.find(FontNames.SCOREROUND)
+        font.text = player.stats_scoreround
+
         self.play_sound()
 
         BoxSpriteMan.instance.remove(self)
         CollisionPairMan.instance.remove(self)
 
-        group_manager = GroupMan.instance.find(GroupNames.CIRCLE)
+        group_manager = group.GroupMan.instance.find(group.GroupNames.CIRCLE)
         node = group_manager.find(self)
         if node: # what the
             group_manager.remove(node)

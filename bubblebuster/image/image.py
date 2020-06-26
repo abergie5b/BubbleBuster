@@ -1,7 +1,7 @@
 import pygame
 from enum import Enum
 
-from link import *
+from bubblebuster.link import *
 
 class ImageNames(Enum):
     MOUSE = 1

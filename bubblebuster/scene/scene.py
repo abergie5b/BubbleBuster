@@ -1,14 +1,14 @@
-from input import InputMan, LMouseClickCircleObserver, RMouseClickCircleObserver, MouseHoverHighlightObserver, MouseClickObserver, MouseClickExitObserver, MouseClickSettingsObserver
-from image import ImageMan, ImageNames
-from sprite import BoxSpriteMan, BoxSpriteNames, LineSprite, LineSpriteNames, SpriteMan
-from collision import CollisionCirclePair, CollisionRectPair, CollisionPairMan
-from timer import TimerMan, FadeOutFontCommand, SwitchSceneCommand
-from groups import CircleGroup, Group, GroupMan, GroupNames
-from factory import CircleFactory
-from font import Font, FontMan, FontNames
-from player import Player, PlayerMan, PlayerNames
-from settings import *
-from sound import Music, SoundMan, SoundNames, Sound
+from bubblebuster.input import InputMan, LMouseClickCircleObserver, RMouseClickCircleObserver, MouseHoverHighlightObserver, MouseClickObserver, MouseClickExitObserver, MouseClickSettingsObserver
+from bubblebuster.image import ImageMan, ImageNames
+from bubblebuster.sprite import BoxSpriteMan, BoxSpriteNames, LineSprite, LineSpriteNames, SpriteMan
+from bubblebuster.collision import CollisionCirclePair, CollisionRectPair, CollisionPairMan
+from bubblebuster.timer import TimerMan, FadeOutFontCommand, SwitchSceneCommand
+from bubblebuster.group import CircleGroup, Group, GroupMan, GroupNames
+from bubblebuster.sprite import CircleFactory
+from bubblebuster.font import Font, FontMan, FontNames
+from bubblebuster.player import Player, PlayerMan, PlayerNames
+from bubblebuster.settings import *
+from bubblebuster.sound import Music, SoundMan, SoundNames, Sound
 
 import pygame
 from enum import Enum
@@ -113,7 +113,7 @@ class SceneContext:
     def set_state(self, name, player=None):
         if name == SceneNames.MENU:
             self.scene_state = self.scene_menu 
-            self.scene_state.handle()
+            self.scene_state.handle(player)
         elif name == SceneNames.PLAY:
             self.scene_state = self.scene_play
             self.scene_state.handle(player)
@@ -180,7 +180,14 @@ class SceneMenu(Scene):
         MENU_STARTY += MENU_OFFSETY
         fontexit = self.font_manager.add(Font(FontNames.EXIT, InterfaceSettings.FONTSTYLE, 32, 'Exit', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
 
-        self.input_manager.lmouse.attach(MouseClickObserver(fontplay, SceneNames.PLAY))
+        # player
+        player = Player(PlayerNames.PLAYERONE, 
+                        GameSettings.PLAYER_EXPLOSIONS, 
+                        GameSettings.NUMBER_OF_BUBBLES
+        )
+
+        self.playerone = self.player_manager.add(player)
+        self.input_manager.lmouse.attach(MouseClickObserver(fontplay, SceneNames.SCENESWITCH, player))
         self.input_manager.lmouse.attach(MouseClickObserver(fontrules, SceneNames.RULES))
         self.input_manager.lmouse.attach(MouseClickObserver(fontsettings, SceneNames.SETTINGS))
         self.input_manager.lmouse.attach(MouseClickObserver(fonthighscores, SceneNames.HIGHSCORES))
@@ -215,7 +222,7 @@ class SceneMenu(Scene):
         self.font_manager.draw(self.screen)
 
     def handle(self, player=None):
-        SceneContext.instance.reset(player=player)
+        #SceneContext.instance.reset(player=player)
         musicmenu = Music(SoundNames.MUSICMENU, 'resources/bubbling.wav')
         musicmenu.play()
 
@@ -535,6 +542,9 @@ class ScenePlay(Scene):
         self.font_manager.add(Font(FontNames.LEVEL, InterfaceSettings.FONTSTYLE, 16, 'Level: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
         self.font_manager.add(Font(FontNames.SCORE, InterfaceSettings.FONTSTYLE, 16, self.playerone.current_level, InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_STARTY)))
         MENU_OFFSETY += MENU_STARTY
+        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, 'Round: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
+        self.font_manager.add(Font(FontNames.SCOREROUND, InterfaceSettings.FONTSTYLE, 16, self.playerone.score, InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_OFFSETY)))
+        MENU_OFFSETY += MENU_STARTY
         self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, 'Score: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
         self.font_manager.add(Font(FontNames.SCORE, InterfaceSettings.FONTSTYLE, 16, self.playerone.score, InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_OFFSETY)))
         MENU_OFFSETY += MENU_STARTY
@@ -548,6 +558,9 @@ class ScenePlay(Scene):
         self.font_timedisplay = self.font_manager.add(Font(FontNames.TIME, InterfaceSettings.FONTSTYLE, 16, self.timer_manager.current_time, InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_OFFSETY)))
 
         self.font_manager.add(Font(FontNames.TOAST, InterfaceSettings.FONTSTYLE, 16, '', InterfaceSettings.FONTCOLOR, (SCREEN_WIDTH-150, SCREEN_HEIGHT-25)))
+
+        font = self.font_manager.find(FontNames.SCOREROUND)
+        font.text = 0
 
 
 class SceneSwitch(Scene):
@@ -603,6 +616,49 @@ class SceneSwitch(Scene):
                                    (SCREEN_WIDTH//7, SCREEN_HEIGHT//6)
                               )
         )
+
+        MENU_STARTX = SCREEN_WIDTH // 4
+        MENU_STARTY = SCREEN_HEIGHT // 3
+        MENU_OFFSETY = 45
+        MENU_OFFSETX = 350
+        MENU_OFFSETX_ARROW = 50
+
+        fontstatsscore = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, 'Round Score', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
+
+        if player.stats_explosionsprev:
+            fontstatsexplosionbonusA = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, player.stats_scoreroundprev//player.stats_explosionsprev, InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX, MENU_STARTY)))
+            w, h = fontstatsexplosionbonusA.font.size(str(fontstatsexplosionbonusA.text))
+            w += MENU_OFFSETX_ARROW
+            fontstatsexplosionbonusB = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, 'x', InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX+w, MENU_STARTY)))
+            fontstatsexplosionbonusC = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, player.stats_explosionsprev, InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX+w+MENU_OFFSETX_ARROW, MENU_STARTY)))
+            fontstatsexplosionbonusD = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, '=', InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX+w+MENU_OFFSETX_ARROW*2, MENU_STARTY)))
+            fontstatsscoreval = self.font_manager.add(Font(FontNames.STATS_ROUNDSCORE, InterfaceSettings.FONTSTYLE, 24, player.stats_scoreroundprev, InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX+w+MENU_OFFSETX_ARROW*3, MENU_STARTY)))
+        else:
+            fontstatsscoreval = self.font_manager.add(Font(FontNames.STATS_ROUNDSCORE, InterfaceSettings.FONTSTYLE, 24, player.stats_scoreroundprev, InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX, MENU_STARTY)))
+
+        MENU_STARTY += MENU_OFFSETY
+        fontstatstotalscore = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, 'Total Score', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
+        fontstatstotalscoreval = self.font_manager.add(Font(FontNames.STATS_BUBBLES, InterfaceSettings.FONTSTYLE, 24, player.score, InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX, MENU_STARTY)))
+
+        MENU_STARTY += MENU_OFFSETY
+        fontstatsbubbles = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, '# of Bubbles', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
+        fontstatsbubblesval = self.font_manager.add(Font(FontNames.STATS_BUBBLES, InterfaceSettings.FONTSTYLE, 24, player.stats_bubbles, InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX, MENU_STARTY)))
+
+        MENU_STARTY += MENU_OFFSETY
+        fontstatsmult = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, 'Max Multiplier', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
+        fontstatsmultval = self.font_manager.add(Font(FontNames.STATS_MAXMULTIPLIER, InterfaceSettings.FONTSTYLE, 24, player.stats_maxmultiplier, InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX, MENU_STARTY)))
+
+        MENU_STARTY += MENU_OFFSETY
+        fontstatsexplosionsprev = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, 'Explosions in Round', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
+        fontstatsexplosionsusedprevval = self.font_manager.add(Font(FontNames.STATS_EXPLOSIONSUSEDPREV, InterfaceSettings.FONTSTYLE, 24, GameSettings.PLAYER_EXPLOSIONS-player.stats_explosionsprev, InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX, MENU_STARTY)))
+
+        MENU_STARTY += MENU_OFFSETY
+        fontstatsexplosions = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, 'Total Explosions', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
+        fontstatsexplosionsusedval = self.font_manager.add(Font(FontNames.STATS_EXPLOSIONSUSED, InterfaceSettings.FONTSTYLE, 24, player.stats_explosions, InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX, MENU_STARTY)))
+
         SceneContext.instance.reset(player=player)
-        self.timer_manager.add(FadeOutFontCommand(menutitle, InterfaceSettings.FONTCOLOR), 1000)
-        self.timer_manager.add(SwitchSceneCommand(SceneNames.PLAY), 3000)
+
+        MENU_STARTY += MENU_OFFSETY*2
+        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, 'Press any key ...', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
+
+        self.timer_manager.add(SwitchSceneCommand(SceneNames.PLAY, onkeypress=True), 0)

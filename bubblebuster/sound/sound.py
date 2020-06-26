@@ -1,7 +1,7 @@
 import pygame
 from enum import Enum
 
-from link import *
+from bubblebuster.link import *
 
 class SoundNames(Enum):
     MUSICMENU = 1

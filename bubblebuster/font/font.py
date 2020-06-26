@@ -1,4 +1,4 @@
-from link import Link, LinkMan
+from bubblebuster.link import Link, LinkMan
 
 import pygame
 import pygame.freetype as pft
@@ -30,6 +30,14 @@ class FontNames(Enum):
     TOAST = 23
     BUBBLEPOPDELAY = 24
     LEVEL = 25
+    STATS_MAXMULTIPLIER = 26
+    STATS_BUBBLES = 27
+    STATS_SCORE = 28
+    STATS_EXPLOSIONSUSED = 29
+    STATS_EXPLOSIONBONUS = 30
+    STATS_ROUNDSCORE = 31
+    SCOREROUND = 32
+    STATS_EXPLOSIONSUSEDPREV = 33
 
 
 class Font(Link):

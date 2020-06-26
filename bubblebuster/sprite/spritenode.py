@@ -1,4 +1,4 @@
-from link import Link, Manager
+from bubblebuster.link import Link, Manager
 
 import pygame
 

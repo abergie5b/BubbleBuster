@@ -1,14 +1,15 @@
 import pygame
 
-from scene import SceneContext
-from settings import SCREEN_HEIGHT, SCREEN_WIDTH, GameSettings
+from bubblebuster.scene import SceneContext
+from bubblebuster.settings import SCREEN_HEIGHT, SCREEN_WIDTH, GameSettings, InterfaceSettings
 
 class Game:
     def __init__(self):
         # required for pygame
         pygame.init()
 
-        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), flags=pygame.RESIZABLE)
+        self.screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), 
+                                               flags=pygame.RESIZABLE)
         self.running = True
         self.FPS = 90
 
@@ -23,7 +24,7 @@ class Game:
 
         # clear the display
         # is there ... a better way? -.-
-        self.screen.fill((0, 0, 0))
+        self.screen.fill(InterfaceSettings.BACKGROUND_COLOR)
 
     def update(self):
         self.scene_context.scene_state.update()
@@ -31,7 +32,7 @@ class Game:
     def run(self):
 
         # Fill the background with black
-        self.scene_context.scene_state.screen.fill((0, 0, 0))
+        self.scene_context.scene_state.screen.fill(InterfaceSettings.BACKGROUND_COLOR)
 
         # get clock for FPS
         clock = pygame.time.Clock()
