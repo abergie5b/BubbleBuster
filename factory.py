@@ -2,6 +2,8 @@ from sprite import CircleSprite, BoxSpriteMan, BoxSpriteNames
 
 from random import randint
 
+import json
+
 
 class CircleFactory:
     def __init__(self, group, manager):

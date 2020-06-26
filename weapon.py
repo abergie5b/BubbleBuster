@@ -1,4 +1,5 @@
 from link import Link, LinkMan
+from settings import GameSettings
 
 from enum import Enum
 
@@ -7,10 +8,31 @@ class WeaponNames(Enum):
 
 
 class Weapon(Link):
-    def __init__(self, name, player):
+    def __init__(self, name, player, ammo):
         super().__init__()
         self.name = name
         self.player = player
+        self.ammo = ammo
+
+
+class Finger(Weapon):
+    def __init__(self, name, player, ammo):
+        super().__init__(name, player, ammo)
+
+
+class Thumb(Weapon):
+    def __init__(self, name, player, ammo):
+        super().__init__(name, player, ammo)
+
+
+class Hand(Weapon):
+    def __init__(self, name, player, ammo):
+        super().__init__(name, player, ammo)
+
+
+class Pebble(Weapon):
+    def __init__(self, name, player, ammo):
+        super().__init__(name, player, ammo)
 
 
 class WeaponMan(LinkMan):
