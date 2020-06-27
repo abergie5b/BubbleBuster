@@ -54,15 +54,14 @@ class LineSprite(SpriteLink):
         pass
 
     def accept(self, circle):
-        if self.name == LineSpriteNames.WALL_LEFT or self.name == LineSpriteNames.WALL_RIGHT:
+        if self.start_xy[0] == self.end_xy[0]: # if it is a horizontal line
             circle.deltax *= -1
-        else:
+        else: # if it is a vertical line
             circle.deltay *= -1
 
         # why do need to call this twice huh?
         circle.move()
         circle.update()
-
 
 class BoxSprite(SpriteLink):
     instance = None
@@ -115,8 +114,8 @@ class CircleSprite(BoxSprite):
 
     def draw(self, screen):
         self.rect = pygame.draw.circle(screen,
-                                       self.color, 
-                                       (self.posx, self.posy), 
+                                       self.color,
+                                       (self.posx, self.posy),
                                        self.height//2,
                                        self.width)
 
@@ -153,7 +152,7 @@ class CircleSprite(BoxSprite):
         circle_group = group.GroupMan.instance.find(group.GroupNames.CIRCLE)
         head = circle_group.nodeman.head
         while head:
-            # there must be 
+            # there must be
             # a better way
             if head.pSprite.collision_enabled:
                 if head.pSprite.name == BoxSpriteNames.CIRCLE and pygame.sprite.collide_circle(self, head.pSprite):
@@ -163,7 +162,7 @@ class CircleSprite(BoxSprite):
 
                     if DEBUG:
                         print('colliding circle %s destroyed, multiplier: %d' % (head.pSprite, explosion.multiplier))
-                    
+
                     fadeout_command = timer.TimerMan.instance.find(timer.TimeEventNames.FADEOUTTOAST)
                     timer.TimerMan.instance.remove(fadeout_command)
 
@@ -217,9 +216,9 @@ class CircleSprite(BoxSprite):
 class ExplosionSprite(BoxSprite):
     instance = None
     def draw(self, screen):
-        self.rect = pygame.draw.circle(screen, 
-                                       self.color, 
-                                       (self.posx, self.posy), 
+        self.rect = pygame.draw.circle(screen,
+                                       self.color,
+                                       (self.posx, self.posy),
                                        self.height//2,
                                        self.width)
 
@@ -352,5 +351,3 @@ class SpriteMan(LinkMan):
         while head:
             head.update()
             head = head.next
-
-
