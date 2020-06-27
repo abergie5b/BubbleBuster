@@ -11,7 +11,6 @@ from bubblebuster.sound import SoundMan, SoundNames
 import pygame
 from random import randint, choice
 from enum import Enum
-from datetime import datetime
 
 class SpriteNames(Enum):
     EXPLODE = 1
@@ -100,10 +99,6 @@ class BoxSprite(SpriteLink):
         screen.blit(self.surface, (self.posx, self.posy))
 
 normal_bubble_images = list(map(lambda x: pygame.image.load('resources/bubble-%s.png' % x), ['blue', 'cyan', 'green', 'orange', 'pink']))
-normal_bubble_images = [pygame.image.load('resources/bubble.png')]
-
-bubble_ripple_images = [pygame.image.load('resources/Ripple%s.png' % i) for i in [1,2,3,4]]
-
 red_bubble_image = pygame.image.load('resources/bubble-red.png')
 
 class CircleSprite(BoxSprite):
@@ -115,17 +110,9 @@ class CircleSprite(BoxSprite):
         
         self.image = pygame.transform.scale(choice(normal_bubble_images).convert_alpha(), (self.height, self.height))
         self.image_red = pygame.transform.scale(red_bubble_image.convert_alpha(), (self.height, self.height))
-
-        self.bubble_ripple_images = list(map(lambda x: pygame.transform.scale(x.convert_alpha(), (self.height, self.height)), bubble_ripple_images))
-        self.ripple_index = choice(range(3))
-        self.last_animation = datetime.utcnow()
-        self.deltaTime = 0
         
-        self.prepop = False # when it is like red or somefin
-        
+        self.prepop = False # when it is like red or somefin 
 #        self.surface = self.image.subsurface(pygame.Rect(54, 50, 238, 238))
-
-
 
     def move(self):
         self.posx += self.deltax
@@ -143,16 +130,7 @@ class CircleSprite(BoxSprite):
         if self.prepop:
             self.rect = screen.blit(self.image_red, (self.posx, self.posy))
         else:
-            self.deltaTime += (datetime.utcnow() - self.last_animation).total_seconds() * 1000
-            self.rect = screen.blit(self.bubble_ripple_images[self.ripple_index], (self.posx, self.posy))
-            if self.deltaTime >= 500:
-                self.ripple_index += 1
-                self.deltaTime = 0
-                self.last_animation = datetime.utcnow()
-            
-            if self.ripple_index > 3:
-                self.ripple_index = 0
-#            self.rect = screen.blit(self.image, (self.posx, self.posy))            
+            self.rect = screen.blit(self.image, (self.posx, self.posy))            
 
     def update(self):
         self.move()
