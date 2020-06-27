@@ -54,8 +54,11 @@ class LineSprite(SpriteLink):
         pass
 
     def accept(self, circle):
-        circle.deltax *= -1
-        circle.deltay *= -1
+        if self.name == LineSpriteNames.WALL_LEFT or self.name == LineSpriteNames.WALL_RIGHT:
+            circle.deltax *= -1
+        else:
+            circle.deltay *= -1
+
         # why do need to call this twice huh?
         circle.move()
         circle.update()
@@ -140,7 +143,7 @@ class CircleSprite(BoxSprite):
         self.deltay *= -1
         circle.deltax *= -1
         circle.deltay *= -1
-        # resolve collisions for me please please
+        # resolve collisions for me please! please!
         while pygame.sprite.collide_circle(self, circle):
             self.update()
             circle.update()
