@@ -105,23 +105,32 @@ class CircleSprite(BoxSprite):
         self.deltax = randint(-self.delta, self.delta)
         self.deltay = randint(-self.delta, self.delta)
         self.hratio = self.height / GameSettings.BUBBLE_MAXH
-        #self.image = pygame.image.load('resources/bubble_transparent.png').convert_alpha()
-        #self.surface = self.image.subsurface(pygame.Rect(54, 50, 238, 238))
+        self.image = pygame.image.load('resources/bubble.png').convert_alpha()
+        self.image = pygame.transform.scale(self.image, (self.height, self.height))
+
+        self.image_blue = pygame.image.load('resources/bubble-blue.png').convert_alpha()
+        self.image_blue = pygame.transform.scale(self.image_blue, (self.height, self.height))
+        
+        self.prepop = False # when it is like red or somefin 
+#        self.surface = self.image.subsurface(pygame.Rect(54, 50, 238, 238))
 
     def move(self):
         self.posx += self.deltax
         self.posy += self.deltay
 
     def draw(self, screen):
-        self.rect = pygame.draw.circle(screen,
-                                       self.color,
-                                       (self.posx, self.posy),
-                                       self.height//2,
-                                       self.width)
+        #self.rect = pygame.draw.circle(screen,
+        #                               self.color,
+        #                               (self.posx, self.posy),
+        #                               self.height//2,
+        #                               self.width)
 
         #screen.blit(self.surface, (self.posx, self.posy))
         #screen.blit(self.image, (self.posx, self.posy))
-        #self.rect = screen.blit(self.surface, (self.posx, self.posy))
+        if self.prepop:
+            self.rect = screen.blit(self.image_blue, (self.posx, self.posy))
+        else:
+            self.rect = screen.blit(self.image, (self.posx, self.posy))            
 
     def update(self):
         self.move()
@@ -158,7 +167,7 @@ class CircleSprite(BoxSprite):
                 if head.pSprite.name == BoxSpriteNames.CIRCLE and pygame.sprite.collide_circle(self, head.pSprite):
 
                     explosion.multiplier += 1
-                    head.pSprite.color = (255, 0, 0)
+                    head.pSprite.prepop = True
 
                     if DEBUG:
                         print('colliding circle %s destroyed, multiplier: %d' % (head.pSprite, explosion.multiplier))
