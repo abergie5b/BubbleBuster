@@ -1,6 +1,6 @@
 from bubblebuster.input import InputObserver
-from bubblebuster.player import PlayerMan
-from bubblebuster.sound import SoundMan
+from bubblebuster.player import PlayerMan, PlayerNames
+from bubblebuster.sound import SoundMan, SoundNames
 from bubblebuster.timer import TimerMan, ClickExplodeCommand
 from bubblebuster.font import FontMan, FontNames
 from bubblebuster.settings import GameSettings

@@ -31,25 +31,19 @@ class SceneContext:
     def set_state(self, name, player=None):
         if name == sc.sc.SceneNames.MENU:
             self.scene_state = self.scene_menu 
-            self.scene_state.handle(player)
         elif name == sc.sc.SceneNames.PLAY:
             self.scene_state = self.scene_play
-            self.scene_state.handle(player)
         elif name == sc.sc.SceneNames.OVER:
             self.scene_state = self.scene_over
-            self.scene_state.handle()
         elif name == sc.sc.SceneNames.RULES:
             self.scene_state = self.scene_rules
-            self.scene_state.handle()
         elif name == sc.sc.SceneNames.SETTINGS:
             self.scene_state = self.scene_settings
-            self.scene_state.handle()
         elif name == sc.sc.SceneNames.HIGHSCORES:
             self.scene_state = self.scene_highscores
-            self.scene_state.handle()
         elif name == sc.sc.SceneNames.SCENESWITCH:
             self.scene_state = self.scene_switch
-            self.scene_state.handle(player=player)
         else:
             raise ValueError('no matching scene state found for transition')
+        self.scene_state.handle(player=player)
         self.scene_state.transition()

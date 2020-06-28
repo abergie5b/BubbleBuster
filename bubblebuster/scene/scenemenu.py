@@ -50,19 +50,11 @@ class SceneMenu(Scene):
         MENU_STARTY += MENU_OFFSETY
         fontexit = self.font_manager.add(Font(FontNames.EXIT, InterfaceSettings.FONTSTYLE, 32, 'Exit', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
 
-        # player
-        player = Player(PlayerNames.PLAYERONE, 
-                        GameSettings.PLAYER_EXPLOSIONS, 
-                        GameSettings.NUMBER_OF_BUBBLES
-        )
-
-        self.playerone = self.player_manager.add(player)
-        self.input_manager.lmouse.attach(MouseClickObserver(fontplay, SceneNames.SCENESWITCH, player))
+        self.input_manager.lmouse.attach(MouseClickObserver(fontplay, SceneNames.SCENESWITCH, None))
         self.input_manager.lmouse.attach(MouseClickObserver(fontrules, SceneNames.RULES))
         self.input_manager.lmouse.attach(MouseClickObserver(fontsettings, SceneNames.SETTINGS))
         self.input_manager.lmouse.attach(MouseClickObserver(fonthighscores, SceneNames.HIGHSCORES))
         self.input_manager.lmouse.attach(MouseClickExitObserver(fontexit, None))
-        #self.input_manager.rmouse.attach(RMouseClickCircleObserver())
 
         self.input_manager.mousecursor.attach(MouseHoverHighlightObserver(fontplay, None))
         self.input_manager.mousecursor.attach(MouseHoverHighlightObserver(fontrules, None))
@@ -92,6 +84,5 @@ class SceneMenu(Scene):
         self.font_manager.draw(self.screen)
 
     def handle(self, player=None):
-        #SceneContext.instance.reset(player=player)
         musicmenu = Music(SoundNames.MUSICMENU, 'resources/bubbling.wav')
         musicmenu.play()

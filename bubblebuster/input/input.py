@@ -46,7 +46,7 @@ class InputMan(LinkMan):
             if event.key == pygame.K_ESCAPE:
                 current_scene_name = game.scene_context.scene_state.name
                 if current_scene_name == scene.SceneNames.PLAY or scene.SceneNames.SCENESWITCH:
-                    player = game.scene_context.scene_play.playerone
+                    player = game.scene_context.scene_play.player
                     GameSettings.init()
                     player.reset()
                     scene.SceneContext.instance.reset()
@@ -55,7 +55,6 @@ class InputMan(LinkMan):
 
             self.keypress.notify(game.screen, xcurs, ycurs)
                 
-
         self.mousecursor.notify(game.screen, xcurs, ycurs)
 
         # move dis

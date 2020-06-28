@@ -43,12 +43,15 @@ class Player(Link):
                 self.score += self.stats_scoreround
             # reset for next level
             if DEBUG:
-                print('next level activated %d with %d bubbles and %d max height' % (self.current_level, self.bubbles, GameSettings.BUBBLE_MAXH))
-                print('scoreround: %d scoreround_raw: %d score %d stats_explosionsround: %d' % (self.stats_scoreround, self.stats_scoreround//self.stats_explosionsround, self.score, self.stats_explosionsround))
+                print('next level activated %d with %d bubbles and %d max height' % (
+                      self.current_level, self.bubbles, GameSettings.BUBBLE_MAXH)
+                )
+                print('scoreround: %d scoreround_raw: %d score %d stats_explosionsround: %d' % (
+                      self.stats_scoreround, self.stats_scoreround//self.stats_explosionsround, self.score, self.stats_explosionsround)
+                )
             self.reset()
             # next level
-            #scene.SceneContext.instance.set_state(scene.SceneNames.SCENESWITCH, self)
-            timer.TimerMan.instance.add(timer.SwitchSceneCommand(scene.SceneNames.SCENESWITCH, player=self), 1000)
+            timer.TimerMan.instance.add(timer.SwitchSceneCommand(scene.SceneNames.SCENESWITCH, player=self), 500)
         elif self.explosions <= 0: 
             current_time = timer.TimerMan.instance.current_time
             last_collision = sp.ExplosionSprite.instance.last_collision
@@ -85,7 +88,7 @@ class Player(Link):
         self.update_max_multiplier(multiplier)
         self.bubbles -= 1
         points = multiplier * GameSettings.BUBBLE_MAXH//circle.height
-        self.score +=  points
+        self.score += points
         self.stats_scoreround += points
         if DEBUG:
             print('updating score %d, round: %d circleh: %d mult: %d points: %d bubbles: %d' % (

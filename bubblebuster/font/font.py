@@ -38,7 +38,12 @@ class FontNames(Enum):
     STATS_ROUNDSCORE = 31
     SCOREROUND = 32
     STATS_EXPLOSIONSUSEDPREV = 33
-
+    CURRENTLEVEL = 34
+    STATS_EXPLOSIONBONUSA = 35
+    STATS_EXPLOSIONBONUSB = 36
+    STATS_EXPLOSIONBONUSC = 37
+    STATS_EXPLOSIONBONUSD = 38
+    SCENESWITCH_PRESSANYKEY = 39
 
 class Font(Link):
     def __init__(self, font_name, font_style, font_size, text, color, posxy):

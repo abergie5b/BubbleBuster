@@ -1,5 +1,5 @@
 from bubblebuster.input import InputObserver
-# import bubblebuster.collision as collision
+import bubblebuster.collision as collision
 from bubblebuster.settings import GameSettings
 from bubblebuster.font import FontMan
 

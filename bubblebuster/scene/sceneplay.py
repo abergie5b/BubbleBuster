@@ -14,8 +14,6 @@ import pygame
 class ScenePlay(Scene):
     def __init__(self, name, game, player=None):
         super().__init__(name, game)
-        # images
-        #self.image_manager.add(ImageNames.EXPLODE, 'resources/explode.png')
 
         # zounds
         self.sound_manager.add(SoundNames.SMALLEXPLODE, 'resources/small_explode.wav')
@@ -30,13 +28,37 @@ class ScenePlay(Scene):
         self.input_manager.rmouse.attach(RMouseClickCircleObserver())
 
         if not player:
-            # player
-            player = Player(PlayerNames.PLAYERONE, 
-                            GameSettings.PLAYER_EXPLOSIONS, 
+            player = Player(PlayerNames.PLAYERONE,
+                            GameSettings.PLAYER_EXPLOSIONS,
                             GameSettings.NUMBER_OF_BUBBLES
-            )
-        self.playerone = self.player_manager.add(player)
+                            )
+        self.player = self.player_manager.add(player)
 
+        # fonts
+        MENU_STARTX = 10
+        MENU_STARTY = 15
+        MENU_OFFSETY = 20
+        MENU_OFFSETX = 150
+
+        self.font_manager.add(Font(FontNames.LEVEL, InterfaceSettings.FONTSTYLE, 16, 'Level: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
+        self.font_manager.add(Font(FontNames.CURRENTLEVEL, InterfaceSettings.FONTSTYLE, 16, '', InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_STARTY)))
+        MENU_OFFSETY += MENU_STARTY
+        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, 'Round: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
+        self.font_manager.add(Font(FontNames.SCOREROUND, InterfaceSettings.FONTSTYLE, 16, '', InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_OFFSETY)))
+        MENU_OFFSETY += MENU_STARTY
+        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, 'Score: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
+        self.font_manager.add(Font(FontNames.SCORE, InterfaceSettings.FONTSTYLE, 16, '', InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_OFFSETY)))
+        MENU_OFFSETY += MENU_STARTY
+        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, 'Bubbles: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
+        self.font_manager.add(Font(FontNames.BUBBLES, InterfaceSettings.FONTSTYLE, 16, '', InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_OFFSETY)))
+        MENU_OFFSETY += MENU_STARTY
+        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, 'Explosions: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
+        self.font_manager.add(Font(FontNames.EXPLOSIONS, InterfaceSettings.FONTSTYLE, 16, '', InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_OFFSETY)))
+        MENU_OFFSETY += MENU_STARTY
+        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, 'Time: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
+        self.font_timedisplay = self.font_manager.add(Font(FontNames.TIME, InterfaceSettings.FONTSTYLE, 16, '', InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_OFFSETY)))
+
+        self.font_manager.add(Font(FontNames.TOAST, InterfaceSettings.FONTSTYLE, 16, '', InterfaceSettings.FONTCOLOR, (SCREEN_WIDTH-150, SCREEN_HEIGHT-25)))
 
     def update(self):
         time = pygame.time.get_ticks()
@@ -74,7 +96,6 @@ class ScenePlay(Scene):
         musicmenu = Music(SoundNames.MUSICMENU, 'resources/bubbles.wav')
         musicmenu.play()
 
-
         # sprites
         circle_factory = CircleFactory(self.circle_group, self.boxsprite_manager)
         circle_factory.generate_random(GameSettings.NUMBER_OF_BUBBLES, 
@@ -87,30 +108,16 @@ class ScenePlay(Scene):
         self.collisionpair_manager.add_groups(self.wall_group, self.circle_group, CollisionRectPair)
 
         # fonts
-        MENU_STARTX = 10
-        MENU_STARTY = 15
-        MENU_OFFSETY = 20
-        MENU_OFFSETX = 150
+        fontcurrentlevel = self.font_manager.find(FontNames.CURRENTLEVEL)
+        fontcurrentlevel.text = self.player.current_level
+        fontscoreround = self.font_manager.find(FontNames.SCOREROUND)
+        fontscoreround.text = 0
+        fontscore = self.font_manager.find(FontNames.SCORE)
+        fontscore.text = self.player.score
+        fontbubbles = self.font_manager.find(FontNames.BUBBLES)
+        fontbubbles.text = self.player.bubbles
+        fontexplosions = self.font_manager.find(FontNames.EXPLOSIONS)
+        fontexplosions.text = self.player.explosions
+        fonttime = self.font_manager.find(FontNames.TIME)
+        fonttime.text = self.timer_manager.current_time
 
-        self.font_manager.add(Font(FontNames.LEVEL, InterfaceSettings.FONTSTYLE, 16, 'Level: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
-        self.font_manager.add(Font(FontNames.SCORE, InterfaceSettings.FONTSTYLE, 16, self.playerone.current_level, InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_STARTY)))
-        MENU_OFFSETY += MENU_STARTY
-        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, 'Round: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
-        self.font_manager.add(Font(FontNames.SCOREROUND, InterfaceSettings.FONTSTYLE, 16, self.playerone.score, InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_OFFSETY)))
-        MENU_OFFSETY += MENU_STARTY
-        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, 'Score: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
-        self.font_manager.add(Font(FontNames.SCORE, InterfaceSettings.FONTSTYLE, 16, self.playerone.score, InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_OFFSETY)))
-        MENU_OFFSETY += MENU_STARTY
-        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, 'Bubbles: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
-        self.font_manager.add(Font(FontNames.BUBBLES, InterfaceSettings.FONTSTYLE, 16, self.playerone.bubbles, InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_OFFSETY)))
-        MENU_OFFSETY += MENU_STARTY
-        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, 'Explosions: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
-        self.font_manager.add(Font(FontNames.EXPLOSIONS, InterfaceSettings.FONTSTYLE, 16, self.playerone.explosions, InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_OFFSETY)))
-        MENU_OFFSETY += MENU_STARTY
-        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, 'Time: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
-        self.font_timedisplay = self.font_manager.add(Font(FontNames.TIME, InterfaceSettings.FONTSTYLE, 16, self.timer_manager.current_time, InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_OFFSETY)))
-
-        self.font_manager.add(Font(FontNames.TOAST, InterfaceSettings.FONTSTYLE, 16, '', InterfaceSettings.FONTCOLOR, (SCREEN_WIDTH-150, SCREEN_HEIGHT-25)))
-
-        font = self.font_manager.find(FontNames.SCOREROUND)
-        font.text = 0

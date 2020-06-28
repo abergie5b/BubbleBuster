@@ -1,7 +1,6 @@
 from bubblebuster.link import LinkMan
 import bubblebuster.collision as collision
 import bubblebuster.sprite as sp
-import bubblebuster.sprite as sp
 
 from enum import Enum
 
