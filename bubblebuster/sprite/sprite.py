@@ -54,14 +54,22 @@ class LineSprite(SpriteLink):
         pass
 
     def accept(self, circle):
-        if self.start_xy[0] == self.end_xy[0]: # if it is a horizontal line
+        # why do need to call this twice huh?
+        circle.move()
+        circle.update()
+
+
+class WallSprite(LineSprite):
+    def accept(self, circle):
+        if self.name == LineSpriteNames.WALL_LEFT or self.name == LineSpriteNames.WALL_RIGHT: # vertical
             circle.deltax *= -1
-        else: # if it is a vertical line
+        else:  # if it is a horizontal line
             circle.deltay *= -1
 
         # why do need to call this twice huh?
         circle.move()
         circle.update()
+
 
 class BoxSprite(SpriteLink):
     instance = None
@@ -109,9 +117,6 @@ class CircleSprite(BoxSprite):
         self.image = pygame.transform.scale(image.surface, (self.height, self.height))
         red_bubble = ImageMan.instance.find(ImageNames.REDBUBBLE)
         self.image_red = pygame.transform.scale(red_bubble.surface, (self.height, self.height))
-        
-        self.prepop = False # when it is like red or somefin 
-#        self.surface = self.image.subsurface(pygame.Rect(54, 50, 238, 238))
 
     def move(self):
         self.posx += self.deltax
@@ -126,11 +131,7 @@ class CircleSprite(BoxSprite):
 
         #screen.blit(self.surface, (self.posx, self.posy))
         #screen.blit(self.image, (self.posx, self.posy))
-        # todo swap the image instead of this
-        if self.prepop:
-            self.rect = screen.blit(self.image_red, (self.posx, self.posy))
-        else:
-            self.rect = screen.blit(self.image, (self.posx, self.posy))            
+        self.rect = screen.blit(self.image, (self.posx, self.posy))
 
     def update(self):
         self.move()
@@ -167,7 +168,8 @@ class CircleSprite(BoxSprite):
                 if head.pSprite.name == BoxSpriteNames.CIRCLE and pygame.sprite.collide_circle(self, head.pSprite):
 
                     explosion.multiplier += 1
-                    head.pSprite.prepop = True
+                    # should do this better
+                    head.pSprite.image = head.pSprite.image_red
 
                     if DEBUG:
                         print('colliding circle %s destroyed, multiplier: %d' % (head.pSprite, explosion.multiplier))
@@ -267,6 +269,11 @@ class BoxSpriteMan(LinkMan):
 
     def add_line_sprite(self, name, start_xy, end_xy, color=(255, 255, 255), width=2):
         sprite = LineSprite(name, start_xy, end_xy, color=color, width=width)
+        self.base_add(sprite)
+        return sprite
+
+    def add_wall_sprite(self, name, start_xy, end_xy, color=(255, 255, 255), width=2):
+        sprite = WallSprite(name, start_xy, end_xy, color=color, width=width)
         self.base_add(sprite)
         return sprite
 
