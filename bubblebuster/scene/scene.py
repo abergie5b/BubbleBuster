@@ -39,6 +39,10 @@ class Scene:
         self.timer_manager = TimerMan()
         self.sound_manager = SoundMan()
 
+        # bubbles are ubiquitous
+        list(map(lambda x: self.image_manager.add(getattr(ImageNames, '%sBUBBLE' % x.upper()), 'resources/bubble-%s.png' % x), InterfaceSettings.BUBBLECOLORS))
+        self.image_manager.add(ImageNames.REDBUBBLE, 'resources/bubble-red.png')
+
         # all scenes have circle and wall groups
         self.circle_group = CircleGroup(GroupNames.CIRCLE)
         self.wall_group = Group(GroupNames.WALL)

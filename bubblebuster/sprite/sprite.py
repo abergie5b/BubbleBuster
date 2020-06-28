@@ -98,18 +98,17 @@ class BoxSprite(SpriteLink):
         )
         screen.blit(self.surface, (self.posx, self.posy))
 
-normal_bubble_images = list(map(lambda x: pygame.image.load('resources/bubble-%s.png' % x), ['blue', 'cyan', 'green', 'orange', 'pink']))
-red_bubble_image = pygame.image.load('resources/bubble-red.png')
 
 class CircleSprite(BoxSprite):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def __init__(self, name, image, width, height, x, y, color=(255, 255, 255), alpha=255):
+        super().__init__(name, width, height, x, y, color=color, alpha=alpha)
         self.deltax = randint(-self.delta, self.delta)
         self.deltay = randint(-self.delta, self.delta)
         self.hratio = self.height / GameSettings.BUBBLE_MAXH
         
-        self.image = pygame.transform.scale(choice(normal_bubble_images).convert_alpha(), (self.height, self.height))
-        self.image_red = pygame.transform.scale(red_bubble_image.convert_alpha(), (self.height, self.height))
+        self.image = pygame.transform.scale(image.surface, (self.height, self.height))
+        red_bubble = ImageMan.instance.find(ImageNames.REDBUBBLE)
+        self.image_red = pygame.transform.scale(red_bubble.surface, (self.height, self.height))
         
         self.prepop = False # when it is like red or somefin 
 #        self.surface = self.image.subsurface(pygame.Rect(54, 50, 238, 238))
@@ -127,6 +126,7 @@ class CircleSprite(BoxSprite):
 
         #screen.blit(self.surface, (self.posx, self.posy))
         #screen.blit(self.image, (self.posx, self.posy))
+        # todo swap the image instead of this
         if self.prepop:
             self.rect = screen.blit(self.image_red, (self.posx, self.posy))
         else:

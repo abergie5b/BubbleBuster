@@ -30,6 +30,7 @@ class InterfaceSettings:
     FONTCOLOR = (205, 205, 205)
     FONTSTYLE = 'resources/GFSCUS1D.ttf'
     BACKGROUND_COLOR = (0, 0, 0)
+    BUBBLECOLORS = ['blue', 'cyan', 'green', 'orange', 'pink']
 
 
 class GameSettings:

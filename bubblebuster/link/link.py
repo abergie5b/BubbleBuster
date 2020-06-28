@@ -16,6 +16,7 @@ class SpriteLink(pygame.sprite.DirtySprite):
 
 
 class Link:
+    instance = None
     def __init__(self):
         self.next = None
         self.prev = None

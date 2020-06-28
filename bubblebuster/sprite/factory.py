@@ -1,8 +1,8 @@
 import bubblebuster.sprite as sp
+from bubblebuster.settings import InterfaceSettings
+from bubblebuster.image import ImageNames, ImageMan
 
-from random import randint
-
-import json
+from random import randint, choice
 
 
 class CircleFactory:
@@ -15,7 +15,9 @@ class CircleFactory:
             for x in range(number_of_circles):
                 w, h = (1, randint(max_h//6, max_h))
                 posxy = (randint(h//2, maxx-h-5), randint(h//2, maxy-h-5))
-                self.create_circle(posxy, (w, h), self.get_random_color(alpha), alpha=alpha)
+                bubble = choice(InterfaceSettings.BUBBLECOLORS).upper()
+                image = ImageMan.instance.find(getattr(ImageNames, '%sBUBBLE' % bubble))
+                self.create_circle(image, posxy, (w, h), self.get_random_color(alpha), alpha=alpha)
 
     def get_random_color(self, alpha=None):
         r = randint(75, 200)
@@ -25,9 +27,9 @@ class CircleFactory:
             return (r, g, b, alpha)
         return (r, g, b)
 
-    def create_circle(self, posxy, wh, color, alpha=255):
+    def create_circle(self, image, posxy, wh, color, alpha=255):
         x, y = posxy
         w, h = wh
-        sprite = sp.CircleSprite(sp.BoxSpriteNames.CIRCLE, w, h, x, y, color=color, alpha=alpha)
+        sprite = sp.CircleSprite(sp.BoxSpriteNames.CIRCLE, image, w, h, x, y, color=color, alpha=alpha)
         self.manager.add_sprite(sprite)
         self.group.add(sprite)
