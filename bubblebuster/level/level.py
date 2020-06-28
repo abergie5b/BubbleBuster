@@ -1,3 +1,4 @@
+from bubblebuster.link import LinkMan, Link
 
 
 class Level(Link):

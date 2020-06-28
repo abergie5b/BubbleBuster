@@ -3,7 +3,6 @@ from bubblebuster.link import Link, LinkMan
 from bubblebuster.settings import DEBUG, GameSettings
 import bubblebuster.sprite as sp
 import bubblebuster.scene as scene
-from bubblebuster.font import FontNames, FontMan
 
 from enum import Enum
 
@@ -20,6 +19,8 @@ class Player(Link):
         self.bubbles = bubbles
         self.explosions = explosions
         self.current_level = 1
+
+        # stats
         self.stats_bubbles = 0
         self.stats_maxmultiplier = 0
         self.score = 0

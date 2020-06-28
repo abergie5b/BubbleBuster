@@ -1,7 +1,7 @@
 from bubblebuster.link import LinkMan
 from bubblebuster.collision import CollisionPairMan, CollisionCirclePair
-import bubblebuster.sprite as sp
 from bubblebuster.sprite import SpriteNodeMan
+import bubblebuster.sprite as sp
 
 from enum import Enum
 

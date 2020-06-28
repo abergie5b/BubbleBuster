@@ -1,5 +1,4 @@
 from bubblebuster.link import Link, LinkMan
-from bubblebuster.settings import GameSettings
 
 from enum import Enum
 
@@ -31,6 +30,11 @@ class Hand(Weapon):
 
 
 class Pebble(Weapon):
+    def __init__(self, name, player, ammo):
+        super().__init__(name, player, ammo)
+
+
+class Rock(Weapon):
     def __init__(self, name, player, ammo):
         super().__init__(name, player, ammo)
 

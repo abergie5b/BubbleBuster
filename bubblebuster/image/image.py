@@ -1,9 +1,7 @@
+from bubblebuster.link import *
+
 import pygame
 from enum import Enum
-from random import choice
-
-from bubblebuster.settings import InterfaceSettings
-from bubblebuster.link import *
 
 class ImageNames(Enum):
     BOX = 2

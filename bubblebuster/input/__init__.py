@@ -1,12 +1,11 @@
-from .input import (
-    InputMan, 
-    InputSubject,
-    LMouseClickCircleObserver,
-    RMouseClickCircleObserver,
-    MouseClickSettingsObserver, 
-    MouseHoverHighlightObserver, 
-    KeyPressObserver,
-    MouseClickExitObserver, 
-    MouseClickObserver
-)
+from .inputsubject import InputSubject
+from .inputobserver import InputObserver
+from .input import InputMan
+from .mouseclickobserver import MouseClickObserver
+from .lmouseclickcircleobserver import LMouseClickCircleObserver
+from .rmouseclickcircleobserver import RMouseClickCircleObserver
+from .mouseclicksettingsobserver import MouseClickSettingsObserver
+from .mousehoverhighlightobserver import MouseHoverHighlightObserver
+from .keypressobserver import KeyPressObserver
+from .mouseclickexitobserver import MouseClickExitObserver
 import bubblebuster.input.subject
