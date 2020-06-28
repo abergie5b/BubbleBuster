@@ -1,7 +1,7 @@
 from bubblebuster.timer import Command, TimeEventNames, TimerMan
 from bubblebuster.group import GroupMan, GroupNames
-from bubblebuster.collision import CollisionPairMan
-import bubblebuster.scene as sp
+import bubblebuster.collision as collision
+import bubblebuster.sprite as sp
 
 
 class ClickExplodeCommand(Command):
@@ -37,7 +37,7 @@ class ClickExplodeCommand(Command):
             TimerMan.instance.add(self, delta_time)
         else:
             sp.BoxSpriteMan.instance.remove(self.rect)
-            CollisionPairMan.instance.remove(self.rect)
+            collision.CollisionPairMan.instance.remove(self.rect)
             node = self.circle_group.find(self.rect)
             self.circle_group.remove(node)
 

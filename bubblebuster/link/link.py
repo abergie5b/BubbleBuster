@@ -93,9 +93,6 @@ class LinkMan(Manager):
     def wash(self):
         raise NotImplementedError('this is an abstract method')
 
-    def _get_instance(self):
-        return instance
-
     def print(self):
         head = self.head
         while head:

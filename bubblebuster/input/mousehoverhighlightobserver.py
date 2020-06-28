@@ -1,5 +1,5 @@
 from bubblebuster.input import MouseClickObserver
-from bubblebuster.collision import intersect
+import bubblebuster.collision as collision
 from bubblebuster.settings import InterfaceSettings
 
 class MouseHoverHighlightObserver(MouseClickObserver):
@@ -9,7 +9,7 @@ class MouseHoverHighlightObserver(MouseClickObserver):
     def notify(self, screen, xcurs, ycurs):
         self.rectB.x = xcurs
         self.rectB.y = ycurs
-        if intersect(self.rectA, self.rectB):
+        if collision.intersect(self.rectA, self.rectB):
             self.font.color = InterfaceSettings.MOUSEHIGHLIGHTFONTCOLOR
         else:
             self.font.color = InterfaceSettings.FONTCOLOR

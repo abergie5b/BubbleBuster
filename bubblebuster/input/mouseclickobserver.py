@@ -1,5 +1,5 @@
 from bubblebuster.input import InputObserver
-from bubblebuster.collision import intersect
+import bubblebuster.collision as collision
 from bubblebuster.sound import SoundMan, SoundNames
 import bubblebuster.scene as sp
 
@@ -21,7 +21,7 @@ class MouseClickObserver(InputObserver):
     def notify(self, screen, xcurs, ycurs):
         self.rectB.x = xcurs
         self.rectB.y = ycurs
-        if intersect(self.rectA, self.rectB):
+        if collision.intersect(self.rectA, self.rectB):
             bubblepop = SoundMan.instance.find(SoundNames.BUBBLEPOP)
             bubblepop.play()
             sp.SceneContext.instance.set_state(self.scene_change, player=self.player)

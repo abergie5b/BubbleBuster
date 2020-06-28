@@ -7,36 +7,35 @@ class WeaponNames(Enum):
 
 
 class Weapon(Link):
-    def __init__(self, name, player, ammo):
+    def __init__(self, name):
         super().__init__()
         self.name = name
-        self.player = player
-        self.ammo = ammo
-
+        # add inputs
+        # add more custom crap about the weapon
 
 class Finger(Weapon):
-    def __init__(self, name, player, ammo):
-        super().__init__(name, player, ammo)
+    def __init__(self, name):
+        super().__init__(name)
 
 
 class Thumb(Weapon):
-    def __init__(self, name, player, ammo):
-        super().__init__(name, player, ammo)
+    def __init__(self, name):
+        super().__init__(name)
 
 
 class Hand(Weapon):
-    def __init__(self, name, player, ammo):
-        super().__init__(name, player, ammo)
+    def __init__(self, name):
+        super().__init__(name)
 
 
 class Pebble(Weapon):
-    def __init__(self, name, player, ammo):
-        super().__init__(name, player, ammo)
+    def __init__(self, name):
+        super().__init__(name)
 
 
 class Rock(Weapon):
-    def __init__(self, name, player, ammo):
-        super().__init__(name, player, ammo)
+    def __init__(self, name):
+        super().__init__(name)
 
 
 class WeaponMan(LinkMan):

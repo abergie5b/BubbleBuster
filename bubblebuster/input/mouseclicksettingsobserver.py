@@ -1,5 +1,5 @@
 from bubblebuster.input import InputObserver
-from bubblebuster.collision import intersect
+# import bubblebuster.collision as collision
 from bubblebuster.settings import GameSettings
 from bubblebuster.font import FontMan
 
@@ -22,7 +22,7 @@ class MouseClickSettingsObserver(InputObserver):
     def notify(self, screen, xcurs, ycurs):
         self.rectB.x = xcurs
         self.rectB.y = ycurs
-        if intersect(self.rectA, self.rectB):
+        if collision.intersect(self.rectA, self.rectB):
             value = getattr(GameSettings, self.setting)
             if value + self.increment >= 0: # nice try
                 setattr(GameSettings, self.setting, value + self.increment)
