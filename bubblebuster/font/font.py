@@ -87,6 +87,9 @@ class FreeTypeFont(Link):
 
 class FontMan(LinkMan):
     instance = None
+    def __init__(self):
+        super().__init__()
+        FontMan.instance = self
 
     def compare(self, a, b):
         return a.font_name == b or a == b

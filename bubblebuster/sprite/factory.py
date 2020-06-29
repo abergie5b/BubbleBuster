@@ -13,6 +13,7 @@ class CircleFactory:
     def generate_random(self, number_of_circles, max_xy=(800, 600), max_h=120, alpha=255):
             maxx, maxy = max_xy
             for x in range(number_of_circles):
+                # try not to create circle that overlaps with walls
                 w, h = (1, randint(max_h//6, max_h))
                 posxy = (randint(h//2, maxx-h-5), randint(h//2, maxy-h-5))
                 bubble = choice(InterfaceSettings.BUBBLECOLORS).upper()

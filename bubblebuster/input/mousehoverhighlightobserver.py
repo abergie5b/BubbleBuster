@@ -1,6 +1,8 @@
-from bubblebuster.input import MouseClickObserver
+from bubblebuster.input import MouseClickObserver, InputObserver
 import bubblebuster.collision as collision
 from bubblebuster.settings import InterfaceSettings
+
+import pygame
 
 class MouseHoverHighlightObserver(MouseClickObserver):
     def __init__(self, font, scene):
@@ -13,4 +15,19 @@ class MouseHoverHighlightObserver(MouseClickObserver):
             self.font.color = InterfaceSettings.MOUSEHIGHLIGHTFONTCOLOR
         else:
             self.font.color = InterfaceSettings.FONTCOLOR
+
+
+class MouseHoverHighlightRectObserver(InputObserver):
+    def __init__(self, rect):
+        self.rectA = rect
+        self.rectB = pygame.Rect(0, 0, 1, 1)
+        self.rectA_color = self.rectA.color
+
+    def notify(self, screen, xcurs, ycurs):
+        self.rectB.x = xcurs
+        self.rectB.y = ycurs
+        if self.rectA.rect.colliderect(self.rectB): # click
+            self.rectA.color = (255, 255, 255, 125)
+        elif not self.rectA.selected:
+            self.rectA.color = self.rectA_color
 

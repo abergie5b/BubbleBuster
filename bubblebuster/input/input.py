@@ -15,6 +15,7 @@ class BUTTON(Enum):
 
 
 class InputMan(LinkMan):
+    instance = None
     def __init__(self):
         super().__init__()
         self.lmouse = InputSubject()
@@ -25,6 +26,7 @@ class InputMan(LinkMan):
 
         self.keypress = InputSubject()
         self.mousecursor = InputSubject()
+        InputMan.instance = self
 
     def update(self, game):
         event = pygame.event.poll()
@@ -45,10 +47,14 @@ class InputMan(LinkMan):
 
             if event.key == pygame.K_ESCAPE:
                 current_scene_name = game.scene_context.scene_state.name
-                if current_scene_name == scene.SceneNames.PLAY or scene.SceneNames.SCENESWITCH:
+                # peeee
+                if current_scene_name == scene.SceneNames.PLAY \
+                or current_scene_name == scene.SceneNames.SCENESWITCH \
+                or current_scene_name == scene.SceneNames.WEAPON:
                     player = game.scene_context.scene_play.player
+                    if player:
+                        player.reset()
                     GameSettings.init()
-                    player.reset()
                     scene.SceneContext.instance.reset()
 
                 scene.SceneContext.instance.set_state(scene.SceneNames.MENU)

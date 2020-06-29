@@ -1,5 +1,6 @@
 from bubblebuster.link import SpriteLink, LinkMan
 import bubblebuster.sprite as sp
+from bubblebuster.settings import GameSettings
 
 import pygame
 from enum import Enum
@@ -8,11 +9,12 @@ class BoxSpriteNames(Enum):
     BOX = 1
     EXPLOSION = 2
     CIRCLE = 3
+    BOXGROUP = 4
 
 
 class BoxSprite(SpriteLink):
     instance = None
-    def __init__(self, name, width, height, x, y, color=(255, 255, 255), alpha=255):
+    def __init__(self, name, width, height, x, y, color=(255, 255, 255, 25), fill_width=2):
         super().__init__()
         self.name = name
         self.surface = pygame.Surface((width, height), pygame.SRCALPHA)
@@ -20,41 +22,44 @@ class BoxSprite(SpriteLink):
 
         # dimensions
         self.width = width
+        self.fill_width = fill_width
         self.height = height
         self.radius = self.height // 2 # for circles
 
         # position
+        self.x = x
+        self.y = y
         self.posx = x
         self.posy = y
 
-        # for collisions
-        self.colx = x
-        self.coly = y
-
         self.color = color
-        self.alpha = alpha
 
-        self.delta = 2
-        self.multiplier = 1
+        # for carousel (should probably make a different class)
+        self.parent = None
+        self.selected = False
 
     def draw(self, screen):
-        self.rect = pygame.draw.rect(self.surface,
-                                     self.color,
-                                     self.rect,
-                                     self.width
-                                     )
-        screen.blit(self.surface, (self.posx, self.posy))
+        pygame.draw.rect(self.surface,
+                         self.color,
+                         self.rect,
+                         self.fill_width
+                         )
+        self.surface.fill(self.color)
+        self.rect = screen.blit(self.surface, (self.posx, self.posy))
 
 
 class BoxSpriteMan(LinkMan):
     instance = None
+    def __init__(self):
+        super().__init__()
+        BoxSpriteMan.instance = self
 
     def compare(self, a, b):
         return a.name == b or a == b
 
-    def add(self, sprite_name, width, height, x, y, color=(255, 255, 255)):
+    def add(self, sprite_name, width, height, x, y, color=(255, 255, 255), fill_width=2):
         if sprite_name == sp.BoxSpriteNames.BOX:
-            sprite = sp.BoxSprite(sprite_name, width, height, x, y, color=color)
+            sprite = sp.BoxSprite(sprite_name, width, height, x, y, color=color, fill_width=fill_width)
         elif sprite_name == sp.BoxSpriteNames.CIRCLE:
             sprite = sp.CircleSprite(sprite_name, width, height, x, y, color=color)
         elif sprite_name == sp.BoxSpriteNames.EXPLOSION:
@@ -65,6 +70,11 @@ class BoxSpriteMan(LinkMan):
     def add_sprite(self, sprite):
         self.base_add(sprite)
         return sprite
+
+    def add_boxgroup(self, carousel):
+        for rect in carousel.rects:
+            self.base_add(rect)
+        return carousel
 
     def add_line_sprite(self, name, start_xy, end_xy, color=(255, 255, 255), width=2):
         sprite = sp.LineSprite(name, start_xy, end_xy, color=color, width=width)

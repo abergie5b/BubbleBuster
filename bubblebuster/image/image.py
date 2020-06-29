@@ -4,6 +4,7 @@ import pygame
 from enum import Enum
 
 class ImageNames(Enum):
+    TESTMOUSE = 1
     BOX = 2
     CIRCLE = 3
     EXPLODE = 4

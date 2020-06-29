@@ -15,14 +15,24 @@ from random import randint
 
 class CircleSprite(sp.BoxSprite):
     def __init__(self, name, image, width, height, x, y, color=(255, 255, 255), alpha=255):
-        super().__init__(name, width, height, x, y, color=color, alpha=alpha)
-        self.deltax = randint(-self.delta, self.delta)
-        self.deltay = randint(-self.delta, self.delta)
-        self.hratio = self.height / GameSettings.BUBBLE_MAXH
+        super().__init__(name, width, height, x, y, color=color)
 
+        # image
         self.image = pygame.transform.scale(image.surface, (self.height, self.height))
         red_bubble = ImageMan.instance.find(ImageNames.REDBUBBLE)
         self.image_red = pygame.transform.scale(red_bubble.surface, (self.height, self.height))
+
+        # for movement
+        self.delta = GameSettings.BUBBLE_MAXDELTA
+        self.deltax = randint(-self.delta, self.delta)/100
+        self.deltay = randint(-self.delta, self.delta)/100
+        if not self.deltax:
+            self.deltax = self.delta
+        if not self.deltay:
+            self.deltay = self.delta
+
+        # for scoring
+        self.hratio = self.height / GameSettings.BUBBLE_MAXH
 
     def move(self):
         self.posx += self.deltax
@@ -92,9 +102,11 @@ class CircleSprite(sp.BoxSprite):
         player = PlayerMan.instance.find(PlayerNames.PLAYERONE)
         points = player.update_score(self, multiplier=explosion.multiplier)
 
+        # creatin new fonts .. bad
         font_pointsvalue = FontMan.instance.add(
             Font(FontNames.MULTIPLIER, InterfaceSettings.FONTSTYLE, 18, points, (255, 255, 255),
-                 (self.posx, self.posy)))
+                 (self.posx+self.height//2, self.posy+self.height//2)) # midpoint
+        )
         timer.TimerMan.instance.add(timer.RemoveFontCommand(font_pointsvalue), 1000)
 
         font_bubbles = FontMan.instance.find(FontNames.BUBBLES)

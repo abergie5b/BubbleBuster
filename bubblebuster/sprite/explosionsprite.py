@@ -8,6 +8,13 @@ import pygame
 
 class ExplosionSprite(sp.BoxSprite):
     instance = None
+    def __init__(self, name, width, height, x, y, color=(255, 255, 255), alpha=255):
+        super().__init__(name, width, height, x, y, color=color)
+        # note: no image for this yet
+
+        # for scoring
+        self.multiplier = 1
+
     def draw(self, screen):
         self.rect = pygame.draw.circle(screen,
                                        self.color,

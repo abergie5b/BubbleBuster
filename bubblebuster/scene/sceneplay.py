@@ -1,6 +1,6 @@
 from bubblebuster.input import LMouseClickCircleObserver, RMouseClickCircleObserver
 from bubblebuster.sound import Music, SoundNames
-from bubblebuster.settings import GameSettings, InterfaceSettings, SCREEN_HEIGHT, SCREEN_WIDTH
+from bubblebuster.settings import GameSettings, InterfaceSettings
 from bubblebuster.player import PlayerNames, Player
 from bubblebuster.font import FontNames, Font
 from bubblebuster.collision import CollisionRectPair
@@ -15,6 +15,10 @@ class ScenePlay(Scene):
     def __init__(self, name, game, player=None):
         super().__init__(name, game)
 
+        SCREEN_WIDTH, SCREEN_HEIGHT = (InterfaceSettings.SCREEN_WIDTH, InterfaceSettings.SCREEN_HEIGHT)
+
+        self.player = self.player_manager.add(player)
+
         # zounds
         self.sound_manager.add(SoundNames.SMALLEXPLODE, 'resources/small_explode.wav')
         self.sound_manager.add(SoundNames.LARGEEXPLODE, 'resources/large_explode.wav')
@@ -26,13 +30,6 @@ class ScenePlay(Scene):
         # input
         self.input_manager.lmouse.attach(LMouseClickCircleObserver())
         self.input_manager.rmouse.attach(RMouseClickCircleObserver())
-
-        if not player:
-            player = Player(PlayerNames.PLAYERONE,
-                            GameSettings.PLAYER_EXPLOSIONS,
-                            GameSettings.NUMBER_OF_BUBBLES
-                            )
-        self.player = self.player_manager.add(player)
 
         # fonts
         MENU_STARTX = 10
@@ -93,14 +90,18 @@ class ScenePlay(Scene):
         self.font_manager.draw(self.screen)
 
     def handle(self, player=None):
+        assert(player)
+
+        self.player = self.player
+
         musicmenu = Music(SoundNames.MUSICMENU, 'resources/bubbles.wav')
         musicmenu.play()
 
         # sprites
         circle_factory = CircleFactory(self.circle_group, self.boxsprite_manager)
         circle_factory.generate_random(GameSettings.NUMBER_OF_BUBBLES, 
-                                       max_xy=(SCREEN_WIDTH, 
-                                               SCREEN_HEIGHT), 
+                                       max_xy=(InterfaceSettings.SCREEN_WIDTH,
+                                               InterfaceSettings.SCREEN_HEIGHT),
                                        max_h=GameSettings.BUBBLE_MAXH
         )
 
@@ -117,7 +118,7 @@ class ScenePlay(Scene):
         fontbubbles = self.font_manager.find(FontNames.BUBBLES)
         fontbubbles.text = self.player.bubbles
         fontexplosions = self.font_manager.find(FontNames.EXPLOSIONS)
-        fontexplosions.text = self.player.explosions
+        fontexplosions.text = self.player.weapon.ammo
         fonttime = self.font_manager.find(FontNames.TIME)
         fonttime.text = self.timer_manager.current_time
 

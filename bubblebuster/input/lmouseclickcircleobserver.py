@@ -8,19 +8,19 @@ from bubblebuster.settings import GameSettings
 class LMouseClickCircleObserver(InputObserver):
     def notify(self, screen, xcurs, ycurs):
         player = PlayerMan.instance.find(PlayerNames.PLAYERONE)
-        if player and player.explosions >= GameSettings.SMALLEXPLOSIONCOST:
+        if player and player.weapon.ammo >= player.weapon.smallcost:
             sound = SoundMan.instance.find(SoundNames.SMALLEXPLODE)
             sound.play()
-            player.explosions -= GameSettings.SMALLEXPLOSIONCOST
-            player.stats_explosions += GameSettings.SMALLEXPLOSIONCOST
-            player.stats_explosionsround += GameSettings.SMALLEXPLOSIONCOST
+            player.weapon.ammo -= player.weapon.smallcost
+            player.stats_explosions += player.weapon.smallcost
+            player.stats_explosionsround += player.weapon.smallcost
             click_explode = ClickExplodeCommand(xcurs,
                                                 ycurs,
-                                                GameSettings.EXPLOSION_RADIUS//2,
-                                                GameSettings.EXPLOSION_RADIUS_DELTA//2,
-                                                GameSettings.EXPLOSION_MAX_LIVES//2
+                                                player.weapon.radius//2,
+                                                player.weapon.radius_delta//2,
+                                                player.weapon.duration//2
             )
             TimerMan.instance.add(click_explode, 0)
             font = FontMan.instance.find(FontNames.EXPLOSIONS)
-            font.text = player.explosions
+            font.text = player.weapon.ammo
 

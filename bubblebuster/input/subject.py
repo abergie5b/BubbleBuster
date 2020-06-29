@@ -16,6 +16,7 @@ class Subject(Link):
             observer.prev = None
             self.head.prev = observer
             self.head = observer
+        return observer
 
     def remove(self, observer):
         observer.subject = None

@@ -6,3 +6,4 @@ from .scenerules import *
 from .sceneswitch import *
 from .scenehighscore import *
 from .scenemenu import *
+from .sceneweapon import *

@@ -3,13 +3,15 @@ from bubblebuster.sound import SoundNames, Music
 from bubblebuster.sprite import CircleFactory
 from bubblebuster.font import FontNames, Font
 from bubblebuster.input import MouseClickObserver, MouseHoverHighlightObserver
-from bubblebuster.settings import InterfaceSettings, SCREEN_HEIGHT, SCREEN_WIDTH
+from bubblebuster.settings import InterfaceSettings
 from bubblebuster.collision import CollisionRectPair
 
 
 class SceneRules(Scene):
     def __init__(self, name, game):
         super().__init__(name, game)
+
+        SCREEN_WIDTH, SCREEN_HEIGHT = (InterfaceSettings.SCREEN_WIDTH, InterfaceSettings.SCREEN_HEIGHT)
 
         # zounds
         self.sound_manager.add(SoundNames.BUBBLEPOP, 'resources/settings_bubbles.wav')
@@ -76,8 +78,8 @@ class SceneRules(Scene):
         # make some bubbles
         circle_factory = CircleFactory(self.circle_group, self.boxsprite_manager)
         circle_factory.generate_random(10,
-                                       max_xy=(SCREEN_WIDTH, 
-                                               SCREEN_HEIGHT), 
+                                       max_xy=(InterfaceSettings.SCREEN_WIDTH,
+                                               InterfaceSettings.SCREEN_HEIGHT),
                                        max_h=100
         )
 
@@ -86,7 +88,7 @@ class SceneRules(Scene):
                                    72, 
                                    'How to Play', 
                                    InterfaceSettings.FONTCOLOR, 
-                                   (SCREEN_WIDTH//7, SCREEN_HEIGHT//10)
+                                   (InterfaceSettings.SCREEN_WIDTH//7, InterfaceSettings.SCREEN_HEIGHT//10)
                               )
         )
 

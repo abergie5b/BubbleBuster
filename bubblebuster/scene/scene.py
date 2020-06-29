@@ -9,7 +9,6 @@ from bubblebuster.settings import *
 from bubblebuster.sound import SoundMan
 from bubblebuster.input import InputMan
 
-import pygame
 from enum import Enum
 
 class SceneNames(Enum):
@@ -20,6 +19,7 @@ class SceneNames(Enum):
     SETTINGS = 5
     HIGHSCORES = 6
     SCENESWITCH = 7
+    WEAPON = 8
 
 
 class Scene:
@@ -41,6 +41,7 @@ class Scene:
         # bubbles are ubiquitous
         list(map(lambda x: self.image_manager.add(getattr(ImageNames, '%sBUBBLE' % x.upper()), 'resources/bubble-%s.png' % x), InterfaceSettings.BUBBLECOLORS))
         self.image_manager.add(ImageNames.REDBUBBLE, 'resources/bubble-red.png')
+        self.image_manager.add(ImageNames.TESTMOUSE, 'resources/mouse.png')
 
         # all scenes have circle and wall groups
         self.circle_group = CircleGroup(GroupNames.CIRCLE)
@@ -50,6 +51,7 @@ class Scene:
         self.group_manager.add(self.wall_group)
 
         # all scenes have walls
+        SCREEN_WIDTH, SCREEN_HEIGHT = (InterfaceSettings.SCREEN_WIDTH, InterfaceSettings.SCREEN_HEIGHT)
         self.wall_left = self.boxsprite_manager.add_wall_sprite(LineSpriteNames.WALL_LEFT, (0, 0), (0, SCREEN_HEIGHT), color=(255, 0, 0), width=2)
         self.wall_right = self.boxsprite_manager.add_wall_sprite(LineSpriteNames.WALL_RIGHT, (SCREEN_WIDTH-2, 0), (SCREEN_WIDTH-2, SCREEN_HEIGHT), color=(0, 255, 0), width=2)
         self.wall_top = self.boxsprite_manager.add_wall_sprite(LineSpriteNames.WALL_TOP, (0, 0), (SCREEN_WIDTH, 0), color=(0, 255, 255), width=2)
@@ -98,5 +100,4 @@ class SceneOver(Scene):
 
     def handle(self, player=None):
         pass
-
 

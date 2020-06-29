@@ -3,13 +3,15 @@ from bubblebuster.sound import SoundNames, Music
 from bubblebuster.sprite import CircleFactory
 from bubblebuster.font import FontNames, Font
 from bubblebuster.input import MouseClickObserver, MouseClickSettingsObserver, MouseHoverHighlightObserver
-from bubblebuster.settings import InterfaceSettings, GameSettings, SCREEN_HEIGHT, SCREEN_WIDTH
+from bubblebuster.settings import InterfaceSettings, GameSettings
 from bubblebuster.collision import CollisionRectPair
 
 
 class SceneSettings(Scene):
     def __init__(self, name, game):
         super().__init__(name, game)
+
+        SCREEN_WIDTH, SCREEN_HEIGHT = (InterfaceSettings.SCREEN_WIDTH, InterfaceSettings.SCREEN_HEIGHT)
 
         # zounds
         self.sound_manager.add(SoundNames.BUBBLEPOP, 'resources/bubble_pop.wav')

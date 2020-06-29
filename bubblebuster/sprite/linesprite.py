@@ -8,6 +8,7 @@ class LineSpriteNames(Enum):
     WALL_RIGHT = 2
     WALL_TOP = 3
     WALL_BOTTOM = 4
+    NULL = 5
 
 
 class LineSprite(SpriteLink):

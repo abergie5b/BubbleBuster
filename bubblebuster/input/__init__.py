@@ -3,9 +3,10 @@ from .inputobserver import InputObserver
 from .input import InputMan
 from .mouseclickobserver import MouseClickObserver
 from .lmouseclickcircleobserver import LMouseClickCircleObserver
+from .lmouseclickrectobserver import LMouseClickRectObserver
 from .rmouseclickcircleobserver import RMouseClickCircleObserver
 from .mouseclicksettingsobserver import MouseClickSettingsObserver
-from .mousehoverhighlightobserver import MouseHoverHighlightObserver
+from .mousehoverhighlightobserver import MouseHoverHighlightObserver, MouseHoverHighlightRectObserver
 from .keypressobserver import KeyPressObserver
 from .mouseclickexitobserver import MouseClickExitObserver
 import bubblebuster.input.subject

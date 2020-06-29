@@ -12,6 +12,7 @@ class SceneContext:
         self.scene_settings = sc.SceneSettings(sc.SceneNames.SETTINGS, game)
         self.scene_highscores = sc.SceneHighScores(sc.SceneNames.HIGHSCORES, game)
         self.scene_switch = sc.SceneSwitch(sc.SceneNames.SCENESWITCH, game)
+        self.scene_weapon = sc.SceneWeapon(sc.SceneNames.WEAPON, game)
         # start in menu
         self.scene_state = self.scene_menu
         SceneContext.instance = self
@@ -27,6 +28,7 @@ class SceneContext:
         self.scene_settings = sc.SceneSettings(sc.SceneNames.SETTINGS, self.game)
         self.scene_highscores = sc.SceneHighScores(sc.SceneNames.HIGHSCORES, self.game)
         self.scene_switch = sc.SceneSwitch(sc.SceneNames.SCENESWITCH, self.game)
+        self.scene_weapon = sc.SceneWeapon(sc.SceneNames.WEAPON, self.game)
 
     def set_state(self, name, player=None):
         if name == sc.sc.SceneNames.MENU:
@@ -43,6 +45,8 @@ class SceneContext:
             self.scene_state = self.scene_highscores
         elif name == sc.sc.SceneNames.SCENESWITCH:
             self.scene_state = self.scene_switch
+        elif name == sc.sc.SceneNames.WEAPON:
+            self.scene_state = self.scene_weapon
         else:
             raise ValueError('no matching scene state found for transition')
         self.scene_state.handle(player=player)

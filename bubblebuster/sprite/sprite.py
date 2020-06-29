@@ -7,6 +7,7 @@ from enum import Enum
 
 class SpriteNames(Enum):
     EXPLODE = 1
+    NULL = 2
 
 
 class Sprite(Link):
@@ -48,6 +49,10 @@ class Sprite(Link):
 
 
 class SpriteMan(LinkMan):
+    instance = None
+    def __init__(self):
+        super().__init__()
+        SpriteMan.instance = self
 
     def compare(self, a, b):
         return a.name == b

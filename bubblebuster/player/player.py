@@ -4,6 +4,7 @@ from bubblebuster.settings import DEBUG, GameSettings
 import bubblebuster.sprite as sp
 import bubblebuster.scene as scene
 
+from math import inf
 from enum import Enum
 
 
@@ -13,11 +14,11 @@ class PlayerNames(Enum):
 
 
 class Player(Link):
-    def __init__(self, name, explosions, bubbles):
+    def __init__(self, name, weapon, bubbles):
         super().__init__()
         self.name = name
         self.bubbles = bubbles
-        self.explosions = explosions
+        self.weapon = weapon
         self.current_level = 1
 
         # stats
@@ -37,9 +38,9 @@ class Player(Link):
             GameSettings.NUMBER_OF_BUBBLES += 5
             GameSettings.BUBBLE_MAXH -= 10
             # stats
-            if self.explosions:
+            if self.weapon.ammo and self.weapon.ammo != inf:
                 self.score -= self.stats_scoreround
-                self.stats_scoreround *= self.explosions
+                self.stats_scoreround *= self.weapon.ammo
                 self.score += self.stats_scoreround
             # reset for next level
             if DEBUG:
@@ -52,7 +53,7 @@ class Player(Link):
             self.reset()
             # next level
             timer.TimerMan.instance.add(timer.SwitchSceneCommand(scene.SceneNames.SCENESWITCH, player=self), 500)
-        elif self.explosions <= 0: 
+        elif self.weapon.ammo <= 0:
             current_time = timer.TimerMan.instance.current_time
             last_collision = sp.ExplosionSprite.instance.last_collision
             # this depends how long it takes for the explosions
@@ -60,7 +61,7 @@ class Player(Link):
             # and not measured in time
             # so better to make it large just in case
             totally_random_number = 100
-            if current_time - last_collision > GameSettings.BUBBLEPOPDELAY + GameSettings.EXPLOSION_MAX_LIVES * totally_random_number:
+            if current_time - last_collision > GameSettings.BUBBLEPOPDELAY + self.weapon.duration * totally_random_number:
                 if DEBUG:
                     print('game over, switching back to menu current_time: %d last_collision: %d diff: %d' %
                         (current_time, last_collision, current_time - last_collision))
@@ -73,8 +74,9 @@ class Player(Link):
     def reset(self):
         # reset these or something
         self.bubbles = GameSettings.NUMBER_OF_BUBBLES
-        self.stats_explosionsprev = self.explosions
-        self.explosions = GameSettings.PLAYER_EXPLOSIONS
+        self.stats_explosionsprev = self.weapon.ammo
+        # reload
+        self.weapon.ammo = self.weapon.max_ammo
         self.stats_scoreroundprev = self.stats_scoreround
         self.stats_scoreround = 0
         self.stats_explosionsround = 0
