@@ -26,6 +26,10 @@ class LineSprite(SpriteLink):
                                      self.width
                                      )
 
+    def set_coords(self, startxy, endxy):
+        self.start_xy = startxy
+        self.end_xy = endxy
+
     def draw(self, screen):
         self.rect = pygame.draw.line(screen,
                                      self.color,

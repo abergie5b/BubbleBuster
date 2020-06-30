@@ -46,7 +46,7 @@ class FontNames(Enum):
     SCENESWITCH_PRESSANYKEY = 39
 
 class Font(Link):
-    def __init__(self, font_name, font_style, font_size, text, color, posxy):
+    def __init__(self, font_name, font_style, font_size, text, color, posxy, alpha=255):
         super().__init__()
         self.font_name = font_name
         self.font_style = font_style
@@ -56,6 +56,7 @@ class Font(Link):
         self.color = color
         self.posxy = posxy
         self.posx, self.posy = posxy
+        self.alpha = alpha
 
     def draw(self, screen):
         surface = self.font.render(str(self.text), True, self.color)

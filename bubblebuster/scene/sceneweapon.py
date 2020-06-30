@@ -12,7 +12,6 @@ from bubblebuster.input import MouseClickObserver, LMouseClickRectObserver
 from bubblebuster.ui import WeaponCarousel
 from bubblebuster.weapon import Finger, Thumb, Hand, WeaponNames
 from bubblebuster.player import Player, PlayerMan, PlayerNames
-from bubblebuster.font import FontNames, Font
 
 import pygame
 
@@ -102,3 +101,4 @@ class SceneWeapon(Scene):
 
     def handle(self, player=None):
         assert(self.player)
+

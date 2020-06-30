@@ -21,7 +21,7 @@ class Weapon(Link):
         # image
         self.image = ImageMan.instance.find(ImageNames.TESTMOUSE)
 
-        # add more custom crap about the weapon
+        # add custom crap about the weapon
         self.duration = 0
         self.radius = 0
         self.radius_delta = 0
@@ -32,74 +32,9 @@ class Weapon(Link):
         self.largecost = 0
 
 
-class Finger(Weapon):
-    def __init__(self, name):
-        super().__init__(name)
-
-        self.duration = 25
-        self.radius = 10
-        self.radius_delta = 5
-        self.max_ammo = inf
-        self.ammo = inf
-
-        self.smallcost = 1
-        self.largecost = 2
 
 
-class Thumb(Weapon):
-    def __init__(self, name):
-        super().__init__(name)
 
-        self.duration = 30
-        self.radius = 15
-        self.radius_delta = 5
-        self.max_ammo = inf
-        self.ammo = inf
-
-        self.smallcost = 1
-        self.largecost = 2
-
-
-class Hand(Weapon):
-    def __init__(self, name):
-        super().__init__(name)
-
-        self.duration = 35
-        self.radius = 20
-        self.radius_delta = 5
-        self.max_ammo = inf
-        self.ammo = inf
-
-        self.smallcost = 1
-        self.largecost = 2
-
-
-class Pebble(Weapon):
-    def __init__(self, name):
-        super().__init__(name)
-
-        self.duration = 40
-        self.radius = 5
-        self.radius_delta = 25
-        self.max_ammo = 10
-        self.ammo = 10
-
-        self.smallcost = 1
-        self.largecost = 2
-
-
-class Rock(Weapon):
-    def __init__(self, name):
-        super().__init__(name)
-
-        self.duration = 50
-        self.radius = 15
-        self.radius_delta = 30
-        self.max_ammo = 10
-        self.ammo = 10
-
-        self.smallcost = 1
-        self.largecost = 2
 
 
 class WeaponMan(LinkMan):

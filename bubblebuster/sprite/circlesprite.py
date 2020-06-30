@@ -112,6 +112,7 @@ class CircleSprite(sp.BoxSprite):
         font_bubbles = FontMan.instance.find(FontNames.BUBBLES)
         font_bubbles.text = player.bubbles
 
+        # gotta do this somehwere else
         font = FontMan.instance.find(FontNames.SCORE)
         font.text = player.score
 

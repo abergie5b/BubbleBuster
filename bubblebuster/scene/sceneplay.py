@@ -5,7 +5,7 @@ from bubblebuster.player import PlayerNames, Player
 from bubblebuster.font import FontNames, Font
 from bubblebuster.collision import CollisionRectPair
 from bubblebuster.scene import Scene
-from bubblebuster.sprite import CircleFactory
+from bubblebuster.sprite import CircleFactory, LineSpriteNames
 
 
 import pygame
@@ -18,6 +18,10 @@ class ScenePlay(Scene):
         SCREEN_WIDTH, SCREEN_HEIGHT = (InterfaceSettings.SCREEN_WIDTH, InterfaceSettings.SCREEN_HEIGHT)
 
         self.player = self.player_manager.add(player)
+        wallbottom = self.boxsprite_manager.find(LineSpriteNames.WALL_BOTTOM)
+        startxy = (wallbottom.start_xy[0], wallbottom.start_xy[1]-35)
+        endxy = (wallbottom.end_xy[0], wallbottom.end_xy[1]-35)
+        wallbottom.set_coords(startxy, endxy)
 
         # zounds
         self.sound_manager.add(SoundNames.SMALLEXPLODE, 'resources/small_explode.wav')
@@ -55,7 +59,7 @@ class ScenePlay(Scene):
         self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, 'Time: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
         self.font_timedisplay = self.font_manager.add(Font(FontNames.TIME, InterfaceSettings.FONTSTYLE, 16, '', InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_OFFSETY)))
 
-        self.font_manager.add(Font(FontNames.TOAST, InterfaceSettings.FONTSTYLE, 16, '', InterfaceSettings.FONTCOLOR, (SCREEN_WIDTH-150, SCREEN_HEIGHT-25)))
+        self.font_manager.add(Font(FontNames.TOAST, InterfaceSettings.FONTSTYLE, 16, '', InterfaceSettings.FONTCOLOR, (SCREEN_WIDTH-SCREEN_WIDTH//10, SCREEN_HEIGHT-25)))
 
     def update(self):
         time = pygame.time.get_ticks()
@@ -101,7 +105,7 @@ class ScenePlay(Scene):
         circle_factory = CircleFactory(self.circle_group, self.boxsprite_manager)
         circle_factory.generate_random(GameSettings.NUMBER_OF_BUBBLES, 
                                        max_xy=(InterfaceSettings.SCREEN_WIDTH,
-                                               InterfaceSettings.SCREEN_HEIGHT),
+                                               InterfaceSettings.SCREEN_HEIGHT-35),
                                        max_h=GameSettings.BUBBLE_MAXH
         )
 
