@@ -3,21 +3,13 @@ import pygame
 from bubblebuster.scene import SceneContext
 from bubblebuster.settings import GameSettings, InterfaceSettings, DEBUG, VERSION
 
-import ctypes
-import os
-
 
 class Game:
     def __init__(self):
         # required for pygame
-        os.environ['SDL_VIDEO_CENTERED'] = '1'
         pygame.init()
 
-        ctypes.windll.user32.SetProcessDPIAware()
-        self.resolution = (ctypes.windll.user32.GetSystemMetrics(0), ctypes.windll.user32.GetSystemMetrics(1))
-        if DEBUG:
-            print('detected screen resolution of %d width %d height' % (self.resolution))
-        self.screen = pygame.display.set_mode((InterfaceSettings.SCREEN_WIDTH, InterfaceSettings.SCREEN_HEIGHT), pygame.RESIZABLE)
+        self.screen = pygame.display.set_mode((InterfaceSettings.SCREEN_WIDTH, InterfaceSettings.SCREEN_HEIGHT), pygame.FULLSCREEN|pygame.RESIZABLE)
         pygame.display.set_caption("Bubble Buster v%s" % VERSION)
 
         self.running = True

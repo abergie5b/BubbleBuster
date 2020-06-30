@@ -1,7 +1,6 @@
-from bubblebuster.input import LMouseClickCircleObserver, RMouseClickCircleObserver
-from bubblebuster.sound import Music, SoundNames
+from bubblebuster.input import LMouseClickShootObserver, RMouseClickShootObserver
+from bubblebuster.sound import SoundNames
 from bubblebuster.settings import GameSettings, InterfaceSettings
-from bubblebuster.player import PlayerNames, Player
 from bubblebuster.font import FontNames, Font
 from bubblebuster.collision import CollisionRectPair
 from bubblebuster.scene import Scene
@@ -26,10 +25,22 @@ class ScenePlay(Scene):
         self.sound_manager.add(SoundNames.BUBBLE_SMALLPOP, 'resources/bubble_small_pop.wav')
         self.sound_manager.add(SoundNames.BUBBLE_MEDIUMPOP, 'resources/bubble_medium_pop.wav')
         self.sound_manager.add(SoundNames.BUBBLE_LARGEPOP, 'resources/bubble_large_pop.wav')
+        self.sound_manager.add_music(SoundNames.MUSICMENU, 'resources/bubbles.wav')
 
         # input
-        self.input_manager.lmouse.attach(LMouseClickCircleObserver())
-        self.input_manager.rmouse.attach(RMouseClickCircleObserver())
+        self.input_manager.lmouse.attach(LMouseClickShootObserver())
+        self.input_manager.rmouse.attach(RMouseClickShootObserver())
+
+        # sprites
+        circle_factory = CircleFactory(self.circle_group, self.boxsprite_manager)
+        circle_factory.generate_random(GameSettings.NUMBER_OF_BUBBLES,
+                                       max_xy=(InterfaceSettings.SCREEN_WIDTH,
+                                               InterfaceSettings.SCREEN_HEIGHT),
+                                       max_h=GameSettings.BUBBLE_MAXH
+                                       )
+
+        # collision pairs
+        self.collisionpair_manager.add_groups(self.wall_group, self.circle_group, CollisionRectPair)
 
         # fonts
         MENU_STARTX = 10
@@ -92,21 +103,10 @@ class ScenePlay(Scene):
     def handle(self, player=None):
         assert(player)
 
-        self.player = self.player
+        self.player = player
 
-        musicmenu = Music(SoundNames.MUSICMENU, 'resources/bubbles.wav')
+        musicmenu = self.sound_manager.find(SoundNames.MUSICMENU)
         musicmenu.play()
-
-        # sprites
-        circle_factory = CircleFactory(self.circle_group, self.boxsprite_manager)
-        circle_factory.generate_random(GameSettings.NUMBER_OF_BUBBLES, 
-                                       max_xy=(InterfaceSettings.SCREEN_WIDTH,
-                                               InterfaceSettings.SCREEN_HEIGHT),
-                                       max_h=GameSettings.BUBBLE_MAXH
-        )
-
-        # collision pairs
-        self.collisionpair_manager.add_groups(self.wall_group, self.circle_group, CollisionRectPair)
 
         # fonts
         fontcurrentlevel = self.font_manager.find(FontNames.CURRENTLEVEL)

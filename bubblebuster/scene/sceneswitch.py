@@ -17,7 +17,8 @@ class SceneSwitch(Scene):
 
         # zounds
         self.sound_manager.add(SoundNames.BUBBLEPOP, 'resources/bubble_pop.wav')
-        
+        self.sound_manager.add_music(SoundNames.MUSICMENU, 'resources/bubbling.wav')
+
         # make some bubbles
         circle_factory = CircleFactory(self.circle_group, self.boxsprite_manager)
         circle_factory.generate_random(10,
@@ -102,7 +103,7 @@ class SceneSwitch(Scene):
     def handle(self, player=None):
         assert(player)
 
-        musicmenu = Music(SoundNames.MUSICMENU, 'resources/bubbling.wav')
+        musicmenu = self.sound_manager.find(SoundNames.MUSICMENU)
         musicmenu.play()
 
         if player:

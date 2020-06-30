@@ -2,9 +2,9 @@ from .inputsubject import InputSubject
 from .inputobserver import InputObserver
 from .input import InputMan
 from .mouseclickobserver import MouseClickObserver
-from .lmouseclickcircleobserver import LMouseClickCircleObserver
+from .lmouseclickshootobserver import LMouseClickShootObserver
 from .lmouseclickrectobserver import LMouseClickRectObserver
-from .rmouseclickcircleobserver import RMouseClickCircleObserver
+from .rmouseclickshootobserver import RMouseClickShootObserver
 from .mouseclicksettingsobserver import MouseClickSettingsObserver
 from .mousehoverhighlightobserver import MouseHoverHighlightObserver, MouseHoverHighlightRectObserver
 from .keypressobserver import KeyPressObserver

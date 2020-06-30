@@ -1,5 +1,6 @@
 from bubblebuster.link import Link, LinkMan
 from bubblebuster.image import ImageMan, ImageNames
+from bubblebuster.timer import ClickExplodeCommand, TimerMan
 
 from math import inf
 from enum import Enum
@@ -32,7 +33,30 @@ class Weapon(Link):
         self.largecost = 0
 
 
-class Finger(Weapon):
+class ExplodeWeapon(Weapon):
+    def __init__(self, name):
+        super().__init__(name)
+
+    def lshoot(self, xcurs, ycurs):
+        click_explode = ClickExplodeCommand(xcurs,
+                                            ycurs,
+                                            self.radius // 2,
+                                            self.radius_delta // 2,
+                                            self.duration // 2
+                                            )
+        TimerMan.instance.add(click_explode, 0)
+
+    def rshoot(self, xcurs, ycurs):
+        click_explode = ClickExplodeCommand(xcurs,
+                                            ycurs,
+                                            self.radius,
+                                            self.radius_delta,
+                                            self.duration
+                                            )
+        TimerMan.instance.add(click_explode, 0)
+
+
+class Finger(ExplodeWeapon):
     def __init__(self, name):
         super().__init__(name)
 
@@ -46,7 +70,7 @@ class Finger(Weapon):
         self.largecost = 2
 
 
-class Thumb(Weapon):
+class Thumb(ExplodeWeapon):
     def __init__(self, name):
         super().__init__(name)
 
@@ -60,7 +84,7 @@ class Thumb(Weapon):
         self.largecost = 2
 
 
-class Hand(Weapon):
+class Hand(ExplodeWeapon):
     def __init__(self, name):
         super().__init__(name)
 
@@ -74,7 +98,7 @@ class Hand(Weapon):
         self.largecost = 2
 
 
-class Pebble(Weapon):
+class Pebble(ExplodeWeapon):
     def __init__(self, name):
         super().__init__(name)
 
@@ -88,7 +112,7 @@ class Pebble(Weapon):
         self.largecost = 2
 
 
-class Rock(Weapon):
+class Rock(ExplodeWeapon):
     def __init__(self, name):
         super().__init__(name)
 

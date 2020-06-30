@@ -25,8 +25,8 @@ LARGEEXPLOSIONCOST = 2
 
 class InterfaceSettings:
     # DISPLAY SETTINGS
-    SCREEN_WIDTH = 800
-    SCREEN_HEIGHT = 600
+    SCREEN_WIDTH = 0 # use fullscreen resolution
+    SCREEN_HEIGHT = 0
     BACKGROUND_COLOR = (0, 0, 0)
 
     # FONT SETTINGS
