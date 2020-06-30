@@ -66,8 +66,8 @@ class WeaponCarousel(Carousel):
 
         # guess at these for now
         startx = w // 4
-        offsetx = w // 3
-        starty = h // 10
+        offsetx = w // 2
+        starty = h // 24
         offsety = 20
         imagew, imageh = w//2, h//2
 

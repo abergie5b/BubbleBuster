@@ -103,7 +103,9 @@ class ScenePlay(Scene):
     def handle(self, player=None):
         assert player
 
-        self.player = player
+        # pooooop
+        self.player_manager.remove(self.player)
+        self.player = self.player_manager.add(player)
 
         musicmenu = self.sound_manager.find(SoundNames.MUSICMENU)
         musicmenu.play()

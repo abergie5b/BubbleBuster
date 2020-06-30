@@ -11,6 +11,7 @@ from bubblebuster.ui import WeaponCarousel
 from bubblebuster.weapon import Finger, Thumb, Hand, WeaponNames
 from bubblebuster.player import Player, PlayerNames
 from bubblebuster.font import FontNames, Font
+from bubblebuster.image import ImageNames
 
 import pygame
 
@@ -18,6 +19,11 @@ import pygame
 class SceneWeapon(Scene):
     def __init__(self, name, game):
         super().__init__(name, game)
+
+        # images
+        self.image_manager.add(ImageNames.FINGER, 'resources/finger.png')
+        self.image_manager.add(ImageNames.THUMB, 'resources/thumb.png')
+        self.image_manager.add(ImageNames.HAND, 'resources/hand.png')
 
         # zounds
         self.sound_manager.add(SoundNames.BUBBLEPOP, 'resources/bubble_pop.wav')
@@ -98,7 +104,7 @@ class SceneWeapon(Scene):
         assert self.player
 
         # this is bad,
-        # but need to set this in case this changed from scenesettings
+        # but need to set in case changed from scenesettings
         self.player.bubbles = GameSettings.NUMBER_OF_BUBBLES
 
         if player:

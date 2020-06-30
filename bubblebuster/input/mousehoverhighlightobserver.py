@@ -27,7 +27,7 @@ class MouseHoverHighlightRectObserver(InputObserver):
         self.rectB.x = xcurs
         self.rectB.y = ycurs
         if self.rectA.rect.colliderect(self.rectB): # click
-            self.rectA.color = (255, 255, 255, 125)
+            self.rectA.color = (255, 255, 255, 50)
         elif not self.rectA.selected:
             self.rectA.color = self.rectA_color
 

@@ -60,6 +60,9 @@ class Finger(ExplodeWeapon):
     def __init__(self, name):
         super().__init__(name)
 
+        # image
+        self.image = ImageMan.instance.find(ImageNames.FINGER)
+
         self.duration = 25
         self.radius = 10
         self.radius_delta = 5
@@ -70,9 +73,13 @@ class Finger(ExplodeWeapon):
         self.largecost = 2
 
 
+
 class Thumb(ExplodeWeapon):
     def __init__(self, name):
         super().__init__(name)
+
+        # image
+        self.image = ImageMan.instance.find(ImageNames.THUMB)
 
         self.duration = 30
         self.radius = 15
@@ -87,6 +94,9 @@ class Thumb(ExplodeWeapon):
 class Hand(ExplodeWeapon):
     def __init__(self, name):
         super().__init__(name)
+
+        # image
+        self.image = ImageMan.instance.find(ImageNames.HAND)
 
         self.duration = 35
         self.radius = 20
