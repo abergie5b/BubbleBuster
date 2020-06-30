@@ -16,7 +16,7 @@ class SceneContext:
         # start in menu
         self.scene_state = self.scene_menu
         SceneContext.instance = self
-        self.scene_state.handle()
+        self.scene_state.handle(self.scene_weapon.player)
         self.scene_state.transition()
 
     def reset(self, player=None):
@@ -51,3 +51,4 @@ class SceneContext:
             raise ValueError('no matching scene state found for transition')
         self.scene_state.handle(player=player)
         self.scene_state.transition()
+

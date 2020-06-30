@@ -1,7 +1,6 @@
 from bubblebuster.sprite import BoxSpriteNames, BoxSprite, SpriteMan, SpriteNames, Sprite
 from bubblebuster.font import FontMan, Font, FontNames
 from bubblebuster.settings import InterfaceSettings
-from bubblebuster.image import ImageMan, ImageNames
 from bubblebuster.input import InputMan, MouseHoverHighlightRectObserver
 
 
@@ -66,11 +65,11 @@ class WeaponCarousel(Carousel):
         w, h = (window.width, window.height)
 
         # guess at these for now
-        startx = 35
-        offsetx = 125
-        starty = 10
+        startx = w // 4
+        offsetx = w // 3
+        starty = h // 10
         offsety = 20
-        imagew, imageh = w//3, h//3
+        imagew, imageh = w//2, h//2
 
         FontMan.instance.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, weapon.name.name, (255, 255, 255), (x+startx, y+starty)))
         starty += offsety * 2

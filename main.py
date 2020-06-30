@@ -1,7 +1,7 @@
-import pygame
-
 from bubblebuster.scene import SceneContext
 from bubblebuster.settings import GameSettings, InterfaceSettings, DEBUG, VERSION
+
+import pygame
 
 
 class Game:
@@ -9,8 +9,17 @@ class Game:
         # required for pygame
         pygame.init()
 
-        self.screen = pygame.display.set_mode((InterfaceSettings.SCREEN_WIDTH, InterfaceSettings.SCREEN_HEIGHT), pygame.FULLSCREEN|pygame.RESIZABLE)
-        pygame.display.set_caption("Bubble Buster v%s" % VERSION)
+        title = "Bubble Buster v%s" % VERSION
+        if DEBUG:
+            flags = pygame.RESIZABLE
+            title += ' DEEEBUGGG'
+        else:
+            flags = pygame.FULLSCREEN
+        self.screen = pygame.display.set_mode(
+            (InterfaceSettings.SCREEN_WIDTH, InterfaceSettings.SCREEN_HEIGHT),
+            flags
+        )
+        pygame.display.set_caption(title)
 
         self.running = True
         self.FPS = 90

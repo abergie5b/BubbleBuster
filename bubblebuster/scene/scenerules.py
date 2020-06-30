@@ -1,5 +1,5 @@
 from bubblebuster.scene import Scene, SceneNames
-from bubblebuster.sound import SoundNames, Music
+from bubblebuster.sound import SoundNames
 from bubblebuster.sprite import CircleFactory
 from bubblebuster.font import FontNames, Font
 from bubblebuster.input import MouseClickObserver, MouseHoverHighlightObserver
@@ -14,9 +14,7 @@ class SceneRules(Scene):
         SCREEN_WIDTH, SCREEN_HEIGHT = (InterfaceSettings.SCREEN_WIDTH, InterfaceSettings.SCREEN_HEIGHT)
 
         # zounds
-        self.sound_manager.add(SoundNames.BUBBLEPOP, 'resources/settings_bubbles.wav')
-
-        # zounds
+        self.sound_manager.add_music(SoundNames.MUSICMENU, 'resources/settings_bubbles.wav')
         self.sound_manager.add(SoundNames.BUBBLEPOP, 'resources/bubble_pop.wav')
 
         MENU_STARTX = SCREEN_WIDTH // 8
@@ -72,7 +70,7 @@ class SceneRules(Scene):
         self.font_manager.draw(self.screen)
 
     def handle(self, player=None):
-        musicmenu = Music(SoundNames.MUSICMENU, 'resources/settings_bubbles.wav')
+        musicmenu = self.sound_manager.find(SoundNames.MUSICMENU)
         musicmenu.play()
 
         # make some bubbles

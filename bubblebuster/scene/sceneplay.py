@@ -101,7 +101,7 @@ class ScenePlay(Scene):
         self.font_manager.draw(self.screen)
 
     def handle(self, player=None):
-        assert(player)
+        assert player
 
         self.player = player
 
