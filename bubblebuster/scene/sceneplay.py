@@ -36,12 +36,13 @@ class ScenePlay(Scene):
         self.input_manager.rmouse.attach(RMouseClickShootObserver())
 
         # sprites
-        circle_factory = CircleFactory(self.circle_group, self.boxsprite_manager)
-        circle_factory.generate_random(GameSettings.NUMBER_OF_BUBBLES,
-                                       max_xy=(InterfaceSettings.SCREEN_WIDTH,
-                                               InterfaceSettings.SCREEN_HEIGHT),
-                                       max_h=GameSettings.BUBBLE_MAXH
-                                       )
+        if player: # make the bubbles
+            circle_factory = CircleFactory(self.circle_group, self.boxsprite_manager)
+            circle_factory.generate_random(player.level.bubbles,
+                                           max_xy=(InterfaceSettings.SCREEN_WIDTH,
+                                                   InterfaceSettings.SCREEN_HEIGHT),
+                                           max_h=player.level.bubble_maxh
+                                           )
 
         # collision pairs
         self.collisionpair_manager.add_groups(self.wall_group, self.circle_group, CollisionRectPair)
@@ -116,13 +117,13 @@ class ScenePlay(Scene):
 
         # fonts
         fontcurrentlevel = self.font_manager.find(FontNames.CURRENTLEVEL)
-        fontcurrentlevel.text = self.player.current_level
+        fontcurrentlevel.text = self.player.level.level
         fontscoreround = self.font_manager.find(FontNames.SCOREROUND)
         fontscoreround.text = 0
         fontscore = self.font_manager.find(FontNames.SCORE)
         fontscore.text = self.player.score
         fontbubbles = self.font_manager.find(FontNames.BUBBLES)
-        fontbubbles.text = self.player.bubbles
+        fontbubbles.text = self.player.level.bubbles
         fontexplosions = self.font_manager.find(FontNames.EXPLOSIONS)
         fontexplosions.text = self.player.weapon.stats_usedround
         fonttime = self.font_manager.find(FontNames.TIME)

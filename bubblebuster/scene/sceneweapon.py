@@ -12,6 +12,7 @@ from bubblebuster.weapon import Finger, Thumb, Hand, WeaponNames
 from bubblebuster.player import Player, PlayerNames
 from bubblebuster.font import FontNames, Font
 from bubblebuster.image import ImageNames
+from bubblebuster.level import ActiveLevel
 
 import pygame
 
@@ -70,7 +71,7 @@ class SceneWeapon(Scene):
         # attach this
         self.player = self.player_manager.add(Player(PlayerNames.PLAYERONE,
                                                      None, # no weapon until selected
-                                                     GameSettings.NUMBER_OF_BUBBLES
+                                                     ActiveLevel()
                                                      ))
         carousel.attach(self.player, LMouseClickRectObserver)
 
@@ -105,7 +106,8 @@ class SceneWeapon(Scene):
 
         # this is bad,
         # but need to set in case changed from scenesettings
-        self.player.bubbles = GameSettings.NUMBER_OF_BUBBLES
+        self.player.level.bubbles = GameSettings.NUMBER_OF_BUBBLES
 
         if player:
             self.player = player
+

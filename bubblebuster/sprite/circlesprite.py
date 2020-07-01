@@ -110,7 +110,7 @@ class CircleSprite(sp.BoxSprite):
         timer.TimerMan.instance.add(timer.RemoveFontCommand(font_pointsvalue), 1000)
 
         font_bubbles = FontMan.instance.find(FontNames.BUBBLES)
-        font_bubbles.text = player.bubbles
+        font_bubbles.text = player.level.bubbles
 
         # gotta do this somehwere else
         font = FontMan.instance.find(FontNames.SCORE)

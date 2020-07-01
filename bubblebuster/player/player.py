@@ -1,6 +1,6 @@
 import bubblebuster.timer as timer
 from bubblebuster.link import Link, LinkMan
-from bubblebuster.settings import DEBUG, GameSettings
+from bubblebuster.settings import DEBUG
 import bubblebuster.sprite as sp
 import bubblebuster.scene as scene
 
@@ -14,12 +14,11 @@ class PlayerNames(Enum):
 
 
 class Player(Link):
-    def __init__(self, name, weapon, bubbles):
+    def __init__(self, name, weapon, level):
         super().__init__()
         self.name = name
-        self.bubbles = bubbles
         self.weapon = weapon
-        self.current_level = 1
+        self.level = level
 
         # stats
         self.stats_bubbles = 0
@@ -32,11 +31,9 @@ class Player(Link):
         self.stats_scoreroundprev = 0
 
     def update(self):
-        if self.bubbles <= 0:
+        if self.level.bubbles <= 0:
             # update for next level
-            self.current_level += 1
-            GameSettings.NUMBER_OF_BUBBLES += 5
-            GameSettings.BUBBLE_MAXH -= 10
+            self.level.advance()
             # stats
             if self.weapon.ammo and self.weapon.ammo != inf:
                 self.score -= self.stats_scoreround
@@ -45,29 +42,26 @@ class Player(Link):
             # reset for next level
             if DEBUG:
                 print('next level activated %d with %d bubbles and %d max height' % (
-                      self.current_level, self.bubbles, GameSettings.BUBBLE_MAXH)
+                      self.level.level, self.level.bubbles, self.level.bubble_maxh)
                 )
                 print('scoreround: %d scoreround_raw: %d score %d stats_explosionsround: %d' % (
                       self.stats_scoreround, self.stats_scoreround//self.stats_explosionsround, self.score, self.stats_explosionsround)
                 )
-            self.reset()
             # next level
+            self.reset()
             timer.TimerMan.instance.add(timer.SwitchSceneCommand(scene.SceneNames.SCENESWITCH, player=self), 500)
         elif self.weapon.ammo <= 0:
             current_time = timer.TimerMan.instance.current_time
             last_collision = sp.ExplosionSprite.instance.last_collision
-            # this depends how long it takes for the explosions
-            # GameSettings.EXPLOSION_MAX_LIVES is not exactly frame by frame
-            # and not measured in time
-            # so better to make it large just in case
+            # better to make it large just in case
             totally_random_number = 100
-            if current_time - last_collision > GameSettings.BUBBLEPOPDELAY + self.weapon.duration * totally_random_number:
+            if current_time - last_collision > self.level.bubble_popdelay + self.weapon.duration * totally_random_number:
                 if DEBUG:
                     print('game over, switching back to menu current_time: %d last_collision: %d diff: %d' %
                         (current_time, last_collision, current_time - last_collision)
                     )
                 self.reset()
-                GameSettings.init()
+                self.level.reset()
                 scene.SceneContext.instance.reset()
                 # die
                 timer.TimerMan.instance.add(timer.SwitchSceneCommand(scene.SceneNames.MENU), 1000)
@@ -75,7 +69,6 @@ class Player(Link):
     def reset(self):
         # reload and update stats
         self.weapon.reset()
-        self.bubbles = GameSettings.NUMBER_OF_BUBBLES
         self.stats_explosionsprev = self.weapon.ammo
         self.stats_scoreroundprev = self.stats_scoreround
         self.stats_scoreround = 0
@@ -88,13 +81,13 @@ class Player(Link):
     def update_score(self, circle, multiplier=1):
         self.stats_bubbles += 1
         self.update_max_multiplier(multiplier)
-        self.bubbles -= 1
-        points = multiplier * GameSettings.BUBBLE_MAXH//circle.height
+        self.level.bubbles -= 1
+        points = multiplier * self.level.bubble_maxh//circle.height
         self.score += points
         self.stats_scoreround += points
         if DEBUG:
             print('updating score %d, round: %d circleh: %d mult: %d points: %d bubbles: %d' % (
-                  self.score, self.stats_scoreround, circle.height, multiplier, points, self.bubbles)
+                  self.score, self.stats_scoreround, circle.height, multiplier, points, self.level.bubbles)
             )
         return points
 

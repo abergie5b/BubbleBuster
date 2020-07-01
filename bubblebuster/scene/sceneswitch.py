@@ -108,7 +108,7 @@ class SceneSwitch(Scene):
 
         if player:
             menutitle = self.font_manager.find(FontNames.MENUTITLE)
-            menutitle.text = 'Level %d' % player.current_level
+            menutitle.text = 'Level %d' % player.level.level
 
             MENU_STARTX = InterfaceSettings.SCREEN_WIDTH // 8
             MENU_STARTY = InterfaceSettings.SCREEN_HEIGHT // 3
