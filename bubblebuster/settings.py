@@ -27,13 +27,14 @@ class InterfaceSettings:
 
 
 # BUBBLE SETTINGS
-NUMBER_OF_BUBBLES = 10
-BUBBLE_MAXH = 200
+NUMBER_OF_BUBBLES = 5
+BUBBLE_MAXH = 300
 BUBBLEPOPDELAY = 500
-BUBBLE_MAXDELTA = 300
+BUBBLE_MAXDELTA = 250
 
 class GameSettings:
     # i dont like dis
+    # is this needed anymore?
     @staticmethod
     def init():
         # BUBBLE SETTINGS

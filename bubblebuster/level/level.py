@@ -22,13 +22,14 @@ class ActiveLevel(Level):
         self.bubble_maxdelta = GameSettings.BUBBLE_MAXDELTA
         self.time = 60
 
+        # if gamesettings changes, have to update this, not ideal
         self.max_bubbles = GameSettings.NUMBER_OF_BUBBLES
         self.max_bubbl_maxh = GameSettings.BUBBLE_MAXH
         self.max_time = 60
 
     def advance(self):
         self.bubbles = self.max_bubbles + self.level * 5
-        self.bubble_maxh = self.bubble_maxh - self.level * 5
+        self.bubble_maxh = self.max_bubbl_maxh - self.level * 5
         self.time = self.max_time - self.level * 5
         self.level += 1
 

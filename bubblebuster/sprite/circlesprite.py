@@ -55,16 +55,6 @@ class CircleSprite(sp.BoxSprite):
             sound = SoundMan.instance.find(SoundNames.BUBBLE_MINIPOP)
         sound.play()
 
-    def accept(self, circle):
-        self.deltax *= -1
-        self.deltay *= -1
-        circle.deltax *= -1
-        circle.deltay *= -1
-        # resolve collisions for me please! please!
-        while pygame.sprite.collide_circle(self, circle):
-            self.update()
-            circle.update()
-
     def destroy_colliding_circles(self, explosion):
         # explosion None ??
         circle_group = group.GroupMan.instance.find(group.GroupNames.CIRCLE)

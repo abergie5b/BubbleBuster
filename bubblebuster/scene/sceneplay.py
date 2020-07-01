@@ -17,10 +17,10 @@ class ScenePlay(Scene):
         SCREEN_WIDTH, SCREEN_HEIGHT = (InterfaceSettings.SCREEN_WIDTH, InterfaceSettings.SCREEN_HEIGHT)
 
         self.player = self.player_manager.add(player)
-        wallbottom = self.boxsprite_manager.find(LineSpriteNames.WALL_BOTTOM)
-        startxy = (wallbottom.start_xy[0], wallbottom.start_xy[1]-35)
-        endxy = (wallbottom.end_xy[0], wallbottom.end_xy[1]-35)
-        wallbottom.set_coords(startxy, endxy)
+        #wallbottom = self.boxsprite_manager.find(LineSpriteNames.WALL_BOTTOM)
+        #startxy = (wallbottom.start_xy[0], wallbottom.start_xy[1]-35)
+        #endxy = (wallbottom.end_xy[0], wallbottom.end_xy[1]-35)
+        #wallbottom.set_coords(startxy, endxy)
 
         # zounds
         self.sound_manager.add(SoundNames.SMALLEXPLODE, 'resources/small_explode.wav')
