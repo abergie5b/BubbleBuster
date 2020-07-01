@@ -7,6 +7,5 @@ class DestroySpriteCommand(Command):
         self.name = TimeEventNames.DESTROYSPRITE
 
     def execute(self, delta_time):
-        multiplier = self.explosion.multiplier if self.explosion else 1
         self.sprite.destroy(explosion=self.explosion)
 

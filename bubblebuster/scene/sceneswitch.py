@@ -1,11 +1,11 @@
 from bubblebuster.sprite import CircleFactory
-from bubblebuster.sound import SoundNames, Music
-from bubblebuster.scene import Scene, SceneContext, SceneNames
+from bubblebuster.sound import SoundNames
+from bubblebuster.scene import Scene, SceneContext, SceneNames, ScenePlay
 from bubblebuster.settings import InterfaceSettings
 from bubblebuster.collision import CollisionRectPair
 from bubblebuster.font import Font, FontNames
 from bubblebuster.timer import SwitchSceneCommand
-from bubblebuster.settings import InterfaceSettings, GameSettings
+from bubblebuster.settings import InterfaceSettings
 
 
 import pygame
@@ -17,7 +17,8 @@ class SceneSwitch(Scene):
 
         # zounds
         self.sound_manager.add(SoundNames.BUBBLEPOP, 'resources/bubble_pop.wav')
-        
+        self.sound_manager.add_music(SoundNames.MUSICMENU, 'resources/bubbling.wav')
+
         # make some bubbles
         circle_factory = CircleFactory(self.circle_group, self.boxsprite_manager)
         circle_factory.generate_random(10,
@@ -100,9 +101,9 @@ class SceneSwitch(Scene):
         self.font_manager.draw(self.screen)
 
     def handle(self, player=None):
-        assert(player)
+        assert player
 
-        musicmenu = Music(SoundNames.MUSICMENU, 'resources/bubbling.wav')
+        musicmenu = self.sound_manager.find(SoundNames.MUSICMENU)
         musicmenu.play()
 
         if player:
@@ -152,9 +153,6 @@ class SceneSwitch(Scene):
             fontstatsexplosionsusedval = self.font_manager.find(FontNames.STATS_EXPLOSIONSUSED)
             fontstatsexplosionsusedval.text = player.stats_explosions
 
-        #  i dont want to have to do this
-        # its needed and i dont know why mate
-        # it makes switch transitions slow
-        SceneContext.instance.reset(player=player)
-
+        # hack me
+        SceneContext.instance.scene_play = ScenePlay(SceneNames.PLAY, self.game, player=player)
         self.timer_manager.add(SwitchSceneCommand(SceneNames.PLAY, onkeypress=True, player=player), 0)

@@ -5,7 +5,7 @@ from bubblebuster.timer import TimerMan
 from bubblebuster.group import CircleGroup, Group, GroupMan, GroupNames
 from bubblebuster.font import FontMan
 from bubblebuster.player import PlayerMan
-from bubblebuster.settings import *
+from bubblebuster.settings import InterfaceSettings
 from bubblebuster.sound import SoundMan
 from bubblebuster.input import InputMan
 

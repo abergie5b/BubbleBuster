@@ -17,6 +17,15 @@ class MouseClickObserver(InputObserver):
         self.rectB = pygame.Rect(0, 0, 1, 1)
         self.scene_change = scene_change
         self.player = player
+        font.observer = self
+
+    def reset(self, text):
+        self.width, self.height = self.font.font.size(self.font.text)
+        self.rectA = pygame.Rect(self.font.posx+self.width//2,
+                                 self.font.posy+self.height//2,
+                                 self.width,
+                                 self.height
+                                 )
 
     def notify(self, screen, xcurs, ycurs):
         self.rectB.x = xcurs

@@ -1,6 +1,6 @@
-import pygame
+from bubblebuster.image import ImageMan
 
-from image import ImageMan
+import pygame
 
 
 class GameSprite(pygame.sprite.DirtySprite):

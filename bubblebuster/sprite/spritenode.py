@@ -1,6 +1,5 @@
 from bubblebuster.link import Link, Manager
 
-import pygame
 
 class SpriteNode(Link):
     def __init__(self, sprite):

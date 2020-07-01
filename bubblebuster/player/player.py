@@ -64,7 +64,8 @@ class Player(Link):
             if current_time - last_collision > GameSettings.BUBBLEPOPDELAY + self.weapon.duration * totally_random_number:
                 if DEBUG:
                     print('game over, switching back to menu current_time: %d last_collision: %d diff: %d' %
-                        (current_time, last_collision, current_time - last_collision))
+                        (current_time, last_collision, current_time - last_collision)
+                    )
                 self.reset()
                 GameSettings.init()
                 scene.SceneContext.instance.reset()

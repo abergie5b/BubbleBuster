@@ -14,6 +14,9 @@ class ImageNames(Enum):
     ORANGEBUBBLE = 8
     PINKBUBBLE = 9
     REDBUBBLE = 10
+    FINGER = 11
+    THUMB = 12
+    HAND = 13
 
 
 class Image(Link):

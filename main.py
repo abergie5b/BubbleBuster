@@ -1,23 +1,25 @@
-import pygame
-
 from bubblebuster.scene import SceneContext
 from bubblebuster.settings import GameSettings, InterfaceSettings, DEBUG, VERSION
 
-import os
+import pygame
 
 
 class Game:
     def __init__(self):
         # required for pygame
-        os.environ['SDL_VIDEO_CENTERED'] = '1'
         pygame.init()
 
-        displayinfo = pygame.display.Info()
-        self.resolution = (displayinfo.current_w, displayinfo.current_h)
+        title = "Bubble Buster v%s" % VERSION
         if DEBUG:
-            print('detected screen resolution of %d width %d height' % (self.resolution))
-        self.screen = pygame.display.set_mode((InterfaceSettings.SCREEN_WIDTH, InterfaceSettings.SCREEN_HEIGHT), pygame.RESIZABLE)
-        pygame.display.set_caption("Bubble Buster v%s" % VERSION)
+            flags = pygame.RESIZABLE
+            title += ' DEEEBUGGG'
+        else:
+            flags = pygame.FULLSCREEN
+        self.screen = pygame.display.set_mode(
+            (InterfaceSettings.SCREEN_WIDTH, InterfaceSettings.SCREEN_HEIGHT),
+            flags
+        )
+        pygame.display.set_caption(title)
 
         self.running = True
         self.FPS = 90

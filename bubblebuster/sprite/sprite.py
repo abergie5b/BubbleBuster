@@ -15,6 +15,7 @@ class Sprite(Link):
         super().__init__()
         self.name = name
         self.image = ImageMan.instance.find(image_name)
+        self.image.surface = pygame.transform.scale(self.image.surface, (width, height))
         self.rect = self.image.surface.get_rect()
 
         # dimensions
@@ -36,8 +37,8 @@ class Sprite(Link):
         return Sprite(sprite.name, sprite.image.name, sprite.width, sprite.height, sprite.posx, sprite.posy)
 
     def draw(self, screen):
-        screen.blit(self.image.surface,
-                    (self.posx, self.posy)
+        self.rect = screen.blit(self.image.surface,
+                                (self.posx, self.posy)
         )
 
     def update(self):

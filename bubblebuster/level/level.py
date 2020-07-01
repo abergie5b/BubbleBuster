@@ -2,9 +2,21 @@ from bubblebuster.link import LinkMan, Link
 
 
 class Level(Link):
-    def __init__(self, settings):
+    def __init__(self):
         super().__init__()
-        self.settings = settings
+        self.bubbles = 0
+        self.bubble_maxh = 0
+        self.bubble_popdelay = 0
+        self.bubble_maxdelta = 0
+
+
+class Level1(Link):
+    def __init__(self):
+        super().__init__(self)
+        self.bubbles = 10
+        self.bubble_maxh = 200
+        self.bubble_popdelay = 500
+        self.bubble_maxdelta = 300
 
 
 class LevelMan(LinkMan):

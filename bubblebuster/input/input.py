@@ -2,6 +2,7 @@ from bubblebuster.link import LinkMan
 from bubblebuster.settings import GameSettings
 from bubblebuster.input import InputSubject
 import bubblebuster.scene as scene
+from bubblebuster.player import PlayerMan, PlayerNames
 
 import pygame
 from enum import Enum
@@ -47,17 +48,13 @@ class InputMan(LinkMan):
 
             if event.key == pygame.K_ESCAPE:
                 current_scene_name = game.scene_context.scene_state.name
-                # peeee
-                if current_scene_name == scene.SceneNames.PLAY \
-                or current_scene_name == scene.SceneNames.SCENESWITCH \
-                or current_scene_name == scene.SceneNames.WEAPON:
-                    player = game.scene_context.scene_play.player
-                    if player:
-                        player.reset()
+                player = PlayerMan.instance.find(PlayerNames.PLAYERONE)
+                if player:
+                    player.reset()
+                if current_scene_name != scene.SceneNames.SETTINGS:
                     GameSettings.init()
-                    scene.SceneContext.instance.reset()
-
-                scene.SceneContext.instance.set_state(scene.SceneNames.MENU)
+                scene.SceneContext.instance.reset(player=player)
+                scene.SceneContext.instance.set_state(scene.SceneNames.MENU, player=player)
 
             self.keypress.notify(game.screen, xcurs, ycurs)
                 

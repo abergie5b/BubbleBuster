@@ -1,13 +1,11 @@
-from bubblebuster.input import InputObserver, MouseClickObserver, InputMan
-import bubblebuster.collision as collision
+import bubblebuster.input as inp
 from bubblebuster.sound import SoundMan, SoundNames
-from bubblebuster.font import FontMan, Font, FontNames
-from bubblebuster.settings import InterfaceSettings
+from bubblebuster.font import FontMan, FontNames
 import bubblebuster.scene as sc
 
 import pygame
 
-class LMouseClickRectObserver(InputObserver):
+class LMouseClickRectObserver(inp.InputObserver):
     # this is just for weapon carousels for now
     def __init__(self, rect, player, weapon):
         self.rectA = rect
@@ -29,12 +27,13 @@ class LMouseClickRectObserver(InputObserver):
 
                 fontplay = FontMan.instance.find(FontNames.PLAY)
                 fontplay.text = 'Play!'
+                fontplay.observer.reset(fontplay.text)
 
-                self.observer = InputMan.instance.lmouse.attach(MouseClickObserver(fontplay, sc.SceneNames.SCENESWITCH, player=self.player))
+                self.observer = inp.InputMan.instance.lmouse.attach(inp.MouseClickObserver(fontplay, sc.SceneNames.SCENESWITCH, player=self.player))
             else:
                 self.rectA.selected = False
                 fontplay = FontMan.instance.find(FontNames.PLAY)
                 fontplay.text = ''
                 # if this doesnt work, maybe set the fontsize to 0?
-                InputMan.instance.lmouse.remove(self.observer)
+                inp.InputMan.instance.lmouse.remove(self.observer)
 

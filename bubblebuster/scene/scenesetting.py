@@ -15,6 +15,7 @@ class SceneSettings(Scene):
 
         # zounds
         self.sound_manager.add(SoundNames.BUBBLEPOP, 'resources/bubble_pop.wav')
+        self.sound_manager.add_music(SoundNames.MUSICMENU, 'resources/settings_bubbles.wav')
 
         # make some bubbles
         circle_factory = CircleFactory(self.circle_group, self.boxsprite_manager)
@@ -51,24 +52,6 @@ class SceneSettings(Scene):
         bubblesmaxheightdown = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, '-', InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX+MENU_OFFSETX_ARROW, MENU_STARTY+20)))
 
         MENU_STARTY += MENU_OFFSETY
-        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, '# of Explosions', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
-        self.font_manager.add(Font(FontNames.NUMBEROFEXPLOSIONS, InterfaceSettings.FONTSTYLE, 24, GameSettings.PLAYER_EXPLOSIONS, InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX, MENU_STARTY)))
-        numberofexplosionsup = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, '+', InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX+MENU_OFFSETX_ARROW, MENU_STARTY)))
-        numberofexplosionsdown = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, '-', InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX+MENU_OFFSETX_ARROW, MENU_STARTY+20)))
-
-        MENU_STARTY += MENU_OFFSETY
-        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, 'Explosion Duration', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
-        self.font_manager.add(Font(FontNames.EXPLOSIONDURATION, InterfaceSettings.FONTSTYLE, 24, GameSettings.EXPLOSION_MAX_LIVES, InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX, MENU_STARTY)))
-        explosiondurationup = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, '+', InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX+MENU_OFFSETX_ARROW, MENU_STARTY)))
-        explosiondurationdown = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, '-', InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX+MENU_OFFSETX_ARROW, MENU_STARTY+20)))
-
-        MENU_STARTY += MENU_OFFSETY
-        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, 'Explosion Radius Delta', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
-        self.font_manager.add(Font(FontNames.EXPLOSIONRADIUS, InterfaceSettings.FONTSTYLE, 24, GameSettings.EXPLOSION_RADIUS, InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX, MENU_STARTY)))
-        explosionradiusup = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, '+', InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX+MENU_OFFSETX_ARROW, MENU_STARTY)))
-        explosionradiusdown = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, '-', InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX+MENU_OFFSETX_ARROW, MENU_STARTY+20)))
-
-        MENU_STARTY += MENU_OFFSETY
         self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, 'Bubble Bust Delay', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
         self.font_manager.add(Font(FontNames.BUBBLEPOPDELAY, InterfaceSettings.FONTSTYLE, 24, GameSettings.BUBBLEPOPDELAY, InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX, MENU_STARTY)))
         bubblepopdelayup = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, '+', InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX+MENU_OFFSETX_ARROW, MENU_STARTY)))
@@ -85,15 +68,6 @@ class SceneSettings(Scene):
 
         self.input_manager.lmouse.attach(MouseClickSettingsObserver(bubblesmaxheightup, 'BUBBLE_MAXH', FontNames.BUBBLESMAXH, 10))
         self.input_manager.lmouse.attach(MouseClickSettingsObserver(bubblesmaxheightdown, 'BUBBLE_MAXH', FontNames.BUBBLESMAXH, -10))
-
-        self.input_manager.lmouse.attach(MouseClickSettingsObserver(numberofexplosionsup, 'PLAYER_EXPLOSIONS', FontNames.NUMBEROFEXPLOSIONS, 1))
-        self.input_manager.lmouse.attach(MouseClickSettingsObserver(numberofexplosionsdown, 'PLAYER_EXPLOSIONS', FontNames.NUMBEROFEXPLOSIONS, -1))
-
-        self.input_manager.lmouse.attach(MouseClickSettingsObserver(explosiondurationup, 'EXPLOSION_MAX_LIVES', FontNames.EXPLOSIONDURATION, 5))
-        self.input_manager.lmouse.attach(MouseClickSettingsObserver(explosiondurationdown, 'EXPLOSION_MAX_LIVES', FontNames.EXPLOSIONDURATION, -5))
-
-        self.input_manager.lmouse.attach(MouseClickSettingsObserver(explosionradiusup, 'EXPLOSION_RADIUS', FontNames.EXPLOSIONRADIUS, 1))
-        self.input_manager.lmouse.attach(MouseClickSettingsObserver(explosionradiusdown, 'EXPLOSION_RADIUS', FontNames.EXPLOSIONRADIUS, -1))
 
         self.input_manager.lmouse.attach(MouseClickSettingsObserver(bubblepopdelayup, 'BUBBLEPOPDELAY', FontNames.BUBBLEPOPDELAY, 10))
         self.input_manager.lmouse.attach(MouseClickSettingsObserver(bubblepopdelaydown, 'BUBBLEPOPDELAY', FontNames.BUBBLEPOPDELAY, -10))
@@ -120,6 +94,6 @@ class SceneSettings(Scene):
         self.font_manager.draw(self.screen)
 
     def handle(self, player=None):
-        musicmenu = Music(SoundNames.MUSICMENU, 'resources/settings_bubbles.wav')
+        musicmenu = self.sound_manager.find(SoundNames.MUSICMENU)
         musicmenu.play()
 

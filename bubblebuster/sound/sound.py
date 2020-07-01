@@ -41,8 +41,12 @@ class SoundMan(LinkMan):
         return a.name == b
 
     def add(self, name, data):
-        image = Sound(name, data)
-        self.base_add(image)
+        sound = Sound(name, data)
+        self.base_add(sound)
+
+    def add_music(self, name, data):
+        music = Music(name, data)
+        self.base_add(music)
 
     def find(self, image):
         return self.base_find(image)
