@@ -7,7 +7,7 @@ from bubblebuster.font import Font, FontNames
 from bubblebuster.timer import SwitchSceneCommand
 from bubblebuster.settings import InterfaceSettings
 
-
+from math import inf
 import pygame
 
 
@@ -121,7 +121,7 @@ class SceneSwitch(Scene):
             fontstatsexplosionbonusD = self.font_manager.find(FontNames.STATS_EXPLOSIONBONUSD)
             fontstatsscoreval = self.font_manager.find(FontNames.STATS_ROUNDSCORE)
 
-            if player.stats_explosionsprev: # do the thing
+            if player.weapon.ammo < inf and player.stats_explosionsprev: # do the thing
                 fontstatsexplosionbonusA.text = player.stats_scoreroundprev//player.stats_explosionsprev
                 fontstatsexplosionbonusA.posxy = (MENU_STARTX+MENU_OFFSETX, MENU_STARTY)
                 w, h = fontstatsexplosionbonusA.font.size(str(fontstatsexplosionbonusA.text))
@@ -149,10 +149,11 @@ class SceneSwitch(Scene):
             fontstatsmultval = self.font_manager.find(FontNames.STATS_MAXMULTIPLIER)
             fontstatsmultval.text = player.stats_maxmultiplier
             fontstatsexplosionsusedprevval = self.font_manager.find(FontNames.STATS_EXPLOSIONSUSEDPREV)
-            fontstatsexplosionsusedprevval.text = player.weapon.ammo-player.stats_explosionsprev
+            fontstatsexplosionsusedprevval.text = player.weapon.stats_usedroundprev
             fontstatsexplosionsusedval = self.font_manager.find(FontNames.STATS_EXPLOSIONSUSED)
             fontstatsexplosionsusedval.text = player.stats_explosions
 
         # hack me
         SceneContext.instance.scene_play = ScenePlay(SceneNames.PLAY, self.game, player=player)
         self.timer_manager.add(SwitchSceneCommand(SceneNames.PLAY, onkeypress=True, player=player), 0)
+

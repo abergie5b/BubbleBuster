@@ -73,11 +73,10 @@ class Player(Link):
                 timer.TimerMan.instance.add(timer.SwitchSceneCommand(scene.SceneNames.MENU), 1000)
 
     def reset(self):
-        # reset these or something
+        # reload and update stats
+        self.weapon.reset()
         self.bubbles = GameSettings.NUMBER_OF_BUBBLES
         self.stats_explosionsprev = self.weapon.ammo
-        # reload
-        self.weapon.ammo = self.weapon.max_ammo
         self.stats_scoreroundprev = self.stats_scoreround
         self.stats_scoreround = 0
         self.stats_explosionsround = 0

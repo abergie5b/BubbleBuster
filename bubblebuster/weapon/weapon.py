@@ -32,6 +32,16 @@ class Weapon(Link):
         self.smallcost = 0
         self.largecost = 0
 
+        self.stats_usedtotal = 0
+        self.stats_usedround = 0
+        self.stats_usedroundprev = 0
+
+    def reset(self):
+        self.ammo = self.max_ammo
+        self.stats_usedroundprev = self.stats_usedround
+        self.stats_usedtotal += self.stats_usedround
+        self.stats_usedround = 0
+
 
 class ExplodeWeapon(Weapon):
     def __init__(self, name):
@@ -45,6 +55,8 @@ class ExplodeWeapon(Weapon):
                                             self.duration // 2
                                             )
         TimerMan.instance.add(click_explode, 0)
+        self.stats_usedround += self.smallcost
+        self.ammo -= self.smallcost
 
     def rshoot(self, xcurs, ycurs):
         click_explode = ClickExplodeCommand(xcurs,
@@ -54,6 +66,8 @@ class ExplodeWeapon(Weapon):
                                             self.duration
                                             )
         TimerMan.instance.add(click_explode, 0)
+        self.stats_usedround += self.largecost
+        self.ammo -= self.largecost
 
 
 class Finger(ExplodeWeapon):

@@ -124,7 +124,7 @@ class ScenePlay(Scene):
         fontbubbles = self.font_manager.find(FontNames.BUBBLES)
         fontbubbles.text = self.player.bubbles
         fontexplosions = self.font_manager.find(FontNames.EXPLOSIONS)
-        fontexplosions.text = self.player.weapon.ammo
+        fontexplosions.text = self.player.weapon.stats_usedround
         fonttime = self.font_manager.find(FontNames.TIME)
         fonttime.text = self.timer_manager.current_time
 
