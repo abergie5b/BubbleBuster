@@ -10,6 +10,11 @@ class SimulationNames(Enum):
     PAUSE = 4
 
 
+# --- Simulation controls ------------
+#   S - single step
+#   D - repeat step while holding
+#   G - start simulation fixed step
+#   H - start simulation realtime stepping
 class Simulation:
     instance = None
     SINGLE_TIME_STEP = 0.016666
@@ -27,8 +32,8 @@ class Simulation:
         self._process(event)
 
         current_time = TimerMan.instance.current_time
-        self.tic = current_time - self.toc
-        self.toc = current_time
+        self.toc = current_time - self.tic
+        self.tic = current_time
 
         if self.state == SimulationNames.FIXEDSTEP:
             self.time_step = Simulation.SINGLE_TIME_STEP
@@ -36,6 +41,7 @@ class Simulation:
             self.time_step = self.toc
         elif self.state == SimulationNames.SINGLESTEP:
             self.time_step = Simulation.SINGLE_TIME_STEP
+            self.state = SimulationNames.PAUSE
         elif self.state == SimulationNames.PAUSE:
             self.time_step = 0
         else:
