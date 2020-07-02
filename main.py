@@ -12,7 +12,7 @@ class Game:
         title = "Bubble Buster v%s" % VERSION
         if DEBUG:
             flags = pygame.RESIZABLE
-            title += ' DEEEBUGGG'
+            title += ' DEBUG'
         else:
             flags = pygame.FULLSCREEN
         self.screen = pygame.display.set_mode(
@@ -23,6 +23,12 @@ class Game:
 
         self.running = True
         self.FPS = 90
+
+        if not InterfaceSettings.DARKMODE:
+            InterfaceSettings.BACKGROUND_COLOR = InterfaceSettings.BACKGROUND_COLOR_LIGHT
+            InterfaceSettings.MOUSEHIGHLIGHTFONTCOLOR = InterfaceSettings.MOUSEHIGHLIGHTFONTCOLOR_LIGHT
+            InterfaceSettings.FONTITLECOLOR = InterfaceSettings.FONTTITLECOLOR_LIGHT
+            InterfaceSettings.FONTCOLOR = InterfaceSettings.FONTCOLOR_LIGHT
 
         InterfaceSettings.SCREEN_WIDTH, InterfaceSettings.SCREEN_HEIGHT = self.screen.get_size()
         if DEBUG:

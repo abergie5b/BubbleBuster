@@ -18,7 +18,7 @@ class Carousel:
 
 
 class WeaponCarousel(Carousel):
-    def __init__(self, posxy, wh, color=(255, 255, 255), windows=3):
+    def __init__(self, posxy, wh, color=InterfaceSettings.FONTCOLOR, windows=3):
         super().__init__(posxy, wh, windows=windows)
         self.weapons = []
 
@@ -71,23 +71,23 @@ class WeaponCarousel(Carousel):
         offsety = 20
         imagew, imageh = w//2, h//2
 
-        FontMan.instance.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, weapon.name.name, (255, 255, 255), (x+startx, y+starty)))
+        FontMan.instance.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, weapon.name.name, InterfaceSettings.FONTCOLOR, (x+startx, y+starty)))
         starty += offsety * 2
         sprite = SpriteMan.instance.add_sprite(Sprite(SpriteNames.NULL, weapon.image.name, imagew, imageh, x+startx, y+starty))
         starty += imageh + offsety
-        FontMan.instance.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 14, 'Duration:', (255, 255, 255), (x+startx, y+starty)))
-        FontMan.instance.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 14, weapon.duration, (255, 255, 255), (x+startx+offsetx, y+starty)))
+        FontMan.instance.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 14, 'Duration:', InterfaceSettings.FONTCOLOR, (x+startx, y+starty)))
+        FontMan.instance.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 14, weapon.duration, InterfaceSettings.FONTCOLOR, (x+startx+offsetx, y+starty)))
         starty += offsety
-        FontMan.instance.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 14, 'Radius:', (255, 255, 255), (x+startx, y+starty)))
-        FontMan.instance.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 14, weapon.radius, (255, 255, 255), (x+startx+offsetx, y+starty)))
+        FontMan.instance.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 14, 'Radius:', InterfaceSettings.FONTCOLOR, (x+startx, y+starty)))
+        FontMan.instance.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 14, weapon.radius, InterfaceSettings.FONTCOLOR, (x+startx+offsetx, y+starty)))
         starty += offsety
-        FontMan.instance.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 14, 'Radius Delta: ', (255, 255, 255), (x+startx, y+starty)))
-        FontMan.instance.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 14, weapon.radius_delta, (255, 255, 255), (x+startx+offsetx, y+starty)))
+        FontMan.instance.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 14, 'Radius Delta: ', InterfaceSettings.FONTCOLOR, (x+startx, y+starty)))
+        FontMan.instance.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 14, weapon.radius_delta, InterfaceSettings.FONTCOLOR, (x+startx+offsetx, y+starty)))
         starty += offsety
-        FontMan.instance.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 14, 'Normal Cost:', (255, 255, 255), (x+startx, y+starty)))
-        FontMan.instance.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 14, weapon.smallcost, (255, 255, 255), (x+startx+offsetx, y+starty)))
+        FontMan.instance.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 14, 'Normal Cost:', InterfaceSettings.FONTCOLOR, (x+startx, y+starty)))
+        FontMan.instance.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 14, weapon.smallcost, InterfaceSettings.FONTCOLOR, (x+startx+offsetx, y+starty)))
         starty += offsety
-        FontMan.instance.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 14, 'Special Cost:', (255, 255, 255), (x+startx, y+starty)))
-        FontMan.instance.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 14, weapon.largecost, (255, 255, 255), (x+startx+offsetx, y+starty)))
+        FontMan.instance.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 14, 'Special Cost:', InterfaceSettings.FONTCOLOR, (x+startx, y+starty)))
+        FontMan.instance.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 14, weapon.largecost, InterfaceSettings.FONTCOLOR, (x+startx+offsetx, y+starty)))
         return window
 

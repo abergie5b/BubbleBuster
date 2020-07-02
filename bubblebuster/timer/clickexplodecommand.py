@@ -1,5 +1,6 @@
 from bubblebuster.timer import Command, TimeEventNames, TimerMan
 from bubblebuster.group import GroupMan, GroupNames
+from bubblebuster.settings import InterfaceSettings
 import bubblebuster.collision as collision
 import bubblebuster.sprite as sp
 
@@ -13,7 +14,7 @@ class ClickExplodeCommand(Command):
         self.delta = radius_delta
         self.original_lives = lives
         self.lives = lives
-        self.color = (255, 255, 255)
+        self.color = InterfaceSettings.EXPLOSIONCOLOR
         self.rect = None
         self.circle_group = GroupMan.instance.find(GroupNames.CIRCLE)
         self.name = TimeEventNames.CLICKEXPLODE

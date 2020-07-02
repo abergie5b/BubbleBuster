@@ -94,7 +94,7 @@ class CircleSprite(sp.BoxSprite):
 
         # creatin new fonts .. bad
         font_pointsvalue = FontMan.instance.add(
-            Font(FontNames.MULTIPLIER, InterfaceSettings.FONTSTYLE, 18, points, (255, 255, 255),
+            Font(FontNames.MULTIPLIER, InterfaceSettings.FONTSTYLE, 18, points, InterfaceSettings.FONTCOLOR,
                  (self.posx+self.height//2, self.posy+self.height//2)) # midpoint
         )
         timer.TimerMan.instance.add(timer.RemoveFontCommand(font_pointsvalue), 1000)
