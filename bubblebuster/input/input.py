@@ -1,6 +1,6 @@
 from bubblebuster.link import LinkMan
 from bubblebuster.settings import GameSettings
-from bubblebuster.input import InputSubject
+from bubblebuster.input import InputSubject, Simulation
 import bubblebuster.scene as scene
 from bubblebuster.player import PlayerMan, PlayerNames
 
@@ -55,6 +55,9 @@ class InputMan(LinkMan):
                     GameSettings.init()
                 scene.SceneContext.instance.reset(player=player)
                 scene.SceneContext.instance.set_state(scene.SceneNames.MENU, player=player)
+
+            # delete me for "production" builds
+            Simulation.instance.update(event)
 
             self.keypress.notify(game.screen, xcurs, ycurs)
                 

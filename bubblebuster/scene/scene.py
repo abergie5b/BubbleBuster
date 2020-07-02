@@ -7,7 +7,7 @@ from bubblebuster.font import FontMan
 from bubblebuster.player import PlayerMan
 from bubblebuster.settings import InterfaceSettings
 from bubblebuster.sound import SoundMan
-from bubblebuster.input import InputMan
+from bubblebuster.input import InputMan, Simulation
 
 from enum import Enum
 
@@ -37,6 +37,7 @@ class Scene:
         self.player_manager = PlayerMan()
         self.timer_manager = TimerMan()
         self.sound_manager = SoundMan()
+        self.simulation = Simulation()
 
         # bubbles are ubiquitous
         list(map(lambda x: self.image_manager.add(getattr(ImageNames, '%sBUBBLE' % x.upper()), 'resources/bubble-%s.png' % x), InterfaceSettings.BUBBLECOLORS))

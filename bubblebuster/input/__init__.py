@@ -1,3 +1,4 @@
+from .simulation import Simulation
 from .inputsubject import InputSubject
 from .inputobserver import InputObserver
 from .input import InputMan

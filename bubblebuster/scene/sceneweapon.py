@@ -1,12 +1,12 @@
 from bubblebuster.scene import Scene
 from bubblebuster.sprite import CircleFactory
 from bubblebuster.sound import SoundNames
-from bubblebuster.scene import Scene
+from bubblebuster.scene import Scene, SceneNames
 from bubblebuster.settings import InterfaceSettings
 from bubblebuster.collision import CollisionRectPair
 from bubblebuster.font import Font, FontNames
 from bubblebuster.settings import InterfaceSettings, GameSettings
-from bubblebuster.input import LMouseClickRectObserver, MouseHoverHighlightObserver
+from bubblebuster.input import LMouseClickRectObserver, MouseHoverHighlightObserver, MouseClickObserver
 from bubblebuster.ui import WeaponCarousel
 from bubblebuster.weapon import Finger, Thumb, Hand, WeaponNames
 from bubblebuster.player import Player, PlayerNames
@@ -74,6 +74,18 @@ class SceneWeapon(Scene):
                                                      ActiveLevel()
                                                      ))
         carousel.attach(self.player, LMouseClickRectObserver)
+
+        # back to menu
+        fontmenu = self.font_manager.add(Font(FontNames.NULL,
+                                              InterfaceSettings.FONTSTYLE,
+                                              24,
+                                              'Back to Menu',
+                                              InterfaceSettings.FONTCOLOR,
+                                              (InterfaceSettings.SCREEN_WIDTH // 8, MENU_STARTY))
+        )
+
+        self.input_manager.mousecursor.attach(MouseHoverHighlightObserver(fontmenu, None))
+        self.input_manager.lmouse.attach(MouseClickObserver(fontmenu, SceneNames.MENU))
 
     def update(self):
         time = pygame.time.get_ticks()

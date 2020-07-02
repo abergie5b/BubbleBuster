@@ -36,7 +36,7 @@ class InterfaceSettings:
     BUBBLECOLORS = ['blue', 'cyan', 'green', 'orange', 'pink']
 
     # EXPLOSION
-    EXPLOSIONCOLOR = (255, 0, 0)
+    EXPLOSIONCOLOR = (165, 0, 0)
 
 
 # BUBBLE SETTINGS

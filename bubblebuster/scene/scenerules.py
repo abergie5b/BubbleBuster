@@ -16,6 +16,26 @@ class SceneRules(Scene):
         # zounds
         self.sound_manager.add_music(SoundNames.MUSICMENU, 'resources/settings_bubbles.wav')
         self.sound_manager.add(SoundNames.BUBBLEPOP, 'resources/bubble_pop.wav')
+        self.font_manager.add(Font(FontNames.MENUTITLE, 
+                                   InterfaceSettings.FONTSTYLE,
+                                   72, 
+                                   'How to Play', 
+                                   InterfaceSettings.FONTCOLOR, 
+                                   (InterfaceSettings.SCREEN_WIDTH//7, InterfaceSettings.SCREEN_HEIGHT//10)
+                              )
+        )
+
+
+        # make some bubbles
+        circle_factory = CircleFactory(self.circle_group, self.boxsprite_manager)
+        circle_factory.generate_random(10,
+                                       max_xy=(InterfaceSettings.SCREEN_WIDTH,
+                                               InterfaceSettings.SCREEN_HEIGHT),
+                                       max_h=100
+        )
+
+        # collision pairs
+        self.collisionpair_manager.add_groups(self.wall_group, self.circle_group, CollisionRectPair)
 
         MENU_STARTX = SCREEN_WIDTH // 8
         MENU_STARTY = SCREEN_HEIGHT // 3
@@ -73,22 +93,3 @@ class SceneRules(Scene):
         musicmenu = self.sound_manager.find(SoundNames.MUSICMENU)
         musicmenu.play()
 
-        # make some bubbles
-        circle_factory = CircleFactory(self.circle_group, self.boxsprite_manager)
-        circle_factory.generate_random(10,
-                                       max_xy=(InterfaceSettings.SCREEN_WIDTH,
-                                               InterfaceSettings.SCREEN_HEIGHT),
-                                       max_h=100
-        )
-
-        self.font_manager.add(Font(FontNames.MENUTITLE, 
-                                   InterfaceSettings.FONTSTYLE,
-                                   72, 
-                                   'How to Play', 
-                                   InterfaceSettings.FONTCOLOR, 
-                                   (InterfaceSettings.SCREEN_WIDTH//7, InterfaceSettings.SCREEN_HEIGHT//10)
-                              )
-        )
-
-        # collision pairs
-        self.collisionpair_manager.add_groups(self.wall_group, self.circle_group, CollisionRectPair)

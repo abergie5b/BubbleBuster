@@ -1,4 +1,4 @@
-from bubblebuster.input import LMouseClickShootObserver, RMouseClickShootObserver
+from bubblebuster.input import LMouseClickShootObserver, RMouseClickShootObserver, Simulation
 from bubblebuster.sound import SoundNames
 from bubblebuster.settings import GameSettings, InterfaceSettings
 from bubblebuster.font import FontNames, Font
@@ -71,7 +71,7 @@ class ScenePlay(Scene):
         self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, 'Time: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
         self.font_timedisplay = self.font_manager.add(Font(FontNames.TIME, InterfaceSettings.FONTSTYLE, 16, '', InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_OFFSETY)))
 
-        self.font_manager.add(Font(FontNames.TOAST, InterfaceSettings.FONTSTYLE, 16, '', InterfaceSettings.FONTCOLOR, (SCREEN_WIDTH-SCREEN_WIDTH//10, SCREEN_HEIGHT-25)))
+        self.font_manager.add(Font(FontNames.TOAST, InterfaceSettings.FONTSTYLE, 16, '', InterfaceSettings.FONTCOLOR, (SCREEN_WIDTH//24, SCREEN_HEIGHT-25)))
 
     def update(self):
         time = pygame.time.get_ticks()
@@ -79,23 +79,25 @@ class ScenePlay(Scene):
         # input updates
         self.input_manager.update(self.game)
 
-        # update the sprites
-        self.sprite_manager.update()
-        self.boxsprite_manager.update()
+        if Simulation.instance.time_step > 0:
 
-        # update the timer events
-        self.timer_manager.update(self, time)
+            # update the sprites
+            self.sprite_manager.update()
+            self.boxsprite_manager.update()
 
-        # fonts
-        # poo poo
-        self.font_timedisplay.text = '%s.%s' % (time // 1000, str(time)[-3:-1])
-        self.font_manager.update()
+            # update the timer events
+            self.timer_manager.update(self, time)
 
-        # update collision events
-        self.collisionpair_manager.process()
+            # fonts
+            # poo poo
+            self.font_timedisplay.text = '%s.%s' % (time // 1000, str(time)[-3:-1])
+            self.font_manager.update()
 
-        # player
-        self.player_manager.update()
+            # update collision events
+            self.collisionpair_manager.process()
+
+            # player
+            self.player_manager.update()
 
     def draw(self):
         # render sprites and stuff
