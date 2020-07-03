@@ -6,20 +6,19 @@ import bubblebuster.sprite as sp
 
 
 class ClickExplodeCommand(Command):
-    def __init__(self, rect):
-        self.rect = rect
+    def __init__(self, spritenode):
+        self.spritenode = spritenode
         self.name = TimeEventNames.CLICKEXPLODE
 
     def execute(self, delta_time):
-        if self.lives:
-            self.rect.radius = self.radius + self.rect.delta
-            self.rect.height = self.radius*2
-            self.lives -= 1
+        if self.spritenode.pSprite.duration:
+            self.spritenode.pSprite.inc()
             TimerMan.instance.add(self, delta_time)
         else: # reset our explosion
-            self.rect.reset()
-            #sp.BoxSpriteMan.instance.remove(self.rect)
-            #collision.CollisionPairMan.instance.remove(self.rect)
-            #node = self.circle_group.find(self.rect)
-            #self.circle_group.remove(node)
+            self.spritenode.pSprite.reset()
+            # i dont really want to do this
+            # theres a better way to recycle
+            sp.BoxSpriteMan.instance.remove(self.spritenode.pSprite)
+            circle_group = GroupMan.instance.find(GroupNames.CIRCLE)
+            circle_group.remove(self.spritenode)
 

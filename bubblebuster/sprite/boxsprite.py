@@ -57,13 +57,13 @@ class BoxSpriteMan(LinkMan):
     def compare(self, a, b):
         return a.name == b or a == b
 
-    def add(self, sprite_name, width, height, x, y, color=(255, 255, 255), fill_width=2):
+    def add(self, sprite_name, width, height, x, y, duration=25, delta=1, color=(255, 255, 255), fill_width=2):
         if sprite_name == sp.BoxSpriteNames.BOX:
             sprite = sp.BoxSprite(sprite_name, width, height, x, y, color=color, fill_width=fill_width)
         elif sprite_name == sp.BoxSpriteNames.CIRCLE:
             sprite = sp.CircleSprite(sprite_name, width, height, x, y, color=color)
         elif sprite_name == sp.BoxSpriteNames.EXPLOSION:
-            sprite = sp.ExplosionSprite(sprite_name, width, height, x, y, color=color)
+            sprite = sp.ExplosionSprite(sprite_name, width, height, x, y, duration, delta, color=color)
         self.base_add(sprite)
         return sprite
 

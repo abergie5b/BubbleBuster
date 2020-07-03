@@ -1,9 +1,16 @@
 from bubblebuster.link import Link, Manager
 
+from enum import Enum
+
+
+class SpriteNodeNames(Enum):
+    NULL = 1
+
 
 class SpriteNode(Link):
     def __init__(self, sprite):
         super().__init__()
+        self.name = SpriteNodeNames.NULL
         self.pSprite = sprite
 
     def draw(self, screen):

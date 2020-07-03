@@ -57,12 +57,9 @@ class CollisionCirclePair(CollisionPair):
 class CollisionPairMan(LinkMan):
     instance = None
 
-    @staticmethod
-    def create():
-        if not CollisionPairMan.instance:
-            CollisionPairMan.instance = CollisionPairMan.__new__(CollisionPairMan)
-            CollisionPairMan.instance.head = None
-        return CollisionPairMan.instance
+    def __init__(self):
+        self.head = None
+        CollisionPairMan.instance = self
 
     def compare(self, a, b):
         return a.name == b

@@ -42,9 +42,12 @@ class CircleGroup(Group):
             if circle.name == sp.BoxSpriteNames.EXPLOSION and sprite.name == sp.BoxSpriteNames.CIRCLE:
                 collision.CollisionPairMan.instance.add(collision.CollisionCirclePair(circle, sprite))
             head = head.next
-        self.nodeman.add(circle)
+        spritenode = self.nodeman.add(circle)
+        return spritenode
 
     def remove(self, circle):
+        if circle.name == sp.BoxSpriteNames.EXPLOSION:
+            collision.CollisionPairMan.instance.remove(circle)
         self.nodeman.remove(circle)
 
     def find(self, circle):
@@ -53,6 +56,9 @@ class CircleGroup(Group):
 
 class GroupMan(LinkMan):
     instance = None
+    def __init__(self):
+        super().__init__()
+        GroupMan.instance = self
 
     def add(self, group):
         self.base_add(group)
