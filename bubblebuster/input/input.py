@@ -1,6 +1,6 @@
 from bubblebuster.link import LinkMan
 from bubblebuster.settings import GameSettings
-from bubblebuster.input import InputSubject, Simulation
+from bubblebuster.input import InputSubject
 import bubblebuster.scene as scene
 from bubblebuster.player import PlayerMan, PlayerNames
 
@@ -56,9 +56,6 @@ class InputMan(LinkMan):
                 scene.SceneContext.instance.reset(player=player)
                 scene.SceneContext.instance.set_state(scene.SceneNames.MENU, player=player)
 
-            # delete me for "production" builds
-            Simulation.instance.update(event)
-
             self.keypress.notify(game.screen, xcurs, ycurs)
                 
         self.mousecursor.notify(game.screen, xcurs, ycurs)
@@ -66,6 +63,8 @@ class InputMan(LinkMan):
         # move dis
         if event.type == pygame.QUIT:
             game.running = False
+
+        return event
 
     @staticmethod
     def set_active(manager):

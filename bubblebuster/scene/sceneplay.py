@@ -76,6 +76,8 @@ class ScenePlay(Scene):
     def update(self):
         time = pygame.time.get_ticks()
 
+        Simulation.instance.update(time)
+
         # input updates
         self.input_manager.update(self.game)
 
