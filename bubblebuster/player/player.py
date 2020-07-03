@@ -1,6 +1,7 @@
 import bubblebuster.timer as timer
 from bubblebuster.link import Link, LinkMan
 from bubblebuster.settings import DEBUG
+from bubblebuster.level import LevelMan, LevelNames
 import bubblebuster.sprite as sp
 import bubblebuster.scene as scene
 
@@ -31,7 +32,7 @@ class Player(Link):
         self.stats_scoreroundprev = 0
 
     def update(self):
-        if self.level.bubbles <= 0:
+        if self.level.is_complete:
             # update for next level
             self.level.advance()
             # stats
@@ -86,8 +87,8 @@ class Player(Link):
         self.score += points
         self.stats_scoreround += points
         if DEBUG:
-            print('updating score %d, round: %d circleh: %d mult: %d points: %d bubbles: %d' % (
-                  self.score, self.stats_scoreround, circle.height, multiplier, points, self.level.bubbles)
+            print('updating score %d, round: %d circleh: %d mult: %d points: %d bubbles: %d is_complete: %d' % (
+                  self.score, self.stats_scoreround, circle.height, multiplier, points, self.level.bubbles, self.level.is_complete)
             )
         return points
 

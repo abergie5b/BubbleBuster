@@ -12,7 +12,7 @@ from bubblebuster.weapon import Finger, Thumb, Hand, WeaponNames
 from bubblebuster.player import Player, PlayerNames
 from bubblebuster.font import FontNames, Font
 from bubblebuster.image import ImageNames
-from bubblebuster.level import ActiveLevel
+from bubblebuster.level import LevelNames
 
 import pygame
 
@@ -68,10 +68,13 @@ class SceneWeapon(Scene):
 
         self.boxsprite_manager.add_boxgroup(carousel)
 
-        # attach this
+        # level
+        level = self.level_manager.add(LevelNames.ACTIVE)
+
+        # player, attach this
         self.player = self.player_manager.add(Player(PlayerNames.PLAYERONE,
                                                      None, # no weapon until selected
-                                                     ActiveLevel()
+                                                     level
                                                      ))
         carousel.attach(self.player, LMouseClickRectObserver)
 

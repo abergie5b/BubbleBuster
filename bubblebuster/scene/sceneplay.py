@@ -5,6 +5,7 @@ from bubblebuster.font import FontNames, Font
 from bubblebuster.collision import CollisionRectPair
 from bubblebuster.scene import Scene
 from bubblebuster.sprite import CircleFactory, LineSpriteNames
+from bubblebuster.level import LevelMan
 
 
 import pygame
@@ -43,6 +44,7 @@ class ScenePlay(Scene):
                                                    InterfaceSettings.SCREEN_HEIGHT),
                                            max_h=player.level.bubble_maxh
                                            )
+
 
         # collision pairs
         self.collisionpair_manager.add_groups(self.wall_group, self.circle_group, CollisionRectPair)
@@ -101,6 +103,9 @@ class ScenePlay(Scene):
             # player
             self.player_manager.update()
 
+            # level
+            self.level_manager.update()
+
     def draw(self):
         # render sprites and stuff
         self.sprite_manager.draw(self.screen)
@@ -115,6 +120,9 @@ class ScenePlay(Scene):
         # pooooop
         self.player_manager.remove(self.player)
         self.player = self.player_manager.add(player)
+
+        self.level_manager.remove(player.level)
+        self.level_manager.add(player.level.name)
 
         musicmenu = self.sound_manager.find(SoundNames.MUSICMENU)
         musicmenu.play()

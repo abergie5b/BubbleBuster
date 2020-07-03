@@ -8,6 +8,7 @@ from bubblebuster.player import PlayerMan
 from bubblebuster.settings import InterfaceSettings
 from bubblebuster.sound import SoundMan
 from bubblebuster.input import InputMan, Simulation
+from bubblebuster.level import LevelMan
 
 from enum import Enum
 
@@ -37,6 +38,7 @@ class Scene:
         self.player_manager = PlayerMan()
         self.timer_manager = TimerMan()
         self.sound_manager = SoundMan()
+        self.level_manager = LevelMan()
         self.simulation = Simulation()
 
         # bubbles are ubiquitous
@@ -83,6 +85,7 @@ class Scene:
         PlayerMan.set_active(self.player_manager)
         TimerMan.set_active(self.timer_manager)
         SoundMan.set_active(self.sound_manager)
+        LevelMan.set_active(self.level_manager)
 
     def handle(self, player=None):
         raise NotImplementedError("this is an abstract class")
