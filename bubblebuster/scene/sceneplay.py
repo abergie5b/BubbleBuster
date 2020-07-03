@@ -121,8 +121,9 @@ class ScenePlay(Scene):
         self.player_manager.remove(self.player)
         self.player = self.player_manager.add(player)
 
+        # levels and players should be coupled better
         self.level_manager.remove(player.level)
-        self.level_manager.add(player.level.name)
+        self.level_manager.add_level(player.level)
 
         musicmenu = self.sound_manager.find(SoundNames.MUSICMENU)
         musicmenu.play()

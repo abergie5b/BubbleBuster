@@ -37,18 +37,19 @@ class CircleGroup(Group):
         # so add the new circle to the collision man
         head = self.nodeman.head
         while head:
-            # hotfix to disable circles colliding with themselves
             sprite = head.pSprite
+            # its not a spritenode yet...
             if circle.name == sp.BoxSpriteNames.EXPLOSION and sprite.name == sp.BoxSpriteNames.CIRCLE:
                 collision.CollisionPairMan.instance.add(collision.CollisionCirclePair(circle, sprite))
             head = head.next
+        # now it is
         spritenode = self.nodeman.add(circle)
         return spritenode
 
-    def remove(self, circle):
-        if circle.name == sp.BoxSpriteNames.EXPLOSION:
-            collision.CollisionPairMan.instance.remove(circle)
-        self.nodeman.remove(circle)
+    def remove(self, spritenode):
+        if spritenode.pSprite.name == sp.BoxSpriteNames.EXPLOSION:
+            collision.CollisionPairMan.instance.remove(spritenode)
+        self.nodeman.remove(spritenode)
 
     def find(self, circle):
         return self.nodeman.base_find(circle)

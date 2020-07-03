@@ -27,9 +27,9 @@ class CircleSprite(sp.BoxSprite):
         self.deltax = randint(-self.delta, self.delta)/100
         self.deltay = randint(-self.delta, self.delta)/100
         if not self.deltax:
-            self.deltax = self.delta
+            self.deltax = self.delta//100
         if not self.deltay:
-            self.deltay = self.delta
+            self.deltay = self.delta//100
 
         # for scoring
         self.hratio = self.height / GameSettings.BUBBLE_MAXH

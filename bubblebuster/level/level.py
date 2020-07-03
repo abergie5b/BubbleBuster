@@ -133,6 +133,10 @@ class LevelMan(LinkMan):
         self.base_add(level)
         return level
 
+    def add_level(self, level):
+        self.base_add(level)
+        return level
+
     def find(self, image):
         return self.base_find(image)
 
