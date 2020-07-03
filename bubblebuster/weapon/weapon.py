@@ -1,6 +1,9 @@
 from bubblebuster.link import Link, LinkMan
 from bubblebuster.image import ImageMan, ImageNames
 from bubblebuster.timer import ClickExplodeCommand, TimerMan
+from bubblebuster.groups import GroupNames, GroupMan
+from bubblebuster.sprite import BoxSpriteMan, BoxSpriteNames
+from bubblebuster.settings import InterfaceSettings
 
 from math import inf
 from enum import Enum
@@ -48,23 +51,17 @@ class ExplodeWeapon(Weapon):
         super().__init__(name)
 
     def lshoot(self, xcurs, ycurs):
-        click_explode = ClickExplodeCommand(xcurs,
-                                            ycurs,
-                                            self.radius // 2,
-                                            self.radius_delta // 2,
-                                            self.duration // 2
-                                            )
+        self.rectx = xcurs
+        self.recty = ycurs
+        click_explode = ClickExplodeCommand(self.rect)
         TimerMan.instance.add(click_explode, 0)
         self.stats_usedround += self.smallcost
         self.ammo -= self.smallcost
 
     def rshoot(self, xcurs, ycurs):
-        click_explode = ClickExplodeCommand(xcurs,
-                                            ycurs,
-                                            self.radius,
-                                            self.radius_delta,
-                                            self.duration
-                                            )
+        self.bigrectx = xcurs
+        self.bigrecty = ycurs
+        click_explode = ClickExplodeCommand(self.bigrect)
         TimerMan.instance.add(click_explode, 0)
         self.stats_usedround += self.largecost
         self.ammo -= self.largecost
@@ -86,6 +83,40 @@ class Finger(ExplodeWeapon):
         self.smallcost = 1
         self.largecost = 2
 
+        # left click sprite
+        self.rectw = 2
+        self.rectr = self.radius // 2
+        self.rectx = -100
+        self.recty = -100
+        self.rect = BoxSpriteMan.instance.add(BoxSpriteNames.EXPLOSION,
+                                              self.width // 2,
+                                              self.radius // 2,
+                                              self.rectx,
+                                              self.recty,
+                                              color=InterfaceSettings.EXPLOSIONCOLOR
+                                              )
+        # !!!!!!!!!!!!!!!
+        self.rect.delta = self.radius_delta
+
+        # right click sprite
+        self.bigrectw = 2
+        self.bigrectr = self.radius
+        self.bigrectx = -100
+        self.bigrecty = -100
+        self.bigrect = BoxSpriteMan.instance.add(BoxSpriteNames.EXPLOSION,
+                                              self.width,
+                                              self.radius*2, # height
+                                              self.rectx,
+                                              self.recty,
+                                              color=InterfaceSettings.EXPLOSIONCOLOR
+                                              )
+        # !!!!!!!!!!!!!!!
+        self.rect.delta = self.radius_delta
+
+        # add these to circle group
+        circle_group = GroupMan.instance.find(GroupNames.CIRCLE)
+        circle_group.add(self.rect)
+        circle_group.add(self.bigrect)
 
 
 class Thumb(ExplodeWeapon):
