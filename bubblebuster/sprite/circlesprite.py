@@ -65,7 +65,9 @@ class CircleSprite(sp.BoxSprite):
             if head.pSprite.collision_enabled:
                 if head.pSprite.name == sp.BoxSpriteNames.CIRCLE and pygame.sprite.collide_circle(self, head.pSprite):
 
+                    sp.ExplosionSprite.instance.last_collision = timer.TimerMan.instance.current_time
                     explosion.multiplier += 1
+
                     # should do this better
                     head.pSprite.image = head.pSprite.image_red
 
@@ -82,12 +84,15 @@ class CircleSprite(sp.BoxSprite):
                     command = timer.DestroySpriteCommand(head.pSprite, explosion=explosion)
                     timer.TimerMan.instance.add(command, GameSettings.BUBBLEPOPDELAY)
 
-                    sp.ExplosionSprite.instance.last_collision = timer.TimerMan.instance.current_time
-
                     head.pSprite.collision_enabled = False
             head = head.next
 
     def destroy(self, explosion):
+        '''
+        destroy this bubble and check for neighboring collisions
+        '''
+        sp.ExplosionSprite.instance.last_collision = timer.TimerMan.instance.current_time
+
         # what if explosion None huhh
         player = PlayerMan.instance.find(PlayerNames.PLAYERONE)
         points = player.update_score(self, multiplier=explosion.multiplier)

@@ -118,8 +118,8 @@ class Finger(ExplodeWeapon):
         self.duration = 10
         self.radius = 10
         self.radius_delta = 5
-        self.max_ammo = inf
-        self.ammo = inf
+        self.max_ammo = 10
+        self.ammo = 10
 
         self.smallcost = 1
         self.largecost = 2

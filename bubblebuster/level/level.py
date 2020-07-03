@@ -23,15 +23,22 @@ class Level(Link):
         self.max_bubbl_maxh = 0
         self.max_time = 0
 
+        # back pointer
+        self.player = None
+
         # state
         self.is_complete = False
+        self.defeat = False
 
     def update(self):
         '''
-        define win condition for level here
+        define win /lose condition for level here
         '''
+        # simple level default just destroy all bubbles
         if not self.bubbles:
             self.is_complete = True
+        if not self.player.weapon.ammo and not self.is_complete:
+            self.defeat = True
 
     def advance(self):
         '''
@@ -43,13 +50,18 @@ class Level(Link):
         self.time = self.max_time - self.level * 5
         self.level += 1
         self.is_complete = False
+        self.defeat = False
 
     def reset(self):
+        '''
+        reset the level after game over
+        '''
         self.level = 1
         self.bubbles = self.max_bubbles
         self.bubble_maxh = self.max_bubbl_maxh
         self.time = self.max_time
         self.is_complete = False
+        self.defeat = False
 
     def transition(self, level):
         '''
@@ -67,6 +79,7 @@ class Level(Link):
         self.max_time = level.max_time
 
         self.is_complete = level.is_complete
+        self.defeat = level.defeat
 
 
 class ActiveLevel(Level):
@@ -95,6 +108,9 @@ class PointsLevel(Level):
     def __init__(self, name):
         super().__init__(name)
 
+    def update(self):
+        pass
+
 
 class TimeLevel(Level):
     '''
@@ -103,6 +119,9 @@ class TimeLevel(Level):
     '''
     def __init__(self, name):
         super().__init__(name)
+
+    def update(self):
+        pass
 
 
 class LevelMan(LinkMan):

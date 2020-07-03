@@ -48,7 +48,7 @@ class CircleGroup(Group):
 
     def remove(self, spritenode):
         if spritenode.pSprite.name == sp.BoxSpriteNames.EXPLOSION:
-            collision.CollisionPairMan.instance.remove(spritenode)
+            collision.CollisionPairMan.instance.remove(spritenode.pSprite)
         self.nodeman.remove(spritenode)
 
     def find(self, circle):

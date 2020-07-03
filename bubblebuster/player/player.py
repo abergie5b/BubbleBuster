@@ -20,6 +20,7 @@ class Player(Link):
         self.name = name
         self.weapon = weapon
         self.level = level
+        self.level.player = self
 
         # stats
         self.stats_bubbles = 0
@@ -40,7 +41,6 @@ class Player(Link):
                 self.score -= self.stats_scoreround
                 self.stats_scoreround *= self.weapon.ammo
                 self.score += self.stats_scoreround
-            # reset for next level
             if DEBUG:
                 print('next level activated %d with %d bubbles and %d max height' % (
                       self.level.level, self.level.bubbles, self.level.bubble_maxh)
@@ -48,23 +48,27 @@ class Player(Link):
                 print('scoreround: %d scoreround_raw: %d score %d stats_explosionsround: %d' % (
                       self.stats_scoreround, self.stats_scoreround//self.stats_explosionsround, self.score, self.stats_explosionsround)
                 )
-            # next level
+            # reset for next level
             self.reset()
+            # next scene
             timer.TimerMan.instance.add(timer.SwitchSceneCommand(scene.SceneNames.SCENESWITCH, player=self), 500)
-        elif self.weapon.ammo <= 0:
+        elif self.level.defeat: # gg
+            # stats
             current_time = timer.TimerMan.instance.current_time
             last_collision = sp.ExplosionSprite.instance.last_collision
-            # better to make it large just in case
-            totally_random_number = 100
-            if current_time - last_collision > self.level.bubble_popdelay + self.weapon.duration * totally_random_number:
+            # let the current explosion finish and make sure no collisions happening
+            if not self.weapon.is_active and current_time - last_collision > self.level.bubble_popdelay:
                 if DEBUG:
                     print('game over, switching back to menu current_time: %d last_collision: %d diff: %d' %
                         (current_time, last_collision, current_time - last_collision)
                     )
+                # reset player state / statistcs
                 self.reset()
+                # reset to level 1
                 self.level.reset()
+                # reset all scenes -> is this necessary?
                 scene.SceneContext.instance.reset()
-                # die
+                # back to menu
                 timer.TimerMan.instance.add(timer.SwitchSceneCommand(scene.SceneNames.MENU), 1000)
 
     def reset(self):
