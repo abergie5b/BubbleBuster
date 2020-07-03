@@ -23,6 +23,9 @@ class ExplosionSprite(sp.BoxSprite):
         self.originalx = x
         self.originaly = y
 
+        # back pointer
+        self.weapon = None
+
     def draw(self, screen):
         self.rect = pygame.draw.circle(screen,
                                        self.color,
@@ -62,3 +65,5 @@ class ExplosionSprite(sp.BoxSprite):
         self.posx = self.originalx
         self.posy = self.originaly
         self.duration = self.originald
+        self.weapon.is_active = False
+

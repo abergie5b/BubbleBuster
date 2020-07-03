@@ -25,6 +25,9 @@ class Weapon(Link):
         # image
         self.image = ImageMan.instance.find(ImageNames.TESTMOUSE)
 
+        # collisions
+        self.rect = None
+
         # add custom crap about the weapon
         self.duration = 0
         self.radius = 0
@@ -35,6 +38,10 @@ class Weapon(Link):
         self.smallcost = 0
         self.largecost = 0
 
+        #
+        self.is_active = False
+
+        # stats
         self.stats_usedtotal = 0
         self.stats_usedround = 0
         self.stats_usedroundprev = 0
@@ -51,47 +58,54 @@ class ExplodeWeapon(Weapon):
         super().__init__(name)
 
     def lshoot(self, xcurs, ycurs):
-        # left click sprite
-        self.rect = BoxSpriteMan.instance.add(BoxSpriteNames.EXPLOSION,
-                                              2,
-                                              self.radius // 2,
-                                              xcurs,
-                                              ycurs,
-                                              duration=self.duration,
-                                              delta=self.radius_delta,
-                                              color=InterfaceSettings.EXPLOSIONCOLOR
-                                              )
+        if not self.is_active:
+            self.is_active = True
+            # left click sprite
+            self.rect = BoxSpriteMan.instance.add(BoxSpriteNames.EXPLOSION,
+                                                  2,
+                                                  self.radius // 2,
+                                                  xcurs,
+                                                  ycurs,
+                                                  duration=self.duration,
+                                                  delta=self.radius_delta,
+                                                  color=InterfaceSettings.EXPLOSIONCOLOR
+                                                  )
+            self.rect.weapon = self
 
-        # add these to circle group
-        circle_group = GroupMan.instance.find(GroupNames.CIRCLE)
-        spritenode = circle_group.add(self.rect)
+            # add these to circle group
+            circle_group = GroupMan.instance.find(GroupNames.CIRCLE)
+            spritenode = circle_group.add(self.rect)
 
-        click_explode = ClickExplodeCommand(spritenode)
-        TimerMan.instance.add(click_explode, 0)
+            click_explode = ClickExplodeCommand(spritenode)
+            TimerMan.instance.add(click_explode, 0)
 
-        self.stats_usedround += self.smallcost
-        self.ammo -= self.smallcost
+            self.stats_usedround += self.smallcost
+            self.ammo -= self.smallcost
 
     def rshoot(self, xcurs, ycurs):
-        # right click sprite
-        self.bigrect = BoxSpriteMan.instance.add(BoxSpriteNames.EXPLOSION,
-                                              2,
-                                              self.radius*2, # height
-                                              xcurs,
-                                              ycurs,
-                                              duration=self.duration,
-                                              delta=self.radius_delta*2,
-                                              color=InterfaceSettings.EXPLOSIONCOLOR
-                                              )
-        # add these to circle group
-        circle_group = GroupMan.instance.find(GroupNames.CIRCLE)
-        spritenode = circle_group.add(self.bigrect)
+        if not self.is_active:
+            self.is_active = True
+            # right click sprite
+            self.rect = BoxSpriteMan.instance.add(BoxSpriteNames.EXPLOSION,
+                                                  2,
+                                                  self.radius*2, # height
+                                                  xcurs,
+                                                  ycurs,
+                                                  duration=self.duration,
+                                                  delta=self.radius_delta*2,
+                                                  color=InterfaceSettings.EXPLOSIONCOLOR
+                                                  )
+            self.rect.weapon = self
 
-        click_explode = ClickExplodeCommand(spritenode)
-        TimerMan.instance.add(click_explode, 0)
+            # add these to circle group
+            circle_group = GroupMan.instance.find(GroupNames.CIRCLE)
+            spritenode = circle_group.add(self.rect)
 
-        self.stats_usedround += self.largecost
-        self.ammo -= self.largecost
+            click_explode = ClickExplodeCommand(spritenode)
+            TimerMan.instance.add(click_explode, 0)
+
+            self.stats_usedround += self.largecost
+            self.ammo -= self.largecost
 
 
 class Finger(ExplodeWeapon):
