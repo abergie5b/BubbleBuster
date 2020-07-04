@@ -5,18 +5,18 @@ from bubblebuster.settings import InterfaceSettings, DEBUG
 from bubblebuster.font import AlphaFont, Font, FontMan, FontNames
 from bubblebuster.player import PlayerMan, PlayerNames
 from bubblebuster.collision import CollisionPairMan, CollisionRectPair
-from bubblebuster.sprite import BoxSpriteNames, BoxSpriteMan
+from bubblebuster.sprite.bubble import BubbleNames
+from bubblebuster.sprite import CircleSprite, BoxSprite, BoxSpriteMan, BoxSpriteNames, ExplosionSprite
 import bubblebuster.group as group
 import bubblebuster.timer as timer
-import bubblebuster.sprite as sp
 
 import pygame
-from random import randint, choice
 
 
-class DelayBubble(sp.CircleSprite):
-    def __init__(self, name, width, height, x, y, color=(255, 255, 255), alpha=255):
-        super().__init__(name, width, height, x, y, color=color, alpha=255)
+class DelayBubble(CircleSprite):
+    def __init__(self, width, height, x, y, color=(255, 255, 255), alpha=255):
+        super().__init__(width, height, x, y, color=color, alpha=255)
+        self.name = BubbleNames.DELAY
 
     def destroy_colliding_circles(self, explosion):
         circle_group = group.GroupMan.instance.find(group.GroupNames.CIRCLE)
@@ -24,13 +24,13 @@ class DelayBubble(sp.CircleSprite):
         while head:
             if head.pSprite.collision_enabled:
                 # this is not pretty
-                if head.pSprite.name == sp.BoxSpriteNames.CIRCLE \
+                if head.pSprite.name == BoxSpriteNames.CIRCLE \
                    and not head.pSprite.bubble_collision_disabled \
                    and pygame.sprite.collide_circle(self, head.pSprite):
 
                     # stats
                     explosion.multiplier += 1
-                    sp.ExplosionSprite.instance.last_collision = timer.TimerMan.instance.current_time
+                    ExplosionSprite.instance.last_collision = timer.TimerMan.instance.current_time
 
                     if DEBUG:
                         print('colliding circle %s destroyed, multiplier: %d' % (head.pSprite, explosion.multiplier))
@@ -132,7 +132,7 @@ class DelayBubble(sp.CircleSprite):
         destroy this bubble and check for neighboring collisions
         bubble might even get a second chance at life, who knows
         '''
-        sp.ExplosionSprite.instance.last_collision = timer.TimerMan.instance.current_time
+        ExplosionSprite.instance.last_collision = timer.TimerMan.instance.current_time
 
         # scoreboard
         player = PlayerMan.instance.find(PlayerNames.PLAYERONE)
@@ -157,7 +157,7 @@ class DelayBubble(sp.CircleSprite):
         self.play_sound()
 
         # quietly remove myself
-        sp.BoxSpriteMan.instance.remove(self)
+        BoxSpriteMan.instance.remove(self)
         CollisionPairMan.instance.remove(self)
 
         group_manager = group.GroupMan.instance.find(group.GroupNames.CIRCLE)

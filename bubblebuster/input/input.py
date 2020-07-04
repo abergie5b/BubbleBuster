@@ -2,7 +2,7 @@ from bubblebuster.link import LinkMan
 from bubblebuster.settings import GameSettings
 from bubblebuster.input import InputSubject
 import bubblebuster.scene as scene
-from bubblebuster.player import PlayerMan, PlayerNames
+import bubblebuster.player as player
 
 import pygame
 from enum import Enum
@@ -48,7 +48,7 @@ class InputMan(LinkMan):
 
             if event.key == pygame.K_ESCAPE:
                 current_scene_name = game.scene_context.scene_state.name
-                player = PlayerMan.instance.find(PlayerNames.PLAYERONE)
+                player = player.PlayerMan.instance.find(player.PlayerNames.PLAYERONE)
                 if player:
                     player.reset()
                 if current_scene_name != scene.SceneNames.SETTINGS:

@@ -1,6 +1,7 @@
 import bubblebuster.sprite as sp
 from bubblebuster.settings import InterfaceSettings
 from bubblebuster.image import ImageNames, ImageMan
+import bubblebuster.sprite.bubble as bu
 
 from random import randint, choice
 
@@ -16,6 +17,7 @@ class CircleFactory:
                 # try not to create circle that overlaps with walls
                 w, h = (1, randint(max_h//4, max_h))
                 posxy = (randint(1, maxx-h-1), randint(1, maxy-h-1))
+                # color doesnt really matter here because they are sprites anywho
                 self.create_circle(posxy, (w, h), self.get_random_color(alpha), alpha=alpha)
 
     def get_random_color(self, alpha=None):
@@ -29,8 +31,10 @@ class CircleFactory:
     def create_circle(self, posxy, wh, color, alpha=255):
         x, y = posxy
         w, h = wh
-        sprite = sp.CircleSprite(
-            sp.BoxSpriteNames.CIRCLE, w, h, x, y, color=color, alpha=alpha
+        bubble = bu.BubbleMan.instance.get_random()
+        sprite = bubble(
+            w, h, x, y, color=color, alpha=alpha
         )
         self.manager.add_sprite(sprite)
         self.group.add(sprite)
+

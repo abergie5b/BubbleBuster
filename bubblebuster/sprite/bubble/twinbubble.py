@@ -6,6 +6,7 @@ from bubblebuster.font import AlphaFont, Font, FontMan, FontNames
 from bubblebuster.player import PlayerMan, PlayerNames
 from bubblebuster.collision import CollisionPairMan, CollisionRectPair
 from bubblebuster.sprite import BoxSpriteNames, BoxSpriteMan
+from bubblebuster.sprite.bubble import BubbleNames
 import bubblebuster.group as group
 import bubblebuster.timer as timer
 import bubblebuster.sprite as sp
@@ -15,8 +16,9 @@ from random import randint, choice
 
 
 class TwinBubble(sp.CircleSprite):
-    def __init__(self, name, width, height, x, y, color=(255, 255, 255), alpha=255):
-        super().__init__(name, width, height, x, y, color=color, alpha=255)
+    def __init__(self, width, height, x, y, color=(255, 255, 255), alpha=255):
+        super().__init__(width, height, x, y, color=color, alpha=255)
+        self.name = BubbleNames.TWIN
 
     def destroy_colliding_circles(self, explosion):
         circle_group = group.GroupMan.instance.find(group.GroupNames.CIRCLE)
@@ -47,7 +49,7 @@ class TwinBubble(sp.CircleSprite):
                     # second chance
                     if head.pSprite.proba_secondchance:
                         font_secondchance = FontMan.instance.add(
-                            Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 18, "Iron Bubble!", InterfaceSettings.FONTCOLOR,
+                            Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 18, "Second Chance!", InterfaceSettings.FONTCOLOR,
                                  (self.posx+self.height//2, self.posy+self.height//2-25)) # above midpoint
                         )
                         timer.TimerMan.instance.add(timer.RemoveFontCommand(font_secondchance), 1000)

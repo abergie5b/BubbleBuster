@@ -6,6 +6,7 @@ from bubblebuster.font import AlphaFont, Font, FontMan, FontNames
 from bubblebuster.player import PlayerMan, PlayerNames
 from bubblebuster.collision import CollisionPairMan, CollisionRectPair
 from bubblebuster.sprite import BoxSpriteNames, BoxSpriteMan
+from bubblebuster.sprite.bubble import BubbleNames
 import bubblebuster.group as group
 import bubblebuster.timer as timer
 import bubblebuster.sprite as sp
@@ -15,8 +16,9 @@ from random import randint, choice
 
 
 class NukeBubble(sp.CircleSprite):
-    def __init__(self, name, width, height, x, y, color=(255, 255, 255), alpha=255):
-        super().__init__(name, width, height, x, y, color=color, alpha=255)
+    def __init__(self, width, height, x, y, color=(255, 255, 255), alpha=255):
+        super().__init__(width, height, x, y, color=color, alpha=255)
+        self.name = BubbleNames.NUKE
 
     def destroy_colliding_circles(self, explosion):
         circle_group = group.GroupMan.instance.find(group.GroupNames.CIRCLE)

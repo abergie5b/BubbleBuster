@@ -1,5 +1,5 @@
 from bubblebuster.image import ImageMan, ImageNames, BubbleImageMan
-from bubblebuster.sprite import BoxSpriteMan, LineSpriteNames, SpriteMan
+import bubblebuster.sprite as sp
 from bubblebuster.collision import CollisionPairMan
 from bubblebuster.timer import TimerMan
 from bubblebuster.group import CircleGroup, Group, GroupMan, GroupNames
@@ -40,8 +40,8 @@ class Scene:
         self.image_manager = ImageMan()
         self.bubble_manager = BubbleMan()
         self.bubble_image_manager = BubbleImageMan()
-        self.sprite_manager = SpriteMan()
-        self.boxsprite_manager = BoxSpriteMan()
+        self.sprite_manager = sp.SpriteMan()
+        self.boxsprite_manager = sp.BoxSpriteMan()
         self.input_manager = InputMan()
         self.group_manager = GroupMan()
         self.collisionpair_manager = CollisionPairMan()
@@ -64,6 +64,14 @@ class Scene:
 
         self.group_manager.add(self.circle_group)
         self.group_manager.add(self.wall_group)
+
+        # add bubble types
+        self.bubble_manager.add(IronBubble)
+        self.bubble_manager.add(DelayBubble)
+        self.bubble_manager.add(SlipperyBubble)
+        self.bubble_manager.add(NukeBubble)
+        self.bubble_manager.add(SpottedBubble)
+        self.bubble_manager.add(TwinBubble)
 
         # all scenes have walls
         SCREEN_WIDTH, SCREEN_HEIGHT = (InterfaceSettings.SCREEN_WIDTH, InterfaceSettings.SCREEN_HEIGHT)
@@ -90,8 +98,8 @@ class Scene:
         ImageMan.set_active(self.image_manager)
         BubbleMan.set_active(self.bubble_manager)
         BubbleImageMan.set_active(self.bubble_image_manager)
-        SpriteMan.set_active(self.sprite_manager)
-        BoxSpriteMan.set_active(self.boxsprite_manager)
+        sp.SpriteMan.set_active(self.sprite_manager)
+        sp.BoxSpriteMan.set_active(self.boxsprite_manager)
         InputMan.set_active(self.input_manager)
         GroupMan.set_active(self.group_manager)
         CollisionPairMan.set_active(self.collisionpair_manager)
