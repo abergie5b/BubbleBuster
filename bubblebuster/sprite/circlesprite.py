@@ -11,36 +11,27 @@ import bubblebuster.timer as timer
 import bubblebuster.sprite as sp
 
 import pygame
-from random import randint
+from random import randint, choice
 
 
 class CircleSprite(sp.BoxSprite):
     def __init__(self, name, width, height, x, y, color=(255, 255, 255), alpha=255):
         super().__init__(name, width, height, x, y, color=color)
 
-        # base color image
-        self.base_image = ImageMan.instance.find(ImageNames.BUBBLE)
-        self.image = pygame.transform.scale(self.base_image.surface, (self.height, self.height))
-        self.image.fill(color, special_flags=pygame.BLEND_MULT)
-
         # red 
         red_bubble = ImageMan.instance.find(ImageNames.REDBUBBLE)
         self.image_red = pygame.transform.scale(red_bubble.surface, (self.height, self.height))
 
-        # put these other colors here for now
-        # bigger memory footprint but better for performance 
-        # when swapping colors 
-        #blue_bubble = ImageMan.instance.find(ImageNames.BLUEBUBBLE)
-        #self.image_blue = pygame.transform.scale(blue_bubble.surface, (self.height, self.height))
-        #cyan_bubble = ImageMan.instance.find(ImageNames.CYANBUBBLE)
-        #self.image_cyan = pygame.transform.scale(cyan_bubble.surface, (self.height, self.height))
-        #green_bubble = ImageMan.instance.find(ImageNames.GREENBUBBLE)
-        #self.image_green = pygame.transform.scale(green_bubble.surface, (self.height, self.height))
-        #orange_bubble = ImageMan.instance.find(ImageNames.ORANGEBUBBLE)
-        #self.image_orange = pygame.transform.scale(orange_bubble.surface, (self.height, self.height))
-        #pink_bubble = ImageMan.instance.find(ImageNames.PINKBUBBLE)
-        #self.image_pink = pygame.transform.scale(pink_bubble.surface, (self.height, self.height))
-        #self.images = [self.image_blue, self.image_cyan, self.image_green, self.image_orange, self.image_pink, self.image_red]
+        # load all these for now
+        blue_bubble = ImageMan.instance.find(ImageNames.BLUEBUBBLE)
+        cyan_bubble = ImageMan.instance.find(ImageNames.CYANBUBBLE)
+        green_bubble = ImageMan.instance.find(ImageNames.GREENBUBBLE)
+        orange_bubble = ImageMan.instance.find(ImageNames.ORANGEBUBBLE)
+        pink_bubble = ImageMan.instance.find(ImageNames.PINKBUBBLE)
+        self.images = [blue_bubble, cyan_bubble, green_bubble, orange_bubble, pink_bubble]
+
+        self.base_image = choice(self.images)
+        self.original_image = self.image = pygame.transform.scale(self.base_image.surface, (self.height, self.height))
 
         # for movement
         self.delta = GameSettings.BUBBLE_MAXDELTA
@@ -58,8 +49,8 @@ class CircleSprite(sp.BoxSprite):
         self.proba_gift = 0.05 <= randint(0, 100)/100
 
         # bubble type (need different classes for these)
+        self.proba_multibubble = 0.05 >= randint(0, 100)/100
         self.proba_secondchance = 0.05 >= randint(0, 100)/100
-        self.proba_multibubble = 0.50 >= randint(0, 100)/100
         self.proba_delaybubble = 0.05 >= randint(0, 100)/100
         self.proba_spottedbubble = 0.05 >= randint(0, 100)/100
         self.proba_nukebubble = 0.05 >= randint(0, 100)/100
@@ -113,6 +104,7 @@ class CircleSprite(sp.BoxSprite):
                     font_multiplier.text = str('Multiplier! %d' % explosion.multiplier)
                     font_multiplier.color = InterfaceSettings.FONTCOLOR
 
+                    # need classes for different types.. lets keep it ugly for now
                     # second chance
                     if head.pSprite.proba_secondchance:
                         head.pSprite.proba_secondchance = 0 # no more second chances for you mate
@@ -131,14 +123,14 @@ class CircleSprite(sp.BoxSprite):
 
                         twina = BoxSpriteMan.instance.add(BoxSpriteNames.CIRCLE,
                                                   head.pSprite.width,
-                                                  head.pSprite.height // 2,
+                                                  max(GameSettings.BUBBLE_MAXH//4, head.pSprite.height//2),
                                                   head.pSprite.rect.centerx,
                                                   head.pSprite.rect.centery,
                                                   color=head.pSprite.color
                         )
                         twinb = BoxSpriteMan.instance.add(BoxSpriteNames.CIRCLE,
                                                   head.pSprite.width,
-                                                  head.pSprite.height // 2,
+                                                  max(GameSettings.BUBBLE_MAXH//4, head.pSprite.height//2),
                                                   head.pSprite.rect.centerx,
                                                   head.pSprite.rect.centery,
                                                   color=head.pSprite.color
@@ -155,6 +147,20 @@ class CircleSprite(sp.BoxSprite):
                         # adjust bubbles for level
                         player = PlayerMan.instance.find(PlayerNames.PLAYERONE)
                         player.level.bubbles += 2
+
+                    elif head.pSprite.proba_delaybubble:
+                        head.pSprite.collision_enabled = False
+                        timer.TimerMan.instance.add(
+                            timer.ColorChangeBubbleCommand(head.pSprite, 
+                                                           head.pSprite.image_red, 
+                                                           GameSettings.BUBBLEPOPDELAY*4
+                                                           ),
+                            0
+                        )
+
+                        # do it
+                        command = timer.DestroySpriteCommand(head.pSprite, explosion=explosion)
+                        timer.TimerMan.instance.add(command, GameSettings.BUBBLEPOPDELAY*4)
 
                     else: # destroy
                         head.pSprite.image = head.pSprite.image_red

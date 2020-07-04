@@ -24,7 +24,7 @@ class SceneSwitch(Scene):
         circle_factory.generate_random(10,
                                        max_xy=(InterfaceSettings.SCREEN_WIDTH,
                                                InterfaceSettings.SCREEN_HEIGHT),
-                                       max_h=100
+                                       max_h=250
         )
 
         # collision pairs

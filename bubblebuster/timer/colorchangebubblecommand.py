@@ -7,17 +7,18 @@ import pygame
 from random import choice
 
 class ColorChangeBubbleCommand(Command):
-    def __init__(self, sprite, duration, end_on_grey=True):
+    def __init__(self, sprite, image, duration, freq=100):
         self.sprite = sprite
+        self.image = image
         self.duration = duration
+        self.freq = freq
         self.name = TimeEventNames.COLORCHANGEBUBBLE
-        self.end_on_grey = end_on_grey
+        self.flip = True
 
     def execute(self, delta_time):
-        self.sprite.image = choice(self.sprite.images)
         if self.duration:
-            TimerMan.instance.add(ColorChangeBubbleCommand(self.sprite, self.duration-1), 25)
-        elif self.end_on_grey:
-            self.sprite.image.fill((0, 0, 0), special_flags=pygame.BLEND_MULT)
-
+            self.sprite.image = self.image if self.flip else self.sprite.original_image
+            self.flip ^= 0x1
+            self.duration -= 1
+            TimerMan.instance.add(self, self.freq)
 

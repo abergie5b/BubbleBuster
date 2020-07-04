@@ -21,7 +21,7 @@ class SceneMenu(Scene):
         circle_factory.generate_random(10,
                                        max_xy=(SCREEN_WIDTH, 
                                                SCREEN_HEIGHT), 
-                                       max_h=100
+                                       max_h=250
         )
 
         self.font_manager.add(Font(FontNames.MENUTITLE,

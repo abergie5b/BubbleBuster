@@ -16,14 +16,12 @@ class CircleFactory:
                 # try not to create circle that overlaps with walls
                 w, h = (1, randint(max_h//4, max_h))
                 posxy = (randint(1, maxx-h-1), randint(1, maxy-h-1))
-                #bubble = choice(InterfaceSettings.BUBBLECOLORS).upper()
-                #image = ImageMan.instance.find(getattr(ImageNames, '%sBUBBLE' % bubble))
                 self.create_circle(posxy, (w, h), self.get_random_color(alpha), alpha=alpha)
 
     def get_random_color(self, alpha=None):
-        r = randint(75, 200)
-        g = randint(75, 225)
-        b = randint(75, 225)
+        r = randint(0, 255)
+        g = randint(0, 255)
+        b = randint(0, 255)
         if alpha:
             return (r, g, b, alpha)
         return (r, g, b)
