@@ -1,6 +1,5 @@
 from bubblebuster.sprite import CircleFactory
 from bubblebuster.sound import SoundNames
-from bubblebuster.scene import Scene, SceneNames
 from bubblebuster.settings import InterfaceSettings
 from bubblebuster.collision import CollisionRectPair
 from bubblebuster.font import Font, FontNames
@@ -12,11 +11,12 @@ from bubblebuster.player import Player, PlayerNames
 from bubblebuster.font import FontNames, Font
 from bubblebuster.image import ImageNames
 from bubblebuster.level import LevelNames
+import bubblebuster.scene.scene as sc
 
 import pygame
 
 
-class SceneWeapon(Scene):
+class SceneWeapon(sc.Scene):
     def __init__(self, name, game):
         super().__init__(name, game)
 
@@ -87,7 +87,7 @@ class SceneWeapon(Scene):
         )
 
         self.input_manager.mousecursor.attach(MouseHoverHighlightObserver(fontmenu, None))
-        self.input_manager.lmouse.attach(MouseClickObserver(fontmenu, SceneNames.MENU))
+        self.input_manager.lmouse.attach(MouseClickObserver(fontmenu, sc.SceneNames.MENU))
 
     def update(self):
         time = pygame.time.get_ticks()

@@ -1,4 +1,4 @@
-from bubblebuster.link import LinkMan
+from bubblebuster.link import LinkMan, DLink
 
 from enum import Enum
 
@@ -11,9 +11,14 @@ class BubbleNames(Enum):
     TWIN = 6
 
 class BubbleMan(LinkMan):
+    instance = None
+    def __init__(self):
+        super().__init__()
+        BubbleMan.instance = self
 
     def add(self, bubble):
-        self.base_add(bubble)
+        assert isinstance(bubble, type)
+        self.base_add(DLink(bubble))
         return bubble
 
     def remove(self, bubble):

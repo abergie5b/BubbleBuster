@@ -1,4 +1,4 @@
-from bubblebuster.scene import SceneContext
+import bubblebuster.scene.scenecontext as sccxt
 from bubblebuster.settings import GameSettings, InterfaceSettings, DEBUG, VERSION
 
 import pygame
@@ -35,7 +35,7 @@ class Game:
             print('created display surface with %d width %d height' % (InterfaceSettings.SCREEN_WIDTH, InterfaceSettings.SCREEN_HEIGHT))
 
         GameSettings.init()
-        self.scene_context = SceneContext(self)
+        self.scene_context = sccxt.SceneContext(self)
 
     def draw(self):
         self.scene_context.scene_state.draw()

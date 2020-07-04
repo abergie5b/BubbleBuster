@@ -39,7 +39,7 @@ class CircleGroup(Group):
         while head:
             sprite = head.pSprite
             # its not a spritenode yet...
-            if circle.name == sp.BoxSpriteNames.EXPLOSION and sprite.name == sp.BoxSpriteNames.CIRCLE:
+            if circle.name == sp.BoxSpriteNames.EXPLOSION and sprite.type == sp.SpriteTypes.BUBBLE:
                 collision.CollisionPairMan.instance.add(collision.CollisionCirclePair(circle, sprite))
             head = head.next
         # now it is

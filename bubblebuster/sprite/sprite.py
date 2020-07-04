@@ -1,9 +1,13 @@
 from bubblebuster.link import Link, LinkMan
 from bubblebuster.image import ImageMan
-from bubblebuster.collision import CollisionPairMan
+import bubblebuster.collision as cl
 
 import pygame
 from enum import Enum
+
+class SpriteTypes(Enum):
+    BUBBLE = 1
+    NULL = 2
 
 class SpriteNames(Enum):
     EXPLODE = 1
@@ -46,7 +50,7 @@ class Sprite(Link):
 
     def destroy(self):
         SpriteMan.instance.remove(self)
-        CollisionPairMan.instance.remove(self)
+        cl.CollisionPairMan.instance.remove(self)
 
 
 class SpriteMan(LinkMan):

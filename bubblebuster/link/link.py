@@ -30,6 +30,22 @@ class Link:
         raise NotImplementedError('this method is abstract')
 
 
+class DLink:
+    instance = None
+    def __init__(self, obj):
+        self.obj = obj
+        self.next = None
+        self.prev = None
+
+    def wash(self):
+        self.obj = None
+        self.next = None
+        self.prev = None
+
+    def print(self):
+        raise NotImplementedError('this method is abstract')
+
+
 class SpriteLinkMan(pygame.sprite.Group):
     def __init__(self, *sprites):
         pygame.sprite.Group.__init__(self, *sprites)

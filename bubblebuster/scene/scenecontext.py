@@ -1,18 +1,26 @@
-import bubblebuster.scene as sc
+import bubblebuster.scene.scene as sc
+import bubblebuster.scene.sceneplay as scpl
+import bubblebuster.scene.sceneswitch as scsw
+import bubblebuster.scene.scenesetting as scst
+import bubblebuster.scene.sceneweapon as scwp
+import bubblebuster.scene.scenerules as scru
+import bubblebuster.scene.scenemenu as scmu
+#import bubblebuster.scene.sceneover as scov
+import bubblebuster.scene.scenehighscore as schs
 
 class SceneContext:
     instance = None
 
     def __init__(self, game):
         self.game = game
-        self.scene_menu = sc.SceneMenu(sc.SceneNames.MENU, game)
-        self.scene_play = sc.ScenePlay(sc.SceneNames.PLAY, game)
-        self.scene_over = sc.SceneOver(sc.SceneNames.OVER, game)
-        self.scene_rules = sc.SceneRules(sc.SceneNames.RULES, game)
-        self.scene_settings = sc.SceneSettings(sc.SceneNames.SETTINGS, game)
-        self.scene_highscores = sc.SceneHighScores(sc.SceneNames.HIGHSCORES, game)
-        self.scene_switch = sc.SceneSwitch(sc.SceneNames.SCENESWITCH, game)
-        self.scene_weapon = sc.SceneWeapon(sc.SceneNames.WEAPON, game)
+        self.scene_menu = scmu.SceneMenu(sc.SceneNames.MENU, game)
+        self.scene_play = scpl.ScenePlay(sc.SceneNames.PLAY, game)
+        #self.scene_over = scov.SceneOver(sc.SceneNames.OVER, game)
+        self.scene_rules = scru.SceneRules(sc.SceneNames.RULES, game)
+        self.scene_settings = scst.SceneSettings(sc.SceneNames.SETTINGS, game)
+        self.scene_highscores = schs.SceneHighScores(sc.SceneNames.HIGHSCORES, game)
+        self.scene_switch = scsw.SceneSwitch(sc.SceneNames.SCENESWITCH, game)
+        self.scene_weapon = scwp.SceneWeapon(sc.SceneNames.WEAPON, game)
         # start in menu
         self.scene_state = self.scene_menu
         SceneContext.instance = self
@@ -31,21 +39,21 @@ class SceneContext:
         self.scene_weapon = sc.SceneWeapon(sc.SceneNames.WEAPON, self.game)
 
     def set_state(self, name, player=None):
-        if name == sc.sc.SceneNames.MENU:
+        if name == sc.SceneNames.MENU:
             self.scene_state = self.scene_menu 
-        elif name == sc.sc.SceneNames.PLAY:
+        elif name == sc.SceneNames.PLAY:
             self.scene_state = self.scene_play
-        elif name == sc.sc.SceneNames.OVER:
+        elif name == sc.SceneNames.OVER:
             self.scene_state = self.scene_over
-        elif name == sc.sc.SceneNames.RULES:
+        elif name == sc.SceneNames.RULES:
             self.scene_state = self.scene_rules
-        elif name == sc.sc.SceneNames.SETTINGS:
+        elif name == sc.SceneNames.SETTINGS:
             self.scene_state = self.scene_settings
-        elif name == sc.sc.SceneNames.HIGHSCORES:
+        elif name == sc.SceneNames.HIGHSCORES:
             self.scene_state = self.scene_highscores
-        elif name == sc.sc.SceneNames.SCENESWITCH:
+        elif name == sc.SceneNames.SCENESWITCH:
             self.scene_state = self.scene_switch
-        elif name == sc.sc.SceneNames.WEAPON:
+        elif name == sc.SceneNames.WEAPON:
             self.scene_state = self.scene_weapon
         else:
             raise ValueError('no matching scene state found for transition')

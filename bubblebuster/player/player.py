@@ -1,9 +1,10 @@
-import bubblebuster.timer as timer
 from bubblebuster.link import Link, LinkMan
 from bubblebuster.settings import DEBUG
 from bubblebuster.level import LevelMan, LevelNames
+import bubblebuster.timer as timer
 import bubblebuster.sprite as sp
-import bubblebuster.scene as scene
+import bubblebuster.scene.scene as sc
+import bubblebuster.scene.scenecontext as sccxt
 
 from math import inf
 from enum import Enum
@@ -51,7 +52,7 @@ class Player(Link):
             # reset for next level
             self.reset()
             # next scene
-            timer.TimerMan.instance.add(timer.SwitchSceneCommand(scene.SceneNames.SCENESWITCH, player=self), 500)
+            timer.TimerMan.instance.add(timer.SwitchSceneCommand(sc.SceneNames.SCENESWITCH, player=self), 500)
         elif self.level.defeat: # gg
             # stats
             current_time = timer.TimerMan.instance.current_time
@@ -67,9 +68,9 @@ class Player(Link):
                 # reset to level 1
                 self.level.reset()
                 # reset all scenes -> is this necessary?
-                scene.SceneContext.instance.reset()
+                sccxt.SceneContext.instance.reset()
                 # back to menu
-                timer.TimerMan.instance.add(timer.SwitchSceneCommand(scene.SceneNames.MENU), 1000)
+                timer.TimerMan.instance.add(timer.SwitchSceneCommand(sc.SceneNames.MENU), 1000)
 
     def reset(self):
         # reload and update stats

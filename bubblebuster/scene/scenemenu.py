@@ -2,11 +2,11 @@ from bubblebuster.sound import SoundNames
 from bubblebuster.font import FontNames, Font
 from bubblebuster.settings import InterfaceSettings
 from bubblebuster.input import MouseClickObserver, MouseHoverHighlightObserver, MouseClickExitObserver
-from bubblebuster.scene import Scene, SceneNames
 from bubblebuster.sprite import CircleFactory
 from bubblebuster.collision import CollisionRectPair
+import bubblebuster.scene.scene as sc
 
-class SceneMenu(Scene):
+class SceneMenu(sc.Scene):
     def __init__(self, name, game):
         super().__init__(name, game)
 
@@ -52,10 +52,10 @@ class SceneMenu(Scene):
         MENU_STARTY += MENU_OFFSETY
         fontexit = self.font_manager.add(Font(FontNames.EXIT, InterfaceSettings.FONTSTYLE, 32, 'Exit', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
 
-        self.input_manager.lmouse.attach(MouseClickObserver(fontplay, SceneNames.WEAPON, None))
-        self.input_manager.lmouse.attach(MouseClickObserver(fontrules, SceneNames.RULES))
-        self.input_manager.lmouse.attach(MouseClickObserver(fontsettings, SceneNames.SETTINGS))
-        self.input_manager.lmouse.attach(MouseClickObserver(fonthighscores, SceneNames.HIGHSCORES))
+        self.input_manager.lmouse.attach(MouseClickObserver(fontplay, sc.SceneNames.WEAPON, None))
+        self.input_manager.lmouse.attach(MouseClickObserver(fontrules, sc.SceneNames.RULES))
+        self.input_manager.lmouse.attach(MouseClickObserver(fontsettings, sc.SceneNames.SETTINGS))
+        self.input_manager.lmouse.attach(MouseClickObserver(fonthighscores, sc.SceneNames.HIGHSCORES))
         self.input_manager.lmouse.attach(MouseClickExitObserver(fontexit, None))
 
         self.input_manager.mousecursor.attach(MouseHoverHighlightObserver(fontplay, None))

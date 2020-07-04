@@ -1,7 +1,7 @@
 import bubblebuster.input as inp
 from bubblebuster.sound import SoundMan, SoundNames
 from bubblebuster.font import FontMan, FontNames
-import bubblebuster.scene as sc
+import bubblebuster.scene.scene as sc
 
 import pygame
 

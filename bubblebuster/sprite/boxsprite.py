@@ -37,6 +37,7 @@ class BoxSprite(SpriteLink):
         # for carousel (should probably make a different class)
         self.parent = None
         self.selected = False
+        BoxSprite.instance = self
 
     def draw(self, screen):
         pygame.draw.rect(self.surface,

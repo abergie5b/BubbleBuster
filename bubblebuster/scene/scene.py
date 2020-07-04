@@ -1,6 +1,4 @@
 from bubblebuster.image import ImageMan, ImageNames, BubbleImageMan
-import bubblebuster.sprite as sp
-from bubblebuster.collision import CollisionPairMan
 from bubblebuster.timer import TimerMan
 from bubblebuster.group import CircleGroup, Group, GroupMan, GroupNames
 from bubblebuster.font import FontMan
@@ -18,6 +16,8 @@ from bubblebuster.sprite.bubble import (
     SpottedBubble, 
     TwinBubble
 )
+import bubblebuster.sprite as sp
+import bubblebuster.collision as cl
 
 from enum import Enum
 
@@ -44,7 +44,7 @@ class Scene:
         self.boxsprite_manager = sp.BoxSpriteMan()
         self.input_manager = InputMan()
         self.group_manager = GroupMan()
-        self.collisionpair_manager = CollisionPairMan()
+        self.collisionpair_manager = cl.CollisionPairMan()
         self.font_manager = FontMan()
         self.player_manager = PlayerMan()
         self.timer_manager = TimerMan()
@@ -75,10 +75,10 @@ class Scene:
 
         # all scenes have walls
         SCREEN_WIDTH, SCREEN_HEIGHT = (InterfaceSettings.SCREEN_WIDTH, InterfaceSettings.SCREEN_HEIGHT)
-        self.wall_left = self.boxsprite_manager.add_wall_sprite(LineSpriteNames.WALL_LEFT, (0, 0), (0, SCREEN_HEIGHT), color=(255, 0, 0), width=2)
-        self.wall_right = self.boxsprite_manager.add_wall_sprite(LineSpriteNames.WALL_RIGHT, (SCREEN_WIDTH-2, 0), (SCREEN_WIDTH-2, SCREEN_HEIGHT), color=(0, 255, 0), width=2)
-        self.wall_top = self.boxsprite_manager.add_wall_sprite(LineSpriteNames.WALL_TOP, (0, 0), (SCREEN_WIDTH, 0), color=(0, 255, 255), width=2)
-        self.wall_bottom = self.boxsprite_manager.add_wall_sprite(LineSpriteNames.WALL_BOTTOM, (0, SCREEN_HEIGHT-2), (SCREEN_WIDTH, SCREEN_HEIGHT-2), color=(255, 255, 0), width=2)
+        self.wall_left = self.boxsprite_manager.add_wall_sprite(sp.LineSpriteNames.WALL_LEFT, (0, 0), (0, SCREEN_HEIGHT), color=(255, 0, 0), width=2)
+        self.wall_right = self.boxsprite_manager.add_wall_sprite(sp.LineSpriteNames.WALL_RIGHT, (SCREEN_WIDTH-2, 0), (SCREEN_WIDTH-2, SCREEN_HEIGHT), color=(0, 255, 0), width=2)
+        self.wall_top = self.boxsprite_manager.add_wall_sprite(sp.LineSpriteNames.WALL_TOP, (0, 0), (SCREEN_WIDTH, 0), color=(0, 255, 255), width=2)
+        self.wall_bottom = self.boxsprite_manager.add_wall_sprite(sp.LineSpriteNames.WALL_BOTTOM, (0, SCREEN_HEIGHT-2), (SCREEN_WIDTH, SCREEN_HEIGHT-2), color=(255, 255, 0), width=2)
         
         self.wall_group.add(self.wall_left)
         self.wall_group.add(self.wall_right)
@@ -102,7 +102,7 @@ class Scene:
         sp.BoxSpriteMan.set_active(self.boxsprite_manager)
         InputMan.set_active(self.input_manager)
         GroupMan.set_active(self.group_manager)
-        CollisionPairMan.set_active(self.collisionpair_manager)
+        cl.CollisionPairMan.set_active(self.collisionpair_manager)
         FontMan.set_active(self.font_manager)
         PlayerMan.set_active(self.player_manager)
         TimerMan.set_active(self.timer_manager)

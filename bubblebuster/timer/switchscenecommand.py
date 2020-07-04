@@ -1,5 +1,5 @@
 from bubblebuster.timer import Command, TimeEventNames
-import bubblebuster.scene as scene
+import bubblebuster.scene.scenecontext as sc
 import bubblebuster.input as input
 
 class SwitchSceneCommand(Command):
@@ -16,5 +16,5 @@ class SwitchSceneCommand(Command):
             input.InputMan.instance.rmouse.attach(input.KeyPressObserver(self, delta_time))
             input.InputMan.instance.keypress.attach(input.KeyPressObserver(self, delta_time))
         else:
-            scene.SceneContext.instance.set_state(self.destination, player=self.player)
+            sc.SceneContext.instance.set_state(self.destination, player=self.player)
 

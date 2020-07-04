@@ -3,15 +3,15 @@ from bubblebuster.sound import SoundNames
 from bubblebuster.settings import GameSettings, InterfaceSettings
 from bubblebuster.font import FontNames, Font
 from bubblebuster.collision import CollisionRectPair
-from bubblebuster.scene import Scene
 from bubblebuster.sprite import CircleFactory, LineSpriteNames
 from bubblebuster.level import LevelMan
+import bubblebuster.scene.scene as sc
 
 
 import pygame
 
 
-class ScenePlay(Scene):
+class ScenePlay(sc.Scene):
     def __init__(self, name, game, player=None):
         super().__init__(name, game)
 

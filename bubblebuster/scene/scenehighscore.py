@@ -1,7 +1,7 @@
-from bubblebuster.scene import Scene
+import bubblebuster.scene.scene as sc
 
 
-class SceneHighScores(Scene):
+class SceneHighScores(sc.Scene):
     def _init(self, name, game):
         super().__init__(name, game)
 

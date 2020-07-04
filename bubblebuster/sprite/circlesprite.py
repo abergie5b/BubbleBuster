@@ -4,11 +4,11 @@ from bubblebuster.image import ImageMan, ImageNames, BubbleImageMan
 from bubblebuster.sound import SoundMan, SoundNames
 from bubblebuster.settings import InterfaceSettings, DEBUG
 from bubblebuster.font import AlphaFont, Font, FontMan, FontNames
-from bubblebuster.player import PlayerMan, PlayerNames
-from bubblebuster.collision import CollisionPairMan, CollisionRectPair
-from bubblebuster.sprite import BoxSpriteNames, BoxSpriteMan, BoxSprite, ExplosionSprite
+from bubblebuster.sprite import BoxSpriteNames, BoxSpriteMan, BoxSprite, ExplosionSprite, SpriteTypes
+import bubblebuster.collision as cl
 import bubblebuster.group as group
 import bubblebuster.timer as timer
+import bubblebuster.player as pl
 
 import pygame
 from random import randint, choice
@@ -17,7 +17,8 @@ from random import randint, choice
 class CircleSprite(BoxSprite):
     def __init__(self, width, height, x, y, color=(255, 255, 255), alpha=255):
         self.name = BoxSpriteNames.CIRCLE
-        super().__init__(self, name, width, height, x, y, color=color)
+        self.type = SpriteTypes.NULL
+        super().__init__(BoxSpriteNames.CIRCLE, width, height, x, y, color=color)
 
         # red 
         red_bubble = ImageMan.instance.find(ImageNames.REDBUBBLE)
@@ -83,7 +84,7 @@ class CircleSprite(BoxSprite):
         while head:
             if head.pSprite.collision_enabled:
                 # this is not pretty
-                if head.pSprite.name == BoxSpriteNames.CIRCLE \
+                if head.pSprite.type == SpriteTypes.BUBBLE \
                    and not head.pSprite.bubble_collision_disabled \
                    and pygame.sprite.collide_circle(self, head.pSprite):
 
@@ -150,11 +151,11 @@ class CircleSprite(BoxSprite):
 
                         # attach to wall group
                         wall_group = group.GroupMan.instance.find(group.GroupNames.WALL)
-                        CollisionPairMan.instance.attach_to_group(wall_group, twina, CollisionRectPair)
-                        CollisionPairMan.instance.attach_to_group(wall_group, twinb, CollisionRectPair)
+                        cl.CollisionPairMan.instance.attach_to_group(wall_group, twina, cl.CollisionRectPair)
+                        cl.CollisionPairMan.instance.attach_to_group(wall_group, twinb, cl.CollisionRectPair)
                         
                         # adjust bubbles for level
-                        player = PlayerMan.instance.find(PlayerNames.PLAYERONE)
+                        player = pl.PlayerMan.instance.find(pl.PlayerNames.PLAYERONE)
                         player.level.bubbles += 2
 
                     elif head.pSprite.proba_delaybubble:
@@ -194,7 +195,7 @@ class CircleSprite(BoxSprite):
         ExplosionSprite.instance.last_collision = timer.TimerMan.instance.current_time
 
         # scoreboard
-        player = PlayerMan.instance.find(PlayerNames.PLAYERONE)
+        player = pl.PlayerMan.instance.find(pl.PlayerNames.PLAYERONE)
         points = player.update_score(self, multiplier=explosion.multiplier)
 
         # show score bubble text
@@ -217,7 +218,7 @@ class CircleSprite(BoxSprite):
 
         # quietly remove myself
         BoxSpriteMan.instance.remove(self)
-        CollisionPairMan.instance.remove(self)
+        cl.CollisionPairMan.instance.remove(self)
 
         group_manager = group.GroupMan.instance.find(group.GroupNames.CIRCLE)
         node = group_manager.find(self)

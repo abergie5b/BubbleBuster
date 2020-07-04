@@ -1,17 +1,19 @@
 from bubblebuster.sprite import CircleFactory
 from bubblebuster.sound import SoundNames
-from bubblebuster.scene import Scene, SceneContext, SceneNames, ScenePlay
 from bubblebuster.settings import InterfaceSettings
 from bubblebuster.collision import CollisionRectPair
 from bubblebuster.font import Font, FontNames
 from bubblebuster.timer import SwitchSceneCommand
 from bubblebuster.settings import InterfaceSettings
+import bubblebuster.scene.scene as sc
+import bubblebuster.scene.scenecontext as sccxt
+import bubblebuster.scene.sceneplay as scpl
 
 from math import inf
 import pygame
 
 
-class SceneSwitch(Scene):
+class SceneSwitch(sc.Scene):
     def __init__(self, name, game):
         super().__init__(name, game)
 
@@ -154,6 +156,6 @@ class SceneSwitch(Scene):
             fontstatsexplosionsusedval.text = player.stats_explosions
 
         # hack me
-        SceneContext.instance.scene_play = ScenePlay(SceneNames.PLAY, self.game, player=player)
-        self.timer_manager.add(SwitchSceneCommand(SceneNames.PLAY, onkeypress=True, player=player), 0)
+        sccxt.SceneContext.instance.scene_play = scpl.ScenePlay(sc.SceneNames.PLAY, self.game, player=player)
+        self.timer_manager.add(SwitchSceneCommand(sc.SceneNames.PLAY, onkeypress=True, player=player), 0)
 

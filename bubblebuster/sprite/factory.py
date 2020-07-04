@@ -32,7 +32,8 @@ class CircleFactory:
         x, y = posxy
         w, h = wh
         bubble = bu.BubbleMan.instance.get_random()
-        sprite = bubble(
+        # bubbleman has dlinks because it stores type objects
+        sprite = bubble.obj(
             w, h, x, y, color=color, alpha=alpha
         )
         self.manager.add_sprite(sprite)

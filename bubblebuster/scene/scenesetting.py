@@ -1,13 +1,13 @@
-from bubblebuster.scene import Scene, SceneNames
 from bubblebuster.sound import SoundNames, Music
 from bubblebuster.sprite import CircleFactory
 from bubblebuster.font import FontNames, Font
 from bubblebuster.input import MouseClickObserver, MouseClickSettingsObserver, MouseHoverHighlightObserver
 from bubblebuster.settings import InterfaceSettings, GameSettings
 from bubblebuster.collision import CollisionRectPair
+import bubblebuster.scene.scene as sc
 
 
-class SceneSettings(Scene):
+class SceneSettings(sc.Scene):
     def __init__(self, name, game):
         super().__init__(name, game)
 
@@ -61,7 +61,7 @@ class SceneSettings(Scene):
         fontmenu = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, 'Back to Menu', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
 
         self.input_manager.mousecursor.attach(MouseHoverHighlightObserver(fontmenu, None))
-        self.input_manager.lmouse.attach(MouseClickObserver(fontmenu, SceneNames.MENU))
+        self.input_manager.lmouse.attach(MouseClickObserver(fontmenu, sc.SceneNames.MENU))
 
         self.input_manager.lmouse.attach(MouseClickSettingsObserver(numberofbubblesup, 'NUMBER_OF_BUBBLES', FontNames.NUMBEROFBUBBLES, 10))
         self.input_manager.lmouse.attach(MouseClickSettingsObserver(numberofbubblesdown, 'NUMBER_OF_BUBBLES', FontNames.NUMBEROFBUBBLES, -10))
