@@ -1,4 +1,5 @@
 import pygame
+from random import randint
 
 class SpriteLink(pygame.sprite.DirtySprite):
     def __init__(self):
@@ -37,7 +38,7 @@ class SpriteLinkMan(pygame.sprite.Group):
 class Manager:
     def __init__(self):
         self.head = None
-        raise NotImplementedError('this is an abstract class')
+        self.length = 0
 
     def base_add(self, link):
         if not self.head:
@@ -47,6 +48,7 @@ class Manager:
         link.next = self.head
         self.head.prev = link
         self.head = link
+        self.length += 1
 
     def base_remove_single(self, head):
         if head.next and not head.prev:
@@ -61,6 +63,7 @@ class Manager:
                 self.head = None
             else:
                 head.prev.next = None
+        self.length -= 1
 
     def base_remove(self, link):
         head = self.head
@@ -83,6 +86,7 @@ class LinkMan(Manager):
 
     def __init__(self):
         self.head = None
+        super().__init__()
 
     def create(self):
         raise NotImplementedError('this is an abstract method')
@@ -98,6 +102,14 @@ class LinkMan(Manager):
         while head:
             head.print()
             head = head.next
+
+    def get_random(self):
+        head = self.head
+        while head:
+            if 1 / self.length >= randint(0, 100)/100:
+                return head
+            head = head.next
+        return self.get_random()
 
     @staticmethod
     def set_active(manager):

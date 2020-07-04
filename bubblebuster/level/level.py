@@ -2,6 +2,7 @@ from bubblebuster.link import LinkMan, Link
 from bubblebuster.settings import GameSettings
 
 from enum import Enum
+from random import randint
 
 class LevelNames(Enum):
     ACTIVE = 1
@@ -34,7 +35,6 @@ class Level(Link):
         '''
         define win /lose condition for level here
         '''
-        # simple level default just destroy all bubbles
         if self.bubbles <= 0:
             self.is_complete = True
         if not self.player.weapon.ammo and not self.is_complete:
@@ -45,9 +45,9 @@ class Level(Link):
         generic advance for moving to the next level
         when the next level is the same type of level
         '''
-        self.bubbles = self.max_bubbles + self.level * 5
-        self.bubble_maxh = self.max_bubbl_maxh - self.level * 5
-        self.time = self.max_time - self.level * 5
+        self.bubbles = self.max_bubbles + self.level * 2
+        self.bubble_maxh = self.max_bubbl_maxh - self.level * 2
+        self.time = self.max_time - self.level * 2
         self.level += 1
         self.is_complete = False
         self.defeat = False
@@ -117,16 +117,28 @@ class PointsLevel(Level):
 
 class TimeLevel(Level):
     '''
-    destroy as many bubbles as you can within the time limit
+    destroy all the bubbles before the time limit
     '''
     def __init__(self, name):
         super().__init__(name)
         self.target_time = 1000
+        self.target_bubbles = 10
 
     def update(self):
-        if self.target_time <= 0:
+        if self.bubbles <= 0:
             self.is_complete = True
-        # no defeat
+        if (self.target_time <= 0 or not self.player.weapon.ammo) and not self.is_complete:
+            self.defeat = True
+    
+
+class SniperLevel(TimeLevel):
+    '''
+    destroy all the bubbles before the time limit
+    '''
+    def __init__(self, name):
+        super().__init__(name)
+        self.target_time = 1000
+        self.target_bubbles = 10
     
 
 class MultiplierLevel(Level):
@@ -147,6 +159,7 @@ class LevelMan(LinkMan):
     instance = None
     def __init__(self):
         super().__init__()
+        self.length = 0
         LevelMan.instance = self
 
     def compare(self, a, b):
@@ -160,6 +173,7 @@ class LevelMan(LinkMan):
 
     def remove(self, level):
         self.base_remove(level)
+        self.length -= 1
 
     def add(self, name):
         if name == LevelNames.ACTIVE:
@@ -169,10 +183,12 @@ class LevelMan(LinkMan):
         elif name == LevelNames.TIME:
             level = TimeLevel(name)
         self.base_add(level)
+        self.length += 1
         return level
 
     def add_level(self, level):
         self.base_add(level)
+        self.length += 1
         return level
 
     def find(self, image):

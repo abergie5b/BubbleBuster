@@ -1,4 +1,4 @@
-from bubblebuster.image import ImageMan, ImageNames
+from bubblebuster.image import ImageMan, ImageNames, BubbleImageMan
 from bubblebuster.sprite import BoxSpriteMan, LineSpriteNames, SpriteMan
 from bubblebuster.collision import CollisionPairMan
 from bubblebuster.timer import TimerMan
@@ -9,6 +9,15 @@ from bubblebuster.settings import InterfaceSettings
 from bubblebuster.sound import SoundMan
 from bubblebuster.input import InputMan, Simulation
 from bubblebuster.level import LevelMan
+from bubblebuster.sprite.bubble import (
+    BubbleMan, 
+    IronBubble, 
+    DelayBubble, 
+    NukeBubble, 
+    SlipperyBubble, 
+    SpottedBubble, 
+    TwinBubble
+)
 
 from enum import Enum
 
@@ -29,6 +38,8 @@ class Scene:
         self.game = game
         self.screen = game.screen
         self.image_manager = ImageMan()
+        self.bubble_manager = BubbleMan()
+        self.bubble_image_manager = BubbleImageMan()
         self.sprite_manager = SpriteMan()
         self.boxsprite_manager = BoxSpriteMan()
         self.input_manager = InputMan()
@@ -42,10 +53,10 @@ class Scene:
         self.simulation = Simulation()
 
         # bubbles are ubiquitous
-        self.image_manager.add(ImageNames.BUBBLE, 'resources/bubble.png')
-        list(map(lambda x: self.image_manager.add(getattr(ImageNames, '%sBUBBLE' % x.upper()), 'resources/bubble-%s.png' % x), InterfaceSettings.BUBBLECOLORS))
+        #self.bubble_image_manager.add(ImageNames.BUBBLE, 'resources/bubble.png')
+        list(map(lambda x: self.bubble_image_manager.add(getattr(ImageNames, '%sBUBBLE' % x.upper()), 'resources/bubble-%s.png' % x), InterfaceSettings.BUBBLECOLORS))
         self.image_manager.add(ImageNames.REDBUBBLE, 'resources/bubble-red.png')
-        self.image_manager.add(ImageNames.TESTMOUSE, 'resources/mouse.png')
+        #self.bubble_image_manager.add(ImageNames.TESTMOUSE, 'resources/mouse.png')
 
         # all scenes have circle and wall groups
         self.circle_group = CircleGroup(GroupNames.CIRCLE)
@@ -77,6 +88,8 @@ class Scene:
 
     def transition(self):
         ImageMan.set_active(self.image_manager)
+        BubbleMan.set_active(self.bubble_manager)
+        BubbleImageMan.set_active(self.bubble_image_manager)
         SpriteMan.set_active(self.sprite_manager)
         BoxSpriteMan.set_active(self.boxsprite_manager)
         InputMan.set_active(self.input_manager)

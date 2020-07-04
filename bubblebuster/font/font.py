@@ -46,7 +46,7 @@ class FontNames(Enum):
     SCENESWITCH_PRESSANYKEY = 39
 
 class Font(Link):
-    def __init__(self, font_name, font_style, font_size, text, color, posxy, alpha=255):
+    def __init__(self, font_name, font_style, font_size, text, color, posxy):
         super().__init__()
         self.font_name = font_name
         self.font_style = font_style
@@ -56,11 +56,41 @@ class Font(Link):
         self.color = color
         self.posxy = posxy
         self.posx, self.posy = posxy
-        self.alpha = alpha
+        self.surface = self.font.render(str(self.text), True, self.color)
 
     def draw(self, screen):
-        surface = self.font.render(str(self.text), True, self.color)
-        screen.blit(surface, self.posxy)
+        self.surface = self.font.render(str(self.text), True, self.color)
+        screen.blit(self.surface, self.posxy)
+
+    def update(self):
+        pass
+
+
+class AlphaFont(Link):
+    def __init__(self, font_name, font_style, font_size, text, color, posxy, alpha=100):
+        super().__init__()
+        self.font_name = font_name
+        self.font_style = font_style
+        self.font_size = font_size
+        self.font = pygame.font.Font(font_style, font_size)
+        self.text = text
+        self.color = color
+        self.posxy = posxy
+        self.posx, self.posy = posxy
+        self.surface = self.font.render(str(self.text), True, self.color)
+        self.alpha = (0, 0, 0, alpha)
+        self.alpha_surf = pygame.Surface(self.surface.get_size(), pygame.SRCALPHA)
+        self.alpha_surf.fill(self.alpha)
+        self.surface.blit(self.alpha_surf, (0, 0), special_flags=pygame.BLEND_RGBA_MULT)
+
+    def set_text(self, text):
+        self.text = text
+        self.surface = self.font.render(str(self.text), True, self.color)
+        self.alpha_surf = pygame.Surface(self.surface.get_size(), pygame.SRCALPHA)
+
+    def draw(self, screen):
+        #self.surface.blit(self.alpha_surf, (0, 0), special_flags=pygame.BLEND_RGBA_MULT)
+        screen.blit(self.surface, self.posxy)
 
     def update(self):
         pass

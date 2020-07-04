@@ -1,4 +1,3 @@
-from bubblebuster.scene import Scene
 from bubblebuster.sprite import CircleFactory
 from bubblebuster.sound import SoundNames
 from bubblebuster.scene import Scene, SceneNames

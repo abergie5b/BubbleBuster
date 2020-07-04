@@ -18,7 +18,6 @@ class ImageNames(Enum):
     THUMB = 12
     HAND = 13
     BUBBLE = 14
-    YELLOWBUBBLE = 15
 
 
 class Image(Link):
@@ -52,4 +51,25 @@ class ImageMan(LinkMan):
     @staticmethod
     def set_active(manager):
         ImageMan.instance = manager
+
+
+class BubbleImageMan(LinkMan):
+    instance = None
+    def __init__(self):
+        super().__init__()
+        BubbleImageMan.instance = self
+
+    def compare(self, a, b):
+        return a.name == b
+
+    def add(self, name, data):
+        image = Image(name, data)
+        self.base_add(image)
+
+    def find(self, image):
+        return self.base_find(image)
+
+    @staticmethod
+    def set_active(manager):
+        BubbleImageMan.instance = manager
 

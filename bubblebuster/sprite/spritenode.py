@@ -31,7 +31,7 @@ class SpriteNode(Link):
 
 class SpriteNodeMan(Manager):
     def __init__(self):
-        self.head = None
+        super().__init__()
 
     def compare(self, a, b):
         return a.pSprite == b or a == b

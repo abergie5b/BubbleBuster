@@ -6,6 +6,7 @@ from bubblebuster.image import ImageMan, ImageNames
 import pygame
 from random import choice
 
+
 class ColorChangeBubbleCommand(Command):
     def __init__(self, sprite, image, duration, freq=100):
         self.sprite = sprite

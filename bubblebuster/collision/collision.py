@@ -58,7 +58,7 @@ class CollisionPairMan(LinkMan):
     instance = None
 
     def __init__(self):
-        self.head = None
+        super().__init__()
         CollisionPairMan.instance = self
 
     def compare(self, a, b):
