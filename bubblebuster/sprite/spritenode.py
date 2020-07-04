@@ -34,7 +34,7 @@ class SpriteNodeMan(Manager):
         self.head = None
 
     def compare(self, a, b):
-        return a.pSprite == b
+        return a.pSprite == b or a == b
 
     def remove(self, spritenode):
         assert(isinstance(spritenode, SpriteNode))

@@ -35,7 +35,7 @@ class Level(Link):
         define win /lose condition for level here
         '''
         # simple level default just destroy all bubbles
-        if not self.bubbles:
+        if self.bubbles <= 0:
             self.is_complete = True
         if not self.player.weapon.ammo and not self.is_complete:
             self.defeat = True
@@ -103,25 +103,44 @@ class ActiveLevel(Level):
 
 class PointsLevel(Level):
     '''
-    get a certain number of points level
+    get a certain number of points
     '''
     def __init__(self, name):
         super().__init__(name)
+        self.target_score = 1000
 
     def update(self):
-        pass
+        if self.player.score >= self.target_score:
+            self.is_complete = True
+        # no defeat condition
 
 
 class TimeLevel(Level):
     '''
-    destroy a certain number of bubbles
-    in a fixed amount of time
+    destroy as many bubbles as you can within the time limit
     '''
     def __init__(self, name):
         super().__init__(name)
+        self.target_time = 1000
 
     def update(self):
-        pass
+        if self.target_time <= 0:
+            self.is_complete = True
+        # no defeat
+    
+
+class MultiplierLevel(Level):
+    '''
+    get a high enough multiplier to pass the level
+    '''
+    def __init__(self, name):
+        super().__init__(name)
+        self.target_multiplier = 10
+
+    def update(self):
+        if self.player.stats_maxmultiplier >= self.target_multiplier:
+            self.is_complete = True
+        # no defeat
 
 
 class LevelMan(LinkMan):

@@ -74,6 +74,10 @@ class CollisionPairMan(LinkMan):
             for b in groupB:
                 self.add(pair_function(a, b))
 
+    def attach_to_group(self, group, sprite, pair_function):
+        for obj in group:
+            self.add(pair_function(obj, sprite))
+
     def remove(self, sprite):
         head = self.head
         while head:

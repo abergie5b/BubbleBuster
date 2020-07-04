@@ -4,7 +4,8 @@ from bubblebuster.sound import SoundMan, SoundNames
 from bubblebuster.settings import InterfaceSettings, DEBUG
 from bubblebuster.font import Font, FontMan, FontNames
 from bubblebuster.player import PlayerMan, PlayerNames
-from bubblebuster.collision import CollisionPairMan
+from bubblebuster.collision import CollisionPairMan, CollisionRectPair
+from bubblebuster.sprite import BoxSpriteNames, BoxSpriteMan
 import bubblebuster.group as group
 import bubblebuster.timer as timer
 import bubblebuster.sprite as sp
@@ -14,18 +15,37 @@ from random import randint
 
 
 class CircleSprite(sp.BoxSprite):
-    def __init__(self, name, image, width, height, x, y, color=(255, 255, 255), alpha=255):
+    def __init__(self, name, width, height, x, y, color=(255, 255, 255), alpha=255):
         super().__init__(name, width, height, x, y, color=color)
 
-        # image
-        self.image = pygame.transform.scale(image.surface, (self.height, self.height))
+        # base color image
+        self.base_image = ImageMan.instance.find(ImageNames.BUBBLE)
+        self.image = pygame.transform.scale(self.base_image.surface, (self.height, self.height))
+        self.image.fill(color, special_flags=pygame.BLEND_MULT)
+
+        # red 
         red_bubble = ImageMan.instance.find(ImageNames.REDBUBBLE)
         self.image_red = pygame.transform.scale(red_bubble.surface, (self.height, self.height))
 
+        # put these other colors here for now
+        # bigger memory footprint but better for performance 
+        # when swapping colors 
+        #blue_bubble = ImageMan.instance.find(ImageNames.BLUEBUBBLE)
+        #self.image_blue = pygame.transform.scale(blue_bubble.surface, (self.height, self.height))
+        #cyan_bubble = ImageMan.instance.find(ImageNames.CYANBUBBLE)
+        #self.image_cyan = pygame.transform.scale(cyan_bubble.surface, (self.height, self.height))
+        #green_bubble = ImageMan.instance.find(ImageNames.GREENBUBBLE)
+        #self.image_green = pygame.transform.scale(green_bubble.surface, (self.height, self.height))
+        #orange_bubble = ImageMan.instance.find(ImageNames.ORANGEBUBBLE)
+        #self.image_orange = pygame.transform.scale(orange_bubble.surface, (self.height, self.height))
+        #pink_bubble = ImageMan.instance.find(ImageNames.PINKBUBBLE)
+        #self.image_pink = pygame.transform.scale(pink_bubble.surface, (self.height, self.height))
+        #self.images = [self.image_blue, self.image_cyan, self.image_green, self.image_orange, self.image_pink, self.image_red]
+
         # for movement
         self.delta = GameSettings.BUBBLE_MAXDELTA
-        self.deltax = randint(-self.delta, self.delta)/100
-        self.deltay = randint(-self.delta, self.delta)/100
+        self.deltax = randint(-self.delta, self.delta)//100
+        self.deltay = randint(-self.delta, self.delta)//100
         if not self.deltax:
             self.deltax = self.delta//100
         if not self.deltay:
@@ -33,6 +53,19 @@ class CircleSprite(sp.BoxSprite):
 
         # for scoring
         self.hratio = self.height / GameSettings.BUBBLE_MAXH
+
+        # gifts
+        self.proba_gift = 0.05 <= randint(0, 100)/100
+
+        # bubble type (need different classes for these)
+        self.proba_secondchance = 0.05 >= randint(0, 100)/100
+        self.proba_multibubble = 0.50 >= randint(0, 100)/100
+        self.proba_delaybubble = 0.05 >= randint(0, 100)/100
+        self.proba_spottedbubble = 0.05 >= randint(0, 100)/100
+        self.proba_nukebubble = 0.05 >= randint(0, 100)/100
+
+        # state
+        self.bubble_collision_disabled = False
 
     def move(self):
         self.posx += self.deltax
@@ -56,24 +89,23 @@ class CircleSprite(sp.BoxSprite):
         sound.play()
 
     def destroy_colliding_circles(self, explosion):
-        # explosion None ??
         circle_group = group.GroupMan.instance.find(group.GroupNames.CIRCLE)
         head = circle_group.nodeman.head
         while head:
-            # there must be
-            # a better way
             if head.pSprite.collision_enabled:
-                if head.pSprite.name == sp.BoxSpriteNames.CIRCLE and pygame.sprite.collide_circle(self, head.pSprite):
+                # this is not pretty
+                if head.pSprite.name == sp.BoxSpriteNames.CIRCLE \
+                   and not head.pSprite.bubble_collision_disabled \
+                   and pygame.sprite.collide_circle(self, head.pSprite):
 
-                    sp.ExplosionSprite.instance.last_collision = timer.TimerMan.instance.current_time
+                    # stats
                     explosion.multiplier += 1
-
-                    # should do this better
-                    head.pSprite.image = head.pSprite.image_red
+                    sp.ExplosionSprite.instance.last_collision = timer.TimerMan.instance.current_time
 
                     if DEBUG:
                         print('colliding circle %s destroyed, multiplier: %d' % (head.pSprite, explosion.multiplier))
 
+                    # multiplier font text
                     fadeout_command = timer.TimerMan.instance.find(timer.TimeEventNames.FADEOUTTOAST)
                     timer.TimerMan.instance.remove(fadeout_command)
 
@@ -81,41 +113,89 @@ class CircleSprite(sp.BoxSprite):
                     font_multiplier.text = str('Multiplier! %d' % explosion.multiplier)
                     font_multiplier.color = InterfaceSettings.FONTCOLOR
 
-                    command = timer.DestroySpriteCommand(head.pSprite, explosion=explosion)
-                    timer.TimerMan.instance.add(command, GameSettings.BUBBLEPOPDELAY)
+                    # second chance
+                    if head.pSprite.proba_secondchance:
+                        head.pSprite.proba_secondchance = 0 # no more second chances for you mate
+                        head.pSprite.bubble_collision_disabled = True
+                        command = timer.SecondChanceBubbleCommand(head.pSprite)
 
-                    head.pSprite.collision_enabled = False
+                        # do it
+                        timer.TimerMan.instance.add(command, 1)
+
+                    elif head.pSprite.proba_multibubble:
+                        head.pSprite.collision_enabled = False
+                        command = timer.DestroySpriteCommand(head.pSprite, explosion=explosion)
+
+                        # do it
+                        timer.TimerMan.instance.add(command, 1)
+
+                        twina = BoxSpriteMan.instance.add(BoxSpriteNames.CIRCLE,
+                                                  head.pSprite.width,
+                                                  head.pSprite.height // 2,
+                                                  head.pSprite.rect.centerx,
+                                                  head.pSprite.rect.centery,
+                                                  color=head.pSprite.color
+                        )
+                        twinb = BoxSpriteMan.instance.add(BoxSpriteNames.CIRCLE,
+                                                  head.pSprite.width,
+                                                  head.pSprite.height // 2,
+                                                  head.pSprite.rect.centerx,
+                                                  head.pSprite.rect.centery,
+                                                  color=head.pSprite.color
+                        )
+                        # delay this 
+                        timer.TimerMan.instance.add(timer.AddToCircleGroupCommand(twina), GameSettings.BUBBLEPOPDELAY)
+                        timer.TimerMan.instance.add(timer.AddToCircleGroupCommand(twinb), GameSettings.BUBBLEPOPDELAY)
+
+                        # attach to wall group
+                        wall_group = group.GroupMan.instance.find(group.GroupNames.WALL)
+                        CollisionPairMan.instance.attach_to_group(wall_group, twina, CollisionRectPair)
+                        CollisionPairMan.instance.attach_to_group(wall_group, twinb, CollisionRectPair)
+                        
+                        # adjust bubbles for level
+                        player = PlayerMan.instance.find(PlayerNames.PLAYERONE)
+                        player.level.bubbles += 2
+
+                    else: # destroy
+                        head.pSprite.image = head.pSprite.image_red
+                        head.pSprite.collision_enabled = False
+                        command = timer.DestroySpriteCommand(head.pSprite, explosion=explosion)
+
+                        # do it
+                        timer.TimerMan.instance.add(command, GameSettings.BUBBLEPOPDELAY)
+
             head = head.next
 
     def destroy(self, explosion):
         '''
         destroy this bubble and check for neighboring collisions
+        bubble might even get a second chance at life, who knows
         '''
         sp.ExplosionSprite.instance.last_collision = timer.TimerMan.instance.current_time
 
-        # what if explosion None huhh
+        # scoreboard
         player = PlayerMan.instance.find(PlayerNames.PLAYERONE)
         points = player.update_score(self, multiplier=explosion.multiplier)
 
-        # creatin new fonts .. bad
+        # show score bubble text
         font_pointsvalue = FontMan.instance.add(
             Font(FontNames.MULTIPLIER, InterfaceSettings.FONTSTYLE, 18, points, InterfaceSettings.FONTCOLOR,
                  (self.posx+self.height//2, self.posy+self.height//2)) # midpoint
         )
         timer.TimerMan.instance.add(timer.RemoveFontCommand(font_pointsvalue), 1000)
 
+        # bubble texts
         font_bubbles = FontMan.instance.find(FontNames.BUBBLES)
         font_bubbles.text = player.level.bubbles
-
-        # gotta do this somehwere else
         font = FontMan.instance.find(FontNames.SCORE)
         font.text = player.score
-
         font = FontMan.instance.find(FontNames.SCOREROUND)
         font.text = player.stats_scoreround
 
+        # sound
         self.play_sound()
 
+        # quietly remove myself
         sp.BoxSpriteMan.instance.remove(self)
         CollisionPairMan.instance.remove(self)
 
@@ -124,8 +204,10 @@ class CircleSprite(sp.BoxSprite):
         if node:  # what the
             group_manager.remove(node)
 
+        # collisions
         self.destroy_colliding_circles(explosion)
 
+        # fade the toast
         fadeout_command = timer.TimerMan.instance.find(timer.TimeEventNames.FADEOUTTOAST)
         if explosion.multiplier > 1 and not fadeout_command:
             font_multiplier = FontMan.instance.find(FontNames.TOAST)

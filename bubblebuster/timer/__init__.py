@@ -6,3 +6,6 @@ from .destroyspritecommand import *
 from .fadeoutfontcommand import *
 from .removefontcommand import *
 from .switchscenecommand import *
+from .secondchancebubblecommand import *
+from .colorchangebubblecommand import *
+from .addtocirclegroupcommand import *

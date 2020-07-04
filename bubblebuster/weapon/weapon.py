@@ -116,10 +116,10 @@ class Finger(ExplodeWeapon):
         self.image = ImageMan.instance.find(ImageNames.FINGER)
 
         self.duration = 10
-        self.radius = 10
-        self.radius_delta = 5
-        self.max_ammo = 10
-        self.ammo = 10
+        self.radius = 6
+        self.radius_delta = 1
+        self.max_ammo = inf
+        self.ammo = inf
 
         self.smallcost = 1
         self.largecost = 2
@@ -132,9 +132,9 @@ class Thumb(ExplodeWeapon):
         # image
         self.image = ImageMan.instance.find(ImageNames.THUMB)
 
-        self.duration = 20
-        self.radius = 15
-        self.radius_delta = 5
+        self.duration = 10
+        self.radius = 12
+        self.radius_delta = 2
         self.max_ammo = inf
         self.ammo = inf
 
@@ -149,9 +149,9 @@ class Hand(ExplodeWeapon):
         # image
         self.image = ImageMan.instance.find(ImageNames.HAND)
 
-        self.duration = 30
-        self.radius = 20
-        self.radius_delta = 5
+        self.duration = 10
+        self.radius = 18
+        self.radius_delta = 3
         self.max_ammo = inf
         self.ammo = inf
 

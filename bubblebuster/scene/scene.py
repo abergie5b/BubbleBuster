@@ -42,6 +42,7 @@ class Scene:
         self.simulation = Simulation()
 
         # bubbles are ubiquitous
+        self.image_manager.add(ImageNames.BUBBLE, 'resources/bubble.png')
         list(map(lambda x: self.image_manager.add(getattr(ImageNames, '%sBUBBLE' % x.upper()), 'resources/bubble-%s.png' % x), InterfaceSettings.BUBBLECOLORS))
         self.image_manager.add(ImageNames.REDBUBBLE, 'resources/bubble-red.png')
         self.image_manager.add(ImageNames.TESTMOUSE, 'resources/mouse.png')

@@ -10,6 +10,9 @@ class TimeEventNames(Enum):
     MINICLICKEXPLODE = 4
     REMOVEFONT = 5
     SWITCHSCENE = 6
+    SECONDCHANCE = 7
+    COLORCHANGEBUBBLE = 8
+    ADDTOCIRCLEGROUP = 9
 
 
 class TimeEvent(Link):

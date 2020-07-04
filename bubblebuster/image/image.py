@@ -17,6 +17,7 @@ class ImageNames(Enum):
     FINGER = 11
     THUMB = 12
     HAND = 13
+    BUBBLE = 14
 
 
 class Image(Link):
