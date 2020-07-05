@@ -67,13 +67,14 @@ class SceneWeapon(sc.Scene):
 
         self.boxsprite_manager.add_boxgroup(carousel)
 
+        # add the player, attach
+        self.player = PlayerMan.instance.find(PlayerNames.PLAYERONE)
+
         # lets do a random level
         LevelMan.instance.current_level = LevelMan.instance.get_random()
         LevelMan.instance.current_level.is_active = True
+        #LevelMan.instance.current_level.player = self.player
 
-        # add the player, attach
-        self.player = PlayerMan.instance.find(PlayerNames.PLAYERONE)
-        
         # 
         carousel.attach(LMouseClickRectObserver)
 

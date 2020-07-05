@@ -254,4 +254,5 @@ class LevelMan(LinkMan):
             head = head.next
         self.current_level = self.get_random()
         self.current_level.is_active = True
-
+        #self.current_level.player = pl.PlayerMan.instance.find(pl.PlayerNames.PLAYERONE)
+        

@@ -115,6 +115,17 @@ class ScenePlay(sc.Scene):
         musicmenu = self.sound_manager.find(SoundNames.MUSICMENU)
         musicmenu.play()
 
+        # sprites
+        #circle_factory = CircleFactory(self.circle_group, self.boxsprite_manager)
+        #circle_factory.generate_random(le.LevelMan.instance.current_level.bubbles,
+        #                               max_xy=(InterfaceSettings.SCREEN_WIDTH,
+        #                                       InterfaceSettings.SCREEN_HEIGHT),
+        #                               max_h=le.LevelMan.instance.current_level.bubble_maxh
+        #                               )
+
+        ## collision pairs
+        #self.collisionpair_manager.add_groups(self.wall_group, self.circle_group, CollisionRectPair)
+
         # fonts
         fontcurrentlevel = self.font_manager.find(FontNames.CURRENTLEVEL)
         fontcurrentlevel.text = le.LevelMan.instance.current_level.level
