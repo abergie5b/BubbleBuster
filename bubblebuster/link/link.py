@@ -37,6 +37,9 @@ class DLink:
         self.next = None
         self.prev = None
 
+    def __call__(self, *args, **kwargs):
+        return self.obj(*args, **kwargs)
+
     def wash(self):
         self.obj = None
         self.next = None

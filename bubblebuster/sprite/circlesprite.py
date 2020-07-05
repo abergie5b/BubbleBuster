@@ -5,6 +5,7 @@ from bubblebuster.sound import SoundMan, SoundNames
 from bubblebuster.settings import InterfaceSettings, DEBUG
 from bubblebuster.font import AlphaFont, Font, FontMan, FontNames
 from bubblebuster.sprite import BoxSpriteNames, BoxSpriteMan, BoxSprite, ExplosionSprite, SpriteTypes
+import bubblebuster.sprite.bubble as bu
 import bubblebuster.collision as cl
 import bubblebuster.group as group
 import bubblebuster.timer as timer
@@ -131,20 +132,20 @@ class CircleSprite(BoxSprite):
                         command = timer.DestroySpriteCommand(head.pSprite, explosion=explosion)
                         timer.TimerMan.instance.add(command, 1)
 
-                        twina = BoxSpriteMan.instance.add(BoxSpriteNames.CIRCLE,
-                                                  head.pSprite.width,
-                                                  max(GameSettings.BUBBLE_MAXH//4, head.pSprite.height//2),
-                                                  head.pSprite.rect.centerx,
-                                                  head.pSprite.rect.centery,
-                                                  color=head.pSprite.color
-                        )
-                        twinb = BoxSpriteMan.instance.add(BoxSpriteNames.CIRCLE,
-                                                  head.pSprite.width,
-                                                  max(GameSettings.BUBBLE_MAXH//4, head.pSprite.height//2),
-                                                  head.pSprite.rect.centerx,
-                                                  head.pSprite.rect.centery,
-                                                  color=head.pSprite.color
-                        )
+                        bubbletypea = bu.BubbleMan.instance.get_random()
+                        twina = bubbletypea.obj(head.pSprite.width,
+                                max(GameSettings.BUBBLE_MAXH//4, head.pSprite.height//2),
+                                head.pSprite.rect.centerx,
+                                head.pSprite.rect.centery,
+                                color=head.pSprite.color)
+
+                        bubbletypeb = bu.BubbleMan.instance.get_random()
+                        twinb = bubbletypeb.obj(head.pSprite.width,
+                                  max(GameSettings.BUBBLE_MAXH//4, head.pSprite.height//2),
+                                  head.pSprite.rect.centerx,
+                                  head.pSprite.rect.centery,
+                                  color=head.pSprite.color)
+
                         # delay this 
                         timer.TimerMan.instance.add(timer.AddToCircleGroupCommand(twina), GameSettings.BUBBLEPOPDELAY)
                         timer.TimerMan.instance.add(timer.AddToCircleGroupCommand(twinb), GameSettings.BUBBLEPOPDELAY)
