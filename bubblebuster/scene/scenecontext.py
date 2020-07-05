@@ -14,23 +14,22 @@ class SceneContext:
     def __init__(self, game):
         self.game = game
         self.scene_menu = scmu.SceneMenu(sc.SceneNames.MENU, game)
-        self.scene_play = scpl.ScenePlay(sc.SceneNames.PLAY, game)
         #self.scene_over = scov.SceneOver(sc.SceneNames.OVER, game)
         self.scene_rules = scru.SceneRules(sc.SceneNames.RULES, game)
         self.scene_settings = scst.SceneSettings(sc.SceneNames.SETTINGS, game)
         self.scene_highscores = schs.SceneHighScores(sc.SceneNames.HIGHSCORES, game)
         self.scene_switch = scsw.SceneSwitch(sc.SceneNames.SCENESWITCH, game)
         self.scene_weapon = scwp.SceneWeapon(sc.SceneNames.WEAPON, game)
+        self.scene_play = scpl.ScenePlay(sc.SceneNames.PLAY, game)
         # start in menu
         self.scene_state = self.scene_menu
         SceneContext.instance = self
-        self.scene_state.handle(self.scene_weapon.player)
+        self.scene_state.handle()
         self.scene_state.transition()
 
-    def reset(self, player=None):
+    def reset(self):
         self.scene_menu = sc.SceneMenu(sc.SceneNames.MENU, self.game)
-        # preserve the player
-        self.scene_play = sc.ScenePlay(sc.SceneNames.PLAY, self.game, player=player)
+        self.scene_play = sc.ScenePlay(sc.SceneNames.PLAY, self.game)
         self.scene_over = sc.SceneOver(sc.SceneNames.OVER, self.game)
         self.scene_rules = sc.SceneRules(sc.SceneNames.RULES, self.game)
         self.scene_settings = sc.SceneSettings(sc.SceneNames.SETTINGS, self.game)
@@ -38,7 +37,7 @@ class SceneContext:
         self.scene_switch = sc.SceneSwitch(sc.SceneNames.SCENESWITCH, self.game)
         self.scene_weapon = sc.SceneWeapon(sc.SceneNames.WEAPON, self.game)
 
-    def set_state(self, name, player=None):
+    def set_state(self, name):
         if name == sc.SceneNames.MENU:
             self.scene_state = self.scene_menu 
         elif name == sc.SceneNames.PLAY:
@@ -57,6 +56,6 @@ class SceneContext:
             self.scene_state = self.scene_weapon
         else:
             raise ValueError('no matching scene state found for transition')
-        self.scene_state.handle(player=player)
+        self.scene_state.handle()
         self.scene_state.transition()
 

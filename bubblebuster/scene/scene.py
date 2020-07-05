@@ -2,11 +2,11 @@ from bubblebuster.image import ImageMan, ImageNames, BubbleImageMan
 from bubblebuster.timer import TimerMan
 from bubblebuster.group import CircleGroup, Group, GroupMan, GroupNames
 from bubblebuster.font import FontMan
-from bubblebuster.player import PlayerMan
+from bubblebuster.player import PlayerMan, PlayerNames, Player
 from bubblebuster.settings import InterfaceSettings
 from bubblebuster.sound import SoundMan
 from bubblebuster.input import InputMan, Simulation
-from bubblebuster.level import LevelMan
+from bubblebuster.level import LevelMan, LevelNames
 from bubblebuster.sprite.bubble import (
     BubbleMan, 
     IronBubble, 
@@ -46,13 +46,17 @@ class Scene:
         self.group_manager = GroupMan()
         self.collisionpair_manager = cl.CollisionPairMan()
         self.font_manager = FontMan()
-        self.player_manager = PlayerMan()
         self.timer_manager = TimerMan()
         self.sound_manager = SoundMan()
-        self.level_manager = LevelMan()
         self.simulation = Simulation()
 
-        # bubbles are ubiquitous
+        # one player man to rule them all
+        self.player_manager = PlayerMan.create()
+
+        # one level man to rule them all
+        self.level_manager = LevelMan.create()
+
+        # bubbles are ubiquitous !!
         #self.bubble_image_manager.add(ImageNames.BUBBLE, 'resources/bubble.png')
         list(map(lambda x: self.bubble_image_manager.add(getattr(ImageNames, '%sBUBBLE' % x.upper()), 'resources/bubble-%s.png' % x), InterfaceSettings.BUBBLECOLORS))
         self.image_manager.add(ImageNames.REDBUBBLE, 'resources/bubble-red.png')
@@ -62,6 +66,7 @@ class Scene:
         self.circle_group = CircleGroup(GroupNames.CIRCLE)
         self.wall_group = Group(GroupNames.WALL)
 
+        # add to groupssssss
         self.group_manager.add(self.circle_group)
         self.group_manager.add(self.wall_group)
 
@@ -72,6 +77,19 @@ class Scene:
         self.bubble_manager.add(NukeBubble)
         self.bubble_manager.add(SpottedBubble)
         self.bubble_manager.add(TwinBubble)
+
+        # the player
+        PlayerMan.instance.add(
+            Player(PlayerNames.PLAYERONE,
+                   None # no weapon until selected
+                   )
+        )
+
+        # add teh levels mate, for jimmy
+        LevelMan.instance.add(LevelNames.POINTS)
+        LevelMan.instance.add(LevelNames.TIME)
+        LevelMan.instance.add(LevelNames.MULTIPLIER)
+        LevelMan.instance.add(LevelNames.SNIPER)
 
         # all scenes have walls
         SCREEN_WIDTH, SCREEN_HEIGHT = (InterfaceSettings.SCREEN_WIDTH, InterfaceSettings.SCREEN_HEIGHT)
@@ -104,10 +122,8 @@ class Scene:
         GroupMan.set_active(self.group_manager)
         cl.CollisionPairMan.set_active(self.collisionpair_manager)
         FontMan.set_active(self.font_manager)
-        PlayerMan.set_active(self.player_manager)
         TimerMan.set_active(self.timer_manager)
         SoundMan.set_active(self.sound_manager)
-        LevelMan.set_active(self.level_manager)
 
     def handle(self, player=None):
         raise NotImplementedError("this is an abstract class")

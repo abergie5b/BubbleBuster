@@ -16,5 +16,5 @@ class SwitchSceneCommand(Command):
             input.InputMan.instance.rmouse.attach(input.KeyPressObserver(self, delta_time))
             input.InputMan.instance.keypress.attach(input.KeyPressObserver(self, delta_time))
         else:
-            sc.SceneContext.instance.set_state(self.destination, player=self.player)
+            sc.SceneContext.instance.set_state(self.destination)
 

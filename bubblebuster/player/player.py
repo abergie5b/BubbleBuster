@@ -16,12 +16,10 @@ class PlayerNames(Enum):
 
 
 class Player(Link):
-    def __init__(self, name, weapon, level):
+    def __init__(self, name, weapon):
         super().__init__()
         self.name = name
         self.weapon = weapon
-        self.level = level
-        self.level.player = self
 
         # stats
         self.stats_bubbles = 0
@@ -34,9 +32,9 @@ class Player(Link):
         self.stats_scoreroundprev = 0
 
     def update(self):
-        if self.level.is_complete:
+        if LevelMan.instance.current_level.is_complete:
             # update for next level
-            self.level.advance()
+            LevelMan.instance.advance()
             # stats
             if self.weapon.ammo and self.weapon.ammo != inf:
                 self.score -= self.stats_scoreround
@@ -44,7 +42,7 @@ class Player(Link):
                 self.score += self.stats_scoreround
             if DEBUG:
                 print('next level activated %d with %d bubbles and %d max height' % (
-                      self.level.level, self.level.bubbles, self.level.bubble_maxh)
+                      LevelMan.instance.current_level, LevelMan.instance.current_level.bubbles, LevelMan.instance.current_level.bubble_maxh)
                 )
                 print('scoreround: %d scoreround_raw: %d score %d stats_explosionsround: %d' % (
                       self.stats_scoreround, self.stats_scoreround//self.stats_explosionsround, self.score, self.stats_explosionsround)
@@ -53,12 +51,12 @@ class Player(Link):
             self.reset()
             # next scene
             timer.TimerMan.instance.add(timer.SwitchSceneCommand(sc.SceneNames.SCENESWITCH, player=self), 500)
-        elif self.level.defeat: # gg
+        elif LevelMan.instance.current_level.defeat: # gg
             # stats
             current_time = timer.TimerMan.instance.current_time
             last_collision = sp.ExplosionSprite.instance.last_collision
             # let the current explosion finish and make sure no collisions happening
-            if not self.weapon.is_active and current_time - last_collision > self.level.bubble_popdelay:
+            if not self.weapon.is_active and current_time - last_collision > LevelMan.instance.current_level.bubble_popdelay:
                 if DEBUG:
                     print('game over, switching back to menu current_time: %d last_collision: %d diff: %d' %
                         (current_time, last_collision, current_time - last_collision)
@@ -66,7 +64,7 @@ class Player(Link):
                 # reset player state / statistcs
                 self.reset()
                 # reset to level 1
-                self.level.reset()
+                LevelMan.instance.reset()
                 # reset all scenes -> is this necessary?
                 sccxt.SceneContext.instance.reset()
                 # back to menu
@@ -87,18 +85,30 @@ class Player(Link):
     def update_score(self, circle, multiplier=1):
         self.stats_bubbles += 1
         self.update_max_multiplier(multiplier)
-        self.level.bubbles -= 1
-        points = multiplier * self.level.bubble_maxh//circle.height
+        LevelMan.instance.current_level.bubbles -= 1
+        points = multiplier * LevelMan.instance.current_level.bubble_maxh//circle.height
         self.score += points
         self.stats_scoreround += points
         if DEBUG:
             print('updating score %d, round: %d circleh: %d mult: %d points: %d bubbles: %d is_complete: %d' % (
-                  self.score, self.stats_scoreround, circle.height, multiplier, points, self.level.bubbles, self.level.is_complete)
+                  self.score, self.stats_scoreround, circle.height, multiplier, points, LevelMan.instance.current_level.bubbles, LevelMan.instance.current_level.is_complete)
             )
         return points
 
 
 class PlayerMan(LinkMan):
+    instance = None
+
+    @staticmethod
+    def create():
+        if not PlayerMan.instance:
+            PlayerMan.instance = PlayerMan.__new__(PlayerMan)
+            PlayerMan.instance.head = None
+            PlayerMan.instance.length = 0
+        return PlayerMan.instance
+
+    def __init__(self):
+        raise NotImplementedError('this is a singleton class')
 
     def add(self, player):
         self.base_add(player)

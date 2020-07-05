@@ -33,5 +33,5 @@ class MouseClickObserver(InputObserver):
         if collision.intersect(self.rectA, self.rectB):
             bubblepop = SoundMan.instance.find(SoundNames.BUBBLEPOP)
             bubblepop.play()
-            sc.SceneContext.instance.set_state(self.scene_change, player=self.player)
+            sc.SceneContext.instance.set_state(self.scene_change)
 

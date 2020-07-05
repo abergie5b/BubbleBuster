@@ -89,7 +89,7 @@ class SceneRules(sc.Scene):
         self.boxsprite_manager.draw(self.screen)
         self.font_manager.draw(self.screen)
 
-    def handle(self, player=None):
+    def handle(self):
         musicmenu = self.sound_manager.find(SoundNames.MUSICMENU)
         musicmenu.play()
 

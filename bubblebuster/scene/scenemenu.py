@@ -85,6 +85,6 @@ class SceneMenu(sc.Scene):
 
         self.font_manager.draw(self.screen)
 
-    def handle(self, player=None):
+    def handle(self):
         musicmenu = self.sound_manager.find(SoundNames.MUSICMENU)
         musicmenu.play()

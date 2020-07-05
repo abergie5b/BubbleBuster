@@ -4,24 +4,19 @@ from bubblebuster.settings import GameSettings, InterfaceSettings
 from bubblebuster.font import FontNames, Font
 from bubblebuster.collision import CollisionRectPair
 from bubblebuster.sprite import CircleFactory, LineSpriteNames
-from bubblebuster.level import LevelMan
 import bubblebuster.scene.scene as sc
+import bubblebuster.player as pl
+import bubblebuster.level as le
 
 
 import pygame
 
 
 class ScenePlay(sc.Scene):
-    def __init__(self, name, game, player=None):
+    def __init__(self, name, game):
         super().__init__(name, game)
 
         SCREEN_WIDTH, SCREEN_HEIGHT = (InterfaceSettings.SCREEN_WIDTH, InterfaceSettings.SCREEN_HEIGHT)
-
-        self.player = self.player_manager.add(player)
-        #wallbottom = self.boxsprite_manager.find(LineSpriteNames.WALL_BOTTOM)
-        #startxy = (wallbottom.start_xy[0], wallbottom.start_xy[1]-35)
-        #endxy = (wallbottom.end_xy[0], wallbottom.end_xy[1]-35)
-        #wallbottom.set_coords(startxy, endxy)
 
         # zounds
         self.sound_manager.add(SoundNames.SMALLEXPLODE, 'resources/small_explode.wav')
@@ -36,15 +31,17 @@ class ScenePlay(sc.Scene):
         self.input_manager.lmouse.attach(LMouseClickShootObserver())
         self.input_manager.rmouse.attach(RMouseClickShootObserver())
 
-        # sprites
-        if player: # make the bubbles
-            circle_factory = CircleFactory(self.circle_group, self.boxsprite_manager)
-            circle_factory.generate_random(player.level.bubbles,
-                                           max_xy=(InterfaceSettings.SCREEN_WIDTH,
-                                                   InterfaceSettings.SCREEN_HEIGHT),
-                                           max_h=player.level.bubble_maxh
-                                           )
+        # player
+        self.player = pl.PlayerMan.instance.find(pl.PlayerNames.PLAYERONE)
+        assert self.player
 
+        # sprites
+        circle_factory = CircleFactory(self.circle_group, self.boxsprite_manager)
+        circle_factory.generate_random(le.LevelMan.instance.current_level.bubbles,
+                                       max_xy=(InterfaceSettings.SCREEN_WIDTH,
+                                               InterfaceSettings.SCREEN_HEIGHT),
+                                       max_h=le.LevelMan.instance.current_level.bubble_maxh
+                                       )
 
         # collision pairs
         self.collisionpair_manager.add_groups(self.wall_group, self.circle_group, CollisionRectPair)
@@ -101,10 +98,10 @@ class ScenePlay(sc.Scene):
             self.collisionpair_manager.process()
 
             # player
-            self.player_manager.update()
+            pl.PlayerMan.instance.update()
 
             # level
-            self.level_manager.update()
+            le.LevelMan.instance.update()
 
     def draw(self):
         # render sprites and stuff
@@ -114,29 +111,19 @@ class ScenePlay(sc.Scene):
         # fonts
         self.font_manager.draw(self.screen)
 
-    def handle(self, player=None):
-        assert player
-
-        # pooooop
-        self.player_manager.remove(self.player)
-        self.player = self.player_manager.add(player)
-
-        # levels and players should be coupled better
-        self.level_manager.remove(player.level)
-        self.level_manager.add_level(player.level)
-
+    def handle(self):
         musicmenu = self.sound_manager.find(SoundNames.MUSICMENU)
         musicmenu.play()
 
         # fonts
         fontcurrentlevel = self.font_manager.find(FontNames.CURRENTLEVEL)
-        fontcurrentlevel.text = self.player.level.level
+        fontcurrentlevel.text = le.LevelMan.instance.current_level.level
         fontscoreround = self.font_manager.find(FontNames.SCOREROUND)
         fontscoreround.text = 0
         fontscore = self.font_manager.find(FontNames.SCORE)
         fontscore.text = self.player.score
         fontbubbles = self.font_manager.find(FontNames.BUBBLES)
-        fontbubbles.text = self.player.level.bubbles
+        fontbubbles.text = le.LevelMan.instance.current_level.bubbles
         fontexplosions = self.font_manager.find(FontNames.EXPLOSIONS)
         fontexplosions.text = self.player.weapon.stats_usedround
         fonttime = self.font_manager.find(FontNames.TIME)

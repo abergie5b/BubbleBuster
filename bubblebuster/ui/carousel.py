@@ -2,6 +2,7 @@ from bubblebuster.sprite import BoxSpriteNames, BoxSprite, SpriteMan, SpriteName
 from bubblebuster.font import FontMan, Font, FontNames
 from bubblebuster.settings import InterfaceSettings
 from bubblebuster.input import InputMan, MouseHoverHighlightRectObserver
+import bubblebuster.player as pl
 
 
 class Carousel:
@@ -34,11 +35,11 @@ class WeaponCarousel(Carousel):
         for x in range(len(weapons)):
             self.add_weapon(weapons[x], self.rects[x])
 
-    def attach(self, player, observer):
+    def attach(self, observer):
         for x in range(len(self.rects)):
             rect = self.rects[x]
             weapon = self.weapons[x]
-            InputMan.instance.lmouse.attach(observer(rect, player, weapon))
+            InputMan.instance.lmouse.attach(observer(rect, weapon))
             InputMan.instance.mousecursor.attach(MouseHoverHighlightRectObserver(rect))
 
     def add_weapon(self, weapon, window):

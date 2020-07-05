@@ -7,10 +7,10 @@ from bubblebuster.settings import InterfaceSettings, GameSettings
 from bubblebuster.input import LMouseClickRectObserver, MouseHoverHighlightObserver, MouseClickObserver
 from bubblebuster.ui import WeaponCarousel
 from bubblebuster.weapon import Finger, Thumb, Hand, WeaponNames
-from bubblebuster.player import Player, PlayerNames
+from bubblebuster.player import Player, PlayerNames, PlayerMan
 from bubblebuster.font import FontNames, Font
 from bubblebuster.image import ImageNames
-from bubblebuster.level import LevelNames
+from bubblebuster.level import LevelNames, LevelMan
 import bubblebuster.scene.scene as sc
 
 import pygame
@@ -67,15 +67,15 @@ class SceneWeapon(sc.Scene):
 
         self.boxsprite_manager.add_boxgroup(carousel)
 
-        # level
-        level = self.level_manager.add(LevelNames.ACTIVE)
+        # lets do a random level
+        LevelMan.instance.current_level = LevelMan.instance.get_random()
+        LevelMan.instance.current_level.is_active = True
 
-        # player, attach this
-        self.player = self.player_manager.add(Player(PlayerNames.PLAYERONE,
-                                                     None, # no weapon until selected
-                                                     level
-                                                     ))
-        carousel.attach(self.player, LMouseClickRectObserver)
+        # add the player, attach
+        self.player = PlayerMan.instance.find(PlayerNames.PLAYERONE)
+        
+        # 
+        carousel.attach(LMouseClickRectObserver)
 
         # back to menu
         fontmenu = self.font_manager.add(Font(FontNames.NULL,
@@ -115,13 +115,9 @@ class SceneWeapon(sc.Scene):
 
         self.sprite_manager.draw(self.screen)
 
-    def handle(self, player=None):
-        assert self.player
+    def handle(self):
 
         # this is bad,
         # but need to set in case changed from scenesettings
-        self.player.level.bubbles = GameSettings.NUMBER_OF_BUBBLES
-
-        if player:
-            self.player = player
+        LevelMan.instance.current_level.bubbles = GameSettings.NUMBER_OF_BUBBLES
 
