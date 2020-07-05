@@ -78,19 +78,6 @@ class Scene:
         self.bubble_manager.add(SpottedBubble)
         self.bubble_manager.add(TwinBubble)
 
-        # the player
-        PlayerMan.instance.add(
-            Player(PlayerNames.PLAYERONE,
-                   None # no weapon until selected
-                   )
-        )
-
-        # add teh levels mate, for jimmy
-        LevelMan.instance.add(LevelNames.POINTS)
-        LevelMan.instance.add(LevelNames.TIME)
-        LevelMan.instance.add(LevelNames.MULTIPLIER)
-        LevelMan.instance.add(LevelNames.SNIPER)
-
         # all scenes have walls
         SCREEN_WIDTH, SCREEN_HEIGHT = (InterfaceSettings.SCREEN_WIDTH, InterfaceSettings.SCREEN_HEIGHT)
         self.wall_left = self.boxsprite_manager.add_wall_sprite(sp.LineSpriteNames.WALL_LEFT, (0, 0), (0, SCREEN_HEIGHT), color=(255, 0, 0), width=2)

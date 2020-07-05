@@ -17,12 +17,13 @@ class Level(Link):
     def __init__(self, name):
         super().__init__()
         self.name = name
+
         self.level = 1
-        self.bubbles = 0
-        self.bubble_maxh = 0
-        self.bubble_popdelay = 0
-        self.bubble_maxdelta = 0
-        self.time = 0
+        self.bubbles = GameSettings.NUMBER_OF_BUBBLES
+        self.bubble_maxh = GameSettings.BUBBLE_MAXH
+        self.bubble_popdelay = GameSettings.BUBBLEPOPDELAY
+        self.bubble_maxdelta = GameSettings.BUBBLE_MAXDELTA
+        self.time = 60
 
         self.max_bubbles = 0
         self.max_bubbl_maxh = 0
@@ -86,17 +87,6 @@ class ActiveLevel(Level):
     '''
     def __init__(self):
         super().__init__(LevelNames.ACTIVE)
-        self.level = 1
-        self.bubbles = GameSettings.NUMBER_OF_BUBBLES
-        self.bubble_maxh = GameSettings.BUBBLE_MAXH
-        self.bubble_popdelay = GameSettings.BUBBLEPOPDELAY
-        self.bubble_maxdelta = GameSettings.BUBBLE_MAXDELTA
-        self.time = 60
-
-        # if gamesettings changes, have to update this, not ideal
-        self.max_bubbles = GameSettings.NUMBER_OF_BUBBLES
-        self.max_bubbl_maxh = GameSettings.BUBBLE_MAXH
-        self.max_time = 60
 
     def advance(self):
         self.bubbles = self.max_bubbles + self.level * 2
@@ -239,7 +229,7 @@ class LevelMan(LinkMan):
         return self.base_find(image)
 
     def reset(self):
-        head = this.head
+        head = self.head
         while head:
             head.is_active = False
             head.reset()
@@ -247,7 +237,7 @@ class LevelMan(LinkMan):
         self.current_level = self.get_random()
 
     def advance(self):
-        head = this.head
+        head = self.head
         while head:
             head.is_active = False
             head.advance()

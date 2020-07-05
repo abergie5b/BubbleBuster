@@ -36,15 +36,15 @@ class ScenePlay(sc.Scene):
         assert self.player
 
         # sprites
-        circle_factory = CircleFactory(self.circle_group, self.boxsprite_manager)
-        circle_factory.generate_random(le.LevelMan.instance.current_level.bubbles,
-                                       max_xy=(InterfaceSettings.SCREEN_WIDTH,
-                                               InterfaceSettings.SCREEN_HEIGHT),
-                                       max_h=le.LevelMan.instance.current_level.bubble_maxh
-                                       )
+        #circle_factory = CircleFactory(self.circle_group, self.boxsprite_manager)
+        #circle_factory.generate_random(le.LevelMan.instance.current_level.bubbles,
+        #                               max_xy=(InterfaceSettings.SCREEN_WIDTH,
+        #                                       InterfaceSettings.SCREEN_HEIGHT),
+        #                               max_h=le.LevelMan.instance.current_level.bubble_maxh
+        #                               )
 
-        # collision pairs
-        self.collisionpair_manager.add_groups(self.wall_group, self.circle_group, CollisionRectPair)
+        ## collision pairs
+        #self.collisionpair_manager.add_groups(self.wall_group, self.circle_group, CollisionRectPair)
 
         # fonts
         MENU_STARTX = 10
@@ -116,15 +116,15 @@ class ScenePlay(sc.Scene):
         musicmenu.play()
 
         # sprites
-        #circle_factory = CircleFactory(self.circle_group, self.boxsprite_manager)
-        #circle_factory.generate_random(le.LevelMan.instance.current_level.bubbles,
-        #                               max_xy=(InterfaceSettings.SCREEN_WIDTH,
-        #                                       InterfaceSettings.SCREEN_HEIGHT),
-        #                               max_h=le.LevelMan.instance.current_level.bubble_maxh
-        #                               )
+        circle_factory = CircleFactory(self.circle_group, self.boxsprite_manager)
+        circle_factory.generate_random(le.LevelMan.instance.current_level.bubbles,
+                                       max_xy=(InterfaceSettings.SCREEN_WIDTH,
+                                               InterfaceSettings.SCREEN_HEIGHT),
+                                       max_h=le.LevelMan.instance.current_level.bubble_maxh
+                                       )
 
-        ## collision pairs
-        #self.collisionpair_manager.add_groups(self.wall_group, self.circle_group, CollisionRectPair)
+        # collision pairs
+        self.collisionpair_manager.add_groups(self.wall_group, self.circle_group, CollisionRectPair)
 
         # fonts
         fontcurrentlevel = self.font_manager.find(FontNames.CURRENTLEVEL)

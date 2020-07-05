@@ -10,6 +10,7 @@ import bubblebuster.collision as cl
 import bubblebuster.group as group
 import bubblebuster.timer as timer
 import bubblebuster.player as pl
+import bubblebuster.level as le
 
 import pygame
 from random import randint, choice
@@ -157,7 +158,7 @@ class CircleSprite(BoxSprite):
                         
                         # adjust bubbles for level
                         player = pl.PlayerMan.instance.find(pl.PlayerNames.PLAYERONE)
-                        player.level.bubbles += 2
+                        le.LevelMan.instance.current_level.bubbles += 2
 
                     elif head.pSprite.proba_delaybubble:
                         font_delaybubble = FontMan.instance.add(
@@ -208,7 +209,7 @@ class CircleSprite(BoxSprite):
 
         # bubble texts
         font_bubbles = FontMan.instance.find(FontNames.BUBBLES)
-        font_bubbles.text = player.level.bubbles
+        font_bubbles.text = le.LevelMan.instance.current_level.bubbles
         font = FontMan.instance.find(FontNames.SCORE)
         font.text = player.score
         font = FontMan.instance.find(FontNames.SCOREROUND)

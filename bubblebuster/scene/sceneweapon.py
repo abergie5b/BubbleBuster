@@ -67,8 +67,18 @@ class SceneWeapon(sc.Scene):
 
         self.boxsprite_manager.add_boxgroup(carousel)
 
-        # add the player, attach
-        self.player = PlayerMan.instance.find(PlayerNames.PLAYERONE)
+        # the player
+        PlayerMan.instance.add(
+            Player(PlayerNames.PLAYERONE,
+                   None # no weapon until selected
+                   )
+        )
+
+        # add teh levels mate, for jimmy
+        LevelMan.instance.add(LevelNames.POINTS)
+        LevelMan.instance.add(LevelNames.TIME)
+        LevelMan.instance.add(LevelNames.MULTIPLIER)
+        LevelMan.instance.add(LevelNames.SNIPER)
 
         # lets do a random level
         LevelMan.instance.current_level = LevelMan.instance.get_random()
