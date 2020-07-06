@@ -3,9 +3,8 @@ from bubblebuster.settings import GameSettings
 from bubblebuster.image import ImageMan, ImageNames, BubbleImageMan
 from bubblebuster.sound import SoundMan, SoundNames
 from bubblebuster.settings import InterfaceSettings, DEBUG
-from bubblebuster.font import AlphaFont, Font, FontMan, FontNames
+from bubblebuster.font import AlphaFont, FontMan, FontNames
 from bubblebuster.sprite import BoxSpriteNames, BoxSpriteMan, BoxSprite, ExplosionSprite, SpriteTypes
-import bubblebuster.sprite.bubble as bu
 import bubblebuster.collision as cl
 import bubblebuster.group as group
 import bubblebuster.timer as timer
@@ -58,6 +57,8 @@ class CircleSprite(BoxSprite):
 
         # state
         self.bubble_collision_disabled = False
+        # has collided with another circle
+        self.has_collided = False
 
     def move(self):
         self.posx += self.deltax
@@ -82,6 +83,13 @@ class CircleSprite(BoxSprite):
 
     def proc(self):
         pass
+
+    def prepare_explode(self, explosion=None):
+        self.image = self.image_red
+        self.collision_enabled = False
+        self.has_collided = True
+        command = timer.DestroySpriteCommand(self, explosion=explosion)
+        timer.TimerMan.instance.add(command, GameSettings.BUBBLEPOPDELAY)
 
     def destroy_colliding_circles(self, explosion):
         circle_group = group.GroupMan.instance.find(group.GroupNames.CIRCLE)
@@ -111,11 +119,7 @@ class CircleSprite(BoxSprite):
                     # do the thing
                     procd = head.pSprite.proc()
                     if not procd: # destroy
-                        head.pSprite.image = head.pSprite.image_red
-                        head.pSprite.collision_enabled = False
-
-                        command = timer.DestroySpriteCommand(head.pSprite, explosion=explosion)
-                        timer.TimerMan.instance.add(command, GameSettings.BUBBLEPOPDELAY)
+                        head.pSprite.prepare_explode()
 
             head = head.next
 
@@ -127,6 +131,9 @@ class CircleSprite(BoxSprite):
         destroy this bubble and check for neighboring collisions
         bubble might even get a second chance at life, who knows
         '''
+        if not explosion:
+            explosion = ExplosionSprite.instance
+
         ExplosionSprite.instance.last_collision = timer.TimerMan.instance.current_time
 
         # scoreboard
@@ -173,6 +180,20 @@ class CircleSprite(BoxSprite):
         if explosion.multiplier > 1 and not fadeout_command:
             font_multiplier = FontMan.instance.find(FontNames.TOAST)
             timer.TimerMan.instance.add(timer.FadeOutFontCommand(font_multiplier, InterfaceSettings.FONTCOLOR), 1000)
+
+    def accept(self, circle):
+        if DEBUG:
+            print('%s bubble collided with %s bubble' % (self, circle))
+
+        procd = circle.proc()
+        if not procd: # destroy me
+            circle.prepare_explode()
+
+            # this bubble can collide with others now (except for self)
+            #circle_group = group.GroupMan.instance.find(group.GroupNames.CIRCLE)
+            #cl.CollisionPairMan.instance.attach_to_group(circle_group, circle, cl.CollisionCirclePair, except_type=SpriteTypes.EXPLOSION)
+
+            #circle.destroy(explosion=self)
 
 
 class CircleSpriteMan(LinkMan):

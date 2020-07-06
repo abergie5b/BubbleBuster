@@ -8,6 +8,7 @@ from enum import Enum
 class SpriteTypes(Enum):
     BUBBLE = 1
     NULL = 2
+    EXPLOSION = 3
 
 class SpriteNames(Enum):
     EXPLODE = 1

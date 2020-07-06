@@ -1,6 +1,7 @@
 import pygame
 
 import bubblebuster.input.subject as subject
+import bubblebuster.sprite as sp
 from bubblebuster.link import *
 
 def intersect(rectA, rectB):
@@ -74,9 +75,17 @@ class CollisionPairMan(LinkMan):
             for b in groupB:
                 self.add(pair_function(a, b))
 
-    def attach_to_group(self, group, sprite, pair_function):
+    def attach_to_group(self, group, sprite, pair_function, except_type=None):
         for obj in group:
-            self.add(pair_function(obj, sprite))
+            if obj != sprite and obj.type != except_type:
+                self.add(pair_function(obj, sprite))
+
+    def remove_single(self, pair):
+        head = self.head
+        while head:
+            if head == pair:
+                self.base_remove_single(pair)
+            head = head.next
 
     def remove(self, sprite):
         head = self.head

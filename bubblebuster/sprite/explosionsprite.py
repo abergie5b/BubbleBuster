@@ -1,8 +1,8 @@
-from bubblebuster.font import FontMan, FontNames
-from bubblebuster.settings import DEBUG, GameSettings
-import bubblebuster.player as pl
+from bubblebuster.settings import DEBUG
+import bubblebuster.collision as cl
 import bubblebuster.timer as timer
 import bubblebuster.sprite as sp
+import bubblebuster.group as gp
 
 
 import pygame
@@ -14,7 +14,7 @@ class ExplosionSprite(sp.BoxSprite):
         # note: no image for this yet
 
         # type
-        self.type = sp.SpriteTypes.NULL
+        self.type = sp.SpriteTypes.EXPLOSION
 
         # for scoring
         self.multiplier = 1
@@ -29,6 +29,9 @@ class ExplosionSprite(sp.BoxSprite):
 
         # back pointer
         self.weapon = None
+
+        # state
+        self.has_collided = False # always
 
     def draw(self, screen):
         self.rect = pygame.draw.circle(screen,
@@ -49,11 +52,11 @@ class ExplosionSprite(sp.BoxSprite):
 
         procd = circle.proc()
         if not procd: # destroy me
-            circle.image = circle.image_red
-            circle.collision_enabled = False
+            circle.prepare_explode(explosion=self)
 
-            command = timer.DestroySpriteCommand(circle, explosion=self)
-            timer.TimerMan.instance.add(command, GameSettings.BUBBLEPOPDELAY)
+            # this bubble can collide with others now
+            #circle_group = gp.GroupMan.instance.find(gp.GroupNames.CIRCLE)
+            #cl.CollisionPairMan.instance.attach_to_group(circle_group, circle, cl.CollisionCirclePair)
 
             #circle.destroy(explosion=self)
 
