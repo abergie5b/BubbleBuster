@@ -23,3 +23,5 @@ class NukeBubble(csp.CircleSprite):
         self.name = BubbleNames.NUKE
         self.type = sp.SpriteTypes.BUBBLE
 
+    def proc(self):
+        return False

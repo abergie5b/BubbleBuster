@@ -21,3 +21,5 @@ class SpottedBubble(csp.CircleSprite):
         self.name = BubbleNames.SPOTTED
         self.type = sp.SpriteTypes.BUBBLE
 
+    def proc(self):
+        return False

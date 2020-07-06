@@ -21,3 +21,5 @@ class SlipperyBubble(csp.CircleSprite):
         self.name = BubbleNames.SLIPPERY
         self.type = sp.SpriteTypes.BUBBLE
 
+    def proc(self):
+        return False
