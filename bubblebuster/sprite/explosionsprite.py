@@ -1,8 +1,9 @@
-from bubblebuster.settings import DEBUG
-import bubblebuster.player as pl
 from bubblebuster.font import FontMan, FontNames
+from bubblebuster.settings import DEBUG, GameSettings
+import bubblebuster.player as pl
 import bubblebuster.timer as timer
 import bubblebuster.sprite as sp
+
 
 import pygame
 
@@ -42,12 +43,19 @@ class ExplosionSprite(sp.BoxSprite):
     def accept(self, circle):
         ExplosionSprite.instance = self
         ExplosionSprite.instance.last_collision = timer.TimerMan.instance.current_time
+
         if DEBUG:
             print('explosion collided with circle', circle)
-        player = pl.PlayerMan.instance.find(pl.PlayerNames.PLAYERONE)
-        font = FontMan.instance.find(FontNames.SCORE)
-        font.text = player.score
-        circle.destroy(explosion=self)
+
+        procd = circle.proc()
+        if not procd: # destroy me
+            circle.image = circle.image_red
+            circle.collision_enabled = False
+
+            command = timer.DestroySpriteCommand(circle, explosion=self)
+            timer.TimerMan.instance.add(command, GameSettings.BUBBLEPOPDELAY)
+
+            #circle.destroy(explosion=self)
 
     def inc(self):
         if DEBUG and self.duration % 5 == 0:
