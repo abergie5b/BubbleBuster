@@ -147,7 +147,11 @@ class CircleSprite(BoxSprite):
                                   head.pSprite.rect.centery,
                                   color=head.pSprite.color)
 
-                        # delay this 
+                        # aod to sprite manager
+                        BoxSpriteMan.instance.add_sprite(twinb)
+                        BoxSpriteMan.instance.add_sprite(twina)
+
+                        # add to circle group, delay this
                         timer.TimerMan.instance.add(timer.AddToCircleGroupCommand(twina), GameSettings.BUBBLEPOPDELAY)
                         timer.TimerMan.instance.add(timer.AddToCircleGroupCommand(twinb), GameSettings.BUBBLEPOPDELAY)
 
