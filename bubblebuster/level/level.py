@@ -3,7 +3,6 @@ from bubblebuster.settings import GameSettings
 import bubblebuster.player as pl
 
 from enum import Enum
-from random import randint
 
 class LevelNames(Enum):
     ACTIVE = 1

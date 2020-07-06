@@ -80,6 +80,9 @@ class CircleSprite(BoxSprite):
             sound = SoundMan.instance.find(SoundNames.BUBBLE_MINIPOP)
         sound.play()
 
+    def proc(self):
+        pass
+
     def destroy_colliding_circles(self, explosion):
         circle_group = group.GroupMan.instance.find(group.GroupNames.CIRCLE)
         head = circle_group.nodeman.head

@@ -8,7 +8,7 @@ import pygame
 
 class ExplosionSprite(sp.BoxSprite):
     instance = None
-    def __init__(self, name, width, height, x, y, duration, radius_delta, color=(255, 255, 255), alpha=255):
+    def __init__(self, name, width, height, x, y, duration, radius_delta, color=(255, 255, 255)):
         super().__init__(name, width, height, x, y, color=color)
         # note: no image for this yet
 
