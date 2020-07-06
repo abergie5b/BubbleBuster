@@ -112,7 +112,7 @@ class Scene:
         TimerMan.set_active(self.timer_manager)
         SoundMan.set_active(self.sound_manager)
 
-    def handle(self, player=None):
+    def handle(self):
         raise NotImplementedError("this is an abstract class")
 
 
@@ -127,6 +127,6 @@ class SceneOver(Scene):
     def draw(self):
         pass
 
-    def handle(self, player=None):
+    def handle(self):
         pass
 

@@ -49,6 +49,15 @@ class SceneSwitch(sc.Scene):
                                         )
                                    )
 
+        self.font_manager.add(Font(FontNames.LEVELTYPE,
+                                        InterfaceSettings.FONTSTYLE,
+                                        48,
+                                        '',
+                                        InterfaceSettings.FONTCOLOR,
+                                        (InterfaceSettings.SCREEN_WIDTH-InterfaceSettings.SCREEN_WIDTH // 2, InterfaceSettings.SCREEN_HEIGHT // 8)
+                                        )
+                                   )
+
         self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 20, 'Round Score', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
 
         self.font_manager.add(Font(FontNames.STATS_EXPLOSIONBONUSA, InterfaceSettings.FONTSTYLE, 20, '0', InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX, MENU_STARTY)))
@@ -80,6 +89,8 @@ class SceneSwitch(sc.Scene):
 
         MENU_STARTY += MENU_OFFSETY*2
         self.font_manager.add(Font(FontNames.SCENESWITCH_PRESSANYKEY, InterfaceSettings.FONTSTYLE, 20, 'Press any key ...', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
+
+        self.timer_manager.add(SwitchSceneCommand(sc.SceneNames.PLAY, onkeypress=True), 1)
 
     def update(self):
         time = pygame.time.get_ticks()
@@ -113,6 +124,9 @@ class SceneSwitch(sc.Scene):
         if player:
             menutitle = self.font_manager.find(FontNames.MENUTITLE)
             menutitle.text = 'Level %d' % le.LevelMan.instance.current_level.level
+
+            menutitle = self.font_manager.find(FontNames.LEVELTYPE)
+            menutitle.text = le.LevelMan.instance.current_level.name.name
 
             MENU_STARTX = InterfaceSettings.SCREEN_WIDTH // 8
             MENU_STARTY = InterfaceSettings.SCREEN_HEIGHT // 3
@@ -157,7 +171,4 @@ class SceneSwitch(sc.Scene):
             fontstatsexplosionsusedval = self.font_manager.find(FontNames.STATS_EXPLOSIONSUSED)
             fontstatsexplosionsusedval.text = player.stats_explosions
 
-        # hack me
-        #sccxt.SceneContext.instance.scene_play = scpl.ScenePlay(sc.SceneNames.PLAY, self.game)
-        self.timer_manager.add(SwitchSceneCommand(sc.SceneNames.PLAY, onkeypress=True), 0)
 

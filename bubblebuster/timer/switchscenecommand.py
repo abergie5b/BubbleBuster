@@ -3,7 +3,7 @@ import bubblebuster.scene.scenecontext as sc
 import bubblebuster.input as input
 
 class SwitchSceneCommand(Command):
-    def __init__(self, destination, player=None, onkeypress=None):
+    def __init__(self, destination, player=None, onkeypress=False):
         self.name = TimeEventNames.SWITCHSCENE
         self.destination = destination
         self.player = player

@@ -33,24 +33,33 @@ class Player(Link):
 
     def update(self):
         if LevelMan.instance.current_level.is_complete:
-            # update for next level
-            LevelMan.instance.advance()
-            # stats
-            if self.weapon.ammo and self.weapon.ammo != inf:
-                self.score -= self.stats_scoreround
-                self.stats_scoreround *= self.weapon.ammo
-                self.score += self.stats_scoreround
-            if DEBUG:
-                print('next level activated %d with %d bubbles and %d max height' % (
-                      LevelMan.instance.current_level, LevelMan.instance.current_level.bubbles, LevelMan.instance.current_level.bubble_maxh)
-                )
-                print('scoreround: %d scoreround_raw: %d score %d stats_explosionsround: %d' % (
-                      self.stats_scoreround, self.stats_scoreround//self.stats_explosionsround, self.score, self.stats_explosionsround)
-                )
-            # reset for next level
-            self.reset()
-            # next scene
-            timer.TimerMan.instance.add(timer.SwitchSceneCommand(sc.SceneNames.SCENESWITCH, player=self), 500)
+            current_time = timer.TimerMan.instance.current_time
+            last_collision = sp.ExplosionSprite.instance.last_collision
+            # let the current explosion finish and make sure no collisions happening
+            if not self.weapon.is_active and current_time - last_collision > LevelMan.instance.current_level.bubble_popdelay:
+
+                # update for next level
+                LevelMan.instance.advance()
+
+                # stats
+                if self.weapon.ammo and self.weapon.ammo != inf:
+                    self.score -= self.stats_scoreround
+                    self.stats_scoreround *= self.weapon.ammo
+                    self.score += self.stats_scoreround
+
+                if DEBUG:
+                    print('next level activated %d with %d bubbles and %d max height' % (
+                          LevelMan.instance.current_level.level, LevelMan.instance.current_level.bubbles, LevelMan.instance.current_level.bubble_maxh)
+                    )
+                    print('scoreround: %d scoreround_raw: %d score %d stats_explosionsround: %d' % (
+                          self.stats_scoreround, self.stats_scoreround//self.stats_explosionsround, self.score, self.stats_explosionsround)
+                    )
+
+                # reset for next level
+                self.reset()
+
+                # next scene
+                timer.TimerMan.instance.add(timer.SwitchSceneCommand(sc.SceneNames.SCENESWITCH), 500)
         elif LevelMan.instance.current_level.defeat: # gg
             # stats
             current_time = timer.TimerMan.instance.current_time

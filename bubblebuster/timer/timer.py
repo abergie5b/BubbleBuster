@@ -2,10 +2,12 @@ from bubblebuster.link import LinkMan
 import bubblebuster.timer as timer
 
 class TimerMan(LinkMan):
+    instance = None
     def __init__(self):
         super().__init__()
         self.head = None
         self.current_time = 0
+        TimerMan.instance = self
 
     def add(self, command, delta_time):
         event = timer.TimeEvent(command, delta_time)

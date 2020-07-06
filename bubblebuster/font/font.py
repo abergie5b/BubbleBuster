@@ -44,6 +44,7 @@ class FontNames(Enum):
     STATS_EXPLOSIONBONUSC = 37
     STATS_EXPLOSIONBONUSD = 38
     SCENESWITCH_PRESSANYKEY = 39
+    LEVELTYPE = 40
 
 class Font(Link):
     def __init__(self, font_name, font_style, font_size, text, color, posxy):

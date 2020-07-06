@@ -25,9 +25,9 @@ class Level(Link):
         self.bubble_maxdelta = GameSettings.BUBBLE_MAXDELTA
         self.time = 60
 
-        self.max_bubbles = 0
-        self.max_bubbl_maxh = 0
-        self.max_time = 0
+        self.max_bubbles = GameSettings.NUMBER_OF_BUBBLES
+        self.max_bubbl_maxh = GameSettings.BUBBLE_MAXH
+        self.max_time = 60
 
         # back pointer
         self.player = pl.PlayerMan.instance.find(pl.PlayerNames.PLAYERONE)
@@ -50,6 +50,7 @@ class Level(Link):
         self.level += 1
         self.is_complete = False
         self.defeat = False
+        self.is_active = False
 
     def reset(self):
         '''
@@ -103,7 +104,7 @@ class PointsLevel(Level):
         super().__init__(LevelNames.POINTS)
         self.target_score = 1000
 
-    def update(self):
+    def _update(self):
         if self.player.score >= self.target_score:
             self.is_complete = True
         # no defeat condition
@@ -124,7 +125,7 @@ class TimeLevel(Level):
         self.target_time = 1000
         self.target_bubbles = 10
 
-    def update(self):
+    def _update(self):
         if self.bubbles <= 0:
             self.is_complete = True
         if (self.target_time <= 0 or not self.player.weapon.ammo) and not self.is_complete:
@@ -146,7 +147,7 @@ class SniperLevel(Level):
         self.target_time = 1000
         self.target_bubbles = 10
 
-    def update(self):
+    def _update(self):
         if self.bubbles <= 0:
             self.is_complete = True
         if (self.target_time <= 0 or not self.player.weapon.ammo) and not self.is_complete:
@@ -167,7 +168,7 @@ class MultiplierLevel(Level):
         super().__init__(LevelNames.MULTIPLIER)
         self.target_multiplier = 10
 
-    def update(self):
+    def _update(self):
         if self.player.stats_maxmultiplier >= self.target_multiplier:
             self.is_complete = True
         # no defeat
@@ -239,7 +240,6 @@ class LevelMan(LinkMan):
     def advance(self):
         head = self.head
         while head:
-            head.is_active = False
             head.advance()
             head = head.next
         self.current_level = self.get_random()
