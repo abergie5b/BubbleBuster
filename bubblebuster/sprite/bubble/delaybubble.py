@@ -1,16 +1,10 @@
 from bubblebuster.settings import GameSettings
-from bubblebuster.image import ImageMan, ImageNames, BubbleImageMan
-from bubblebuster.sound import SoundMan, SoundNames
-from bubblebuster.settings import InterfaceSettings, DEBUG
-from bubblebuster.font import AlphaFont, Font, FontMan, FontNames
+from bubblebuster.settings import InterfaceSettings
+from bubblebuster.font import Font, FontMan, FontNames
 from bubblebuster.sprite.bubble import BubbleNames
-import bubblebuster.collision as cl
-import bubblebuster.player as pl
-import bubblebuster.group as group
 import bubblebuster.timer as timer
 import bubblebuster.sprite as sp
 import bubblebuster.sprite.circlesprite as csp
-import bubblebuster.player as pl
 
 import pygame
 
@@ -21,3 +15,25 @@ class DelayBubble(csp.CircleSprite):
         self.name = BubbleNames.DELAY
         self.type = sp.SpriteTypes.BUBBLE
 
+    def proc(self):
+        if self.proba_delaybubble:
+            font_delaybubble = FontMan.instance.add(
+                Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 18, "Delay!", InterfaceSettings.FONTCOLOR,
+                     (self.posx+self.height//2, self.posy+self.height//2-25)) # above midpoint
+            )
+            timer.TimerMan.instance.add(timer.RemoveFontCommand(font_delaybubble), 1000)
+
+            self.collision_enabled = False
+            timer.TimerMan.instance.add(
+                timer.ColorChangeBubbleCommand(self, 
+                                               self.image_red, 
+                                               GameSettings.BUBBLEPOPDELAY*4
+                                               ),
+                0
+            )
+
+            # do it
+            command = timer.DestroySpriteCommand(self, explosion=sp.ExplosionSprite.instance)
+            timer.TimerMan.instance.add(command, GameSettings.BUBBLEPOPDELAY*4)
+            return True
+        return False

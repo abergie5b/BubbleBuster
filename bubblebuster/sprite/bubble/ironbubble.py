@@ -1,18 +1,11 @@
-from bubblebuster.settings import GameSettings
-from bubblebuster.image import ImageMan, ImageNames, BubbleImageMan
-from bubblebuster.sound import SoundMan, SoundNames
-from bubblebuster.settings import InterfaceSettings, DEBUG
-from bubblebuster.font import AlphaFont, Font, FontMan, FontNames
+from bubblebuster.settings import InterfaceSettings
+from bubblebuster.font import Font, FontMan, FontNames
 from bubblebuster.sprite.bubble import BubbleNames
-import bubblebuster.collision as cl
-import bubblebuster.player as pl
-import bubblebuster.group as group
 import bubblebuster.timer as timer
 import bubblebuster.sprite as sp
 import bubblebuster.sprite.circlesprite as csp
 
 import pygame
-from random import randint, choice
 
 
 class IronBubble(csp.CircleSprite):
@@ -21,3 +14,19 @@ class IronBubble(csp.CircleSprite):
         self.name = BubbleNames.IRON
         self.type = sp.SpriteTypes.BUBBLE
 
+    def proc(self):
+        if self.proba_secondchance:
+            font_secondchance = FontMan.instance.add(
+                Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 18, "Iron Bubble!", InterfaceSettings.FONTCOLOR,
+                     (self.posx+self.height//2, self.posy+self.height//2-25)) # above midpoint
+            )
+            timer.TimerMan.instance.add(timer.RemoveFontCommand(font_secondchance), 1000)
+
+
+            self.proba_secondchance = 0 # no more second chances for you mate
+            self.bubble_collision_disabled = True
+
+            command = timer.SecondChanceBubbleCommand(self)
+            timer.TimerMan.instance.add(command, 1)
+            return True
+        return False

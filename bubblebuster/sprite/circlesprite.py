@@ -48,7 +48,7 @@ class CircleSprite(BoxSprite):
         # gifts
         self.proba_gift = 0.05 <= randint(0, 100)/100
 
-        # bubble type (need different classes for these)
+        # bubble procs
         self.proba_multibubble = 0.05 >= randint(0, 100)/100
         self.proba_secondchance = 0.05 >= randint(0, 100)/100
         self.proba_delaybubble = 0.05 >= randint(0, 100)/100
@@ -108,86 +108,9 @@ class CircleSprite(BoxSprite):
                     font_multiplier.text = str('Multiplier! %d' % explosion.multiplier)
                     font_multiplier.color = InterfaceSettings.FONTCOLOR
 
-                    # need classes for different types.. lets keep it ugly for now
-                    # second chance
-                    if head.pSprite.proba_secondchance:
-                        font_secondchance = FontMan.instance.add(
-                            Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 18, "Iron Bubble!", InterfaceSettings.FONTCOLOR,
-                                 (self.posx+self.height//2, self.posy+self.height//2-25)) # above midpoint
-                        )
-                        timer.TimerMan.instance.add(timer.RemoveFontCommand(font_secondchance), 1000)
-
-
-                        head.pSprite.proba_secondchance = 0 # no more second chances for you mate
-                        head.pSprite.bubble_collision_disabled = True
-
-                        command = timer.SecondChanceBubbleCommand(head.pSprite)
-                        timer.TimerMan.instance.add(command, 1)
-
-                    elif head.pSprite.proba_multibubble:
-                        font_twinbubble = FontMan.instance.add(
-                            Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 18, "Twins!", InterfaceSettings.FONTCOLOR,
-                                 (self.posx+self.height//2, self.posy+self.height//2-25)) # above midpoint
-                        )
-                        timer.TimerMan.instance.add(timer.RemoveFontCommand(font_twinbubble), 1000)
-
-                        head.pSprite.collision_enabled = False
-
-                        command = timer.DestroySpriteCommand(head.pSprite, explosion=explosion)
-                        timer.TimerMan.instance.add(command, 1)
-
-                        bubbletypea = bu.BubbleMan.instance.get_random()
-                        twina = bubbletypea.obj(head.pSprite.width,
-                                max(GameSettings.BUBBLE_MAXH//4, head.pSprite.height//2),
-                                head.pSprite.rect.centerx,
-                                head.pSprite.rect.centery,
-                                color=head.pSprite.color)
-
-                        bubbletypeb = bu.BubbleMan.instance.get_random()
-                        twinb = bubbletypeb.obj(head.pSprite.width,
-                                  max(GameSettings.BUBBLE_MAXH//4, head.pSprite.height//2),
-                                  head.pSprite.rect.centerx,
-                                  head.pSprite.rect.centery,
-                                  color=head.pSprite.color)
-
-                        # aod to sprite manager
-                        BoxSpriteMan.instance.add_sprite(twinb)
-                        BoxSpriteMan.instance.add_sprite(twina)
-
-                        # add to circle group, delay this
-                        timer.TimerMan.instance.add(timer.AddToCircleGroupCommand(twina), GameSettings.BUBBLEPOPDELAY)
-                        timer.TimerMan.instance.add(timer.AddToCircleGroupCommand(twinb), GameSettings.BUBBLEPOPDELAY)
-
-                        # attach to wall group
-                        wall_group = group.GroupMan.instance.find(group.GroupNames.WALL)
-                        cl.CollisionPairMan.instance.attach_to_group(wall_group, twina, cl.CollisionRectPair)
-                        cl.CollisionPairMan.instance.attach_to_group(wall_group, twinb, cl.CollisionRectPair)
-                        
-                        # adjust bubbles for level
-                        player = pl.PlayerMan.instance.find(pl.PlayerNames.PLAYERONE)
-                        le.LevelMan.instance.current_level.bubbles += 2
-
-                    elif head.pSprite.proba_delaybubble:
-                        font_delaybubble = FontMan.instance.add(
-                            Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 18, "Delay!", InterfaceSettings.FONTCOLOR,
-                                 (self.posx+self.height//2, self.posy+self.height//2-25)) # above midpoint
-                        )
-                        timer.TimerMan.instance.add(timer.RemoveFontCommand(font_delaybubble), 1000)
-
-                        head.pSprite.collision_enabled = False
-                        timer.TimerMan.instance.add(
-                            timer.ColorChangeBubbleCommand(head.pSprite, 
-                                                           head.pSprite.image_red, 
-                                                           GameSettings.BUBBLEPOPDELAY*4
-                                                           ),
-                            0
-                        )
-
-                        # do it
-                        command = timer.DestroySpriteCommand(head.pSprite, explosion=explosion)
-                        timer.TimerMan.instance.add(command, GameSettings.BUBBLEPOPDELAY*4)
-
-                    else: # destroy
+                    # do the thing
+                    procd = head.pSprite.proc()
+                    if not procd: # destroy
                         head.pSprite.image = head.pSprite.image_red
                         head.pSprite.collision_enabled = False
 
@@ -195,6 +118,9 @@ class CircleSprite(BoxSprite):
                         timer.TimerMan.instance.add(command, GameSettings.BUBBLEPOPDELAY)
 
             head = head.next
+
+    def proc(self):
+        raise NotImplementedError('procs are not implemented for base class circle sprites')
 
     def destroy(self, explosion):
         '''
