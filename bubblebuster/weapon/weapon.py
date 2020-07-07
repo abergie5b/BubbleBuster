@@ -4,6 +4,7 @@ from bubblebuster.timer import ClickExplodeCommand, TimerMan
 from bubblebuster.group import GroupNames, GroupMan
 from bubblebuster.sprite import BoxSpriteMan, BoxSpriteNames
 from bubblebuster.settings import InterfaceSettings
+import bubblebuster.collision as cl
 
 from math import inf
 from enum import Enum
@@ -72,11 +73,12 @@ class ExplodeWeapon(Weapon):
                                                   )
             self.rect.weapon = self
 
-            # add these to circle group
+            # collision pairs for bubbles
             circle_group = GroupMan.instance.find(GroupNames.CIRCLE)
-            spritenode = circle_group.add(self.rect)
+            cl.CollisionPairMan.instance.attach_to_group_asobja(circle_group, self.rect, cl.CollisionCirclePair)
 
-            click_explode = ClickExplodeCommand(spritenode)
+            # start the explosion
+            click_explode = ClickExplodeCommand(self.rect)
             TimerMan.instance.add(click_explode, 0)
 
             self.stats_usedround += self.smallcost
@@ -97,11 +99,12 @@ class ExplodeWeapon(Weapon):
                                                   )
             self.rect.weapon = self
 
-            # add these to circle group
+            # collision pairs for bubbles
             circle_group = GroupMan.instance.find(GroupNames.CIRCLE)
-            spritenode = circle_group.add(self.rect)
+            cl.CollisionPairMan.instance.attach_to_group_asobja(circle_group, self.rect, cl.CollisionCirclePair)
 
-            click_explode = ClickExplodeCommand(spritenode)
+            # start the explosion
+            click_explode = ClickExplodeCommand(self.rect)
             TimerMan.instance.add(click_explode, 0)
 
             self.stats_usedround += self.largecost

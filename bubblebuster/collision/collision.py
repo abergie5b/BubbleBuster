@@ -80,6 +80,11 @@ class CollisionPairMan(LinkMan):
             if obj != sprite and obj.type != except_type:
                 self.add(pair_function(obj, sprite))
 
+    def attach_to_group_asobja(self, group, sprite, pair_function, except_type=None):
+        for obj in group:
+            if obj != sprite and obj.type != except_type:
+                self.add(pair_function(sprite, obj))
+
     def remove_single(self, pair):
         head = self.head
         while head:

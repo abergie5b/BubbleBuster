@@ -182,6 +182,8 @@ class CircleSprite(BoxSprite):
             timer.TimerMan.instance.add(timer.FadeOutFontCommand(font_multiplier, InterfaceSettings.FONTCOLOR), 1000)
 
     def accept(self, circle):
+        assert isinstance(circle, CircleSprite)
+
         if DEBUG:
             print('%s bubble collided with %s bubble' % (self, circle))
 
