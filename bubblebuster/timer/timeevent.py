@@ -13,6 +13,7 @@ class TimeEventNames(Enum):
     SECONDCHANCE = 7
     COLORCHANGEBUBBLE = 8
     ADDTOCIRCLEGROUP = 9
+    INCREASEBUBBLERADIUS = 10
 
 
 class TimeEvent(Link):

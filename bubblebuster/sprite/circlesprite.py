@@ -23,8 +23,8 @@ class CircleSprite(BoxSprite):
 
         # red 
         red_bubble = ImageMan.instance.find(ImageNames.REDBUBBLE)
-        self.image_red = pygame.transform.scale(red_bubble.surface, 
-                                                (self.height, self.height)
+        self.original_image_red = self.image_red = pygame.transform.scale(red_bubble.surface, 
+                                                                          (self.height, self.height)
         )
 
         self.base_image = BubbleImageMan.instance.get_random()
@@ -45,15 +45,15 @@ class CircleSprite(BoxSprite):
         self.hratio = self.height / GameSettings.BUBBLE_MAXH
 
         # gifts
-        self.proba_gift = 0.05 <= randint(0, 100)/100
+        self.proba_gift = GameSettings.BUBBLE_GIFTPROCPROBA <= randint(0, 100)/100
 
         # bubble procs
-        self.proba_multibubble = 0.05 >= randint(0, 100)/100
-        self.proba_secondchance = 0.05 >= randint(0, 100)/100
-        self.proba_delaybubble = 0.05 >= randint(0, 100)/100
-        self.proba_spottedbubble = 0.05 >= randint(0, 100)/100
-        self.proba_nukebubble = 0.05 >= randint(0, 100)/100
-        self.proba_slipperybubble = 0.05 >= randint(0, 100)/100
+        self.proba_multibubble = GameSettings.BUBBLE_PROCPROBA >= randint(0, 100)/100
+        self.proba_secondchance = GameSettings.BUBBLE_PROCPROBA >= randint(0, 100)/100
+        self.proba_delaybubble = GameSettings.BUBBLE_PROCPROBA >= randint(0, 100)/100
+        self.proba_spottedbubble = GameSettings.BUBBLE_PROCPROBA >= randint(0, 100)/100
+        self.proba_nukebubble = GameSettings.BUBBLE_PROCPROBA >= randint(0, 100)/100
+        self.proba_slipperybubble = GameSettings.BUBBLE_PROCPROBA >= randint(0, 100)/100
 
         # state
         self.bubble_collision_disabled = False
@@ -65,7 +65,9 @@ class CircleSprite(BoxSprite):
         self.posy += self.deltay
 
     def draw(self, screen):
-        self.rect = screen.blit(self.image, (self.posx, self.posy))
+        self.rect = screen.blit(self.image,
+                                (self.posx, self.posy)
+        )
 
     def update(self):
         self.move()
@@ -82,12 +84,18 @@ class CircleSprite(BoxSprite):
         sound.play()
 
     def proc(self):
-        pass
+        raise NotImplementedError('proc not implemented for circle sprite base class')
 
     def prepare_explode(self, explosion=None):
         self.image = self.image_red
         self.collision_enabled = False
         self.has_collided = True
+
+        # blow up
+        command = timer.IncreaseBubbleRadiusCommand(self, GameSettings.BUBBLEPOPDELAY//2)
+        timer.TimerMan.instance.add(command, GameSettings.BUBBLEPOPDELAY//2)
+
+        # destroy
         command = timer.DestroySpriteCommand(self, explosion=explosion)
         timer.TimerMan.instance.add(command, GameSettings.BUBBLEPOPDELAY)
 

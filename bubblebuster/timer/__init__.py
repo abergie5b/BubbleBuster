@@ -9,3 +9,4 @@ from .switchscenecommand import *
 from .secondchancebubblecommand import *
 from .colorchangebubblecommand import *
 from .addtocirclegroupcommand import *
+from .increasebubbleradiuscommand import *

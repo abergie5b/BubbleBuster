@@ -8,7 +8,7 @@ from random import choice
 
 
 class ColorChangeBubbleCommand(Command):
-    def __init__(self, sprite, image, duration, freq=100):
+    def __init__(self, sprite, image, duration, freq=1):
         self.sprite = sprite
         self.image = image
         self.duration = duration

@@ -25,15 +25,20 @@ class DelayBubble(csp.CircleSprite):
 
             self.collision_enabled = False
             timer.TimerMan.instance.add(
-                timer.ColorChangeBubbleCommand(self, 
-                                               self.image_red, 
-                                               GameSettings.BUBBLEPOPDELAY*4
+                timer.ColorChangeBubbleCommand(self,
+                                               self.image_red,
+                                               GameSettings.BUBBLEPOPDELAY*2
                                                ),
                 0
             )
 
+            # blow up
+            #command = timer.IncreaseBubbleRadiusCommand(self, GameSettings.BUBBLEPOPDELAY*2)
+            #timer.TimerMan.instance.add(command, GameSettings.BUBBLEPOPDELAY*2)
+            
             # do it
             command = timer.DestroySpriteCommand(self, explosion=sp.ExplosionSprite.instance)
             timer.TimerMan.instance.add(command, GameSettings.BUBBLEPOPDELAY*4)
             return True
         return False
+

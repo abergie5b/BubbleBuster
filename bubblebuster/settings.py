@@ -44,11 +44,11 @@ NUMBER_OF_BUBBLES = 25
 BUBBLE_MAXH = 200
 BUBBLEPOPDELAY = 500
 BUBBLE_MAXDELTA = 100
+BUBBLE_GIFTPROCPROBA = 0.05
+BUBBLE_PROCPROBA = 0.05
 
 
 class GameSettings:
-    # i dont like dis
-    # is this needed anymore?
     @staticmethod
     def init():
         # BUBBLE SETTINGS
@@ -56,4 +56,6 @@ class GameSettings:
         GameSettings.BUBBLE_MAXH = BUBBLE_MAXH
         GameSettings.BUBBLEPOPDELAY = BUBBLEPOPDELAY
         GameSettings.BUBBLE_MAXDELTA = BUBBLE_MAXDELTA
+        GameSettings.BUBBLE_GIFTPROCPROBA = BUBBLE_GIFTPROCPROBA
+        GameSettings.BUBBLE_PROCPROBA = BUBBLE_PROCPROBA
 
