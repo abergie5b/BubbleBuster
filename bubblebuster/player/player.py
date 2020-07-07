@@ -21,6 +21,9 @@ class Player(Link):
         self.name = name
         self.weapon = weapon
 
+        # from input
+        self.playername = ''
+
         # stats
         self.stats_bubbles = 0
         self.stats_maxmultiplier = 0

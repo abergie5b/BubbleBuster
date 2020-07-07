@@ -5,7 +5,7 @@ import bubblebuster.scene.scenesetting as scst
 import bubblebuster.scene.sceneweapon as scwp
 import bubblebuster.scene.scenerules as scru
 import bubblebuster.scene.scenemenu as scmu
-#import bubblebuster.scene.sceneover as scov
+import bubblebuster.scene.sceneover as scov
 import bubblebuster.scene.scenehighscore as schs
 
 class SceneContext:
@@ -14,7 +14,7 @@ class SceneContext:
     def __init__(self, game):
         self.game = game
         self.scene_menu = scmu.SceneMenu(sc.SceneNames.MENU, game)
-        #self.scene_over = scov.SceneOver(sc.SceneNames.OVER, game)
+        self.scene_over = scov.SceneOver(sc.SceneNames.OVER, game)
         self.scene_rules = scru.SceneRules(sc.SceneNames.RULES, game)
         self.scene_settings = scst.SceneSettings(sc.SceneNames.SETTINGS, game)
         self.scene_highscores = schs.SceneHighScores(sc.SceneNames.HIGHSCORES, game)
@@ -29,7 +29,7 @@ class SceneContext:
     def reset(self):
         self.scene_menu = scmu.SceneMenu(sc.SceneNames.MENU, self.game)
         self.scene_play = scpl.ScenePlay(sc.SceneNames.PLAY, self.game)
-        #self.scene_over = scov.SceneOver(sc.SceneNames.OVER, self.game)
+        self.scene_over = scov.SceneOver(sc.SceneNames.OVER, self.game)
         self.scene_rules = scru.SceneRules(sc.SceneNames.RULES, self.game)
         self.scene_settings = scst.SceneSettings(sc.SceneNames.SETTINGS, self.game)
         self.scene_highscores = schs.SceneHighScores(sc.SceneNames.HIGHSCORES, self.game)

@@ -3,9 +3,8 @@ import bubblebuster.scene.scene as sc
 import bubblebuster.font as ft
 import bubblebuster.settings as st
 import bubblebuster.input as inp
-import bubblebuster.highscores as hs
 
-class SceneHighScores(sc.Scene):
+class SceneOver(sc.Scene):
     def __init__(self, name, game):
         super().__init__(name, game)
 
@@ -13,19 +12,16 @@ class SceneHighScores(sc.Scene):
         self.sound_manager.add_music(SoundNames.MUSICMENU, 'resources/settings_bubbles.wav')
         self.sound_manager.add(SoundNames.BUBBLEPOP, 'resources/bubble_pop.wav')
 
-        highscorejson = hs.HighScores.instance.load_all()
-
-
         MENU_STARTX = st.InterfaceSettings.SCREEN_WIDTH - st.InterfaceSettings.SCREEN_WIDTH // 4
         MENU_STARTY = st.InterfaceSettings.SCREEN_HEIGHT - st.InterfaceSettings.SCREEN_HEIGHT // 6
 
         # back to menu
         fontmenu = self.font_manager.add(ft.Font(ft.FontNames.NULL,
-                                                 st.InterfaceSettings.FONTSTYLE,
-                                                 24,
-                                                 'Back to Menu',
-                                                 st.InterfaceSettings.FONTCOLOR,
-                                                 (st.InterfaceSettings.SCREEN_WIDTH // 8, MENU_STARTY))
+                                              st.InterfaceSettings.FONTSTYLE,
+                                              24,
+                                              'Back to Menu',
+                                              st.InterfaceSettings.FONTCOLOR,
+                                              (st.InterfaceSettings.SCREEN_WIDTH // 8, MENU_STARTY))
                                          )
 
         self.input_manager.mousecursor.attach(inp.MouseHoverHighlightObserver(fontmenu, None))

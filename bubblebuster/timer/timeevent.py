@@ -14,6 +14,7 @@ class TimeEventNames(Enum):
     COLORCHANGEBUBBLE = 8
     ADDTOCIRCLEGROUP = 9
     INCREASEBUBBLERADIUS = 10
+    SETBUBBLEDELTA = 11
 
 
 class TimeEvent(Link):
