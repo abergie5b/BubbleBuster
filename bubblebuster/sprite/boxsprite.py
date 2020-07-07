@@ -31,6 +31,8 @@ class BoxSprite(SpriteLink):
         self.y = y
         self.posx = x
         self.posy = y
+        self.rect.x = x
+        self.rect.y = y
 
         self.color = color
 
@@ -38,6 +40,10 @@ class BoxSprite(SpriteLink):
         self.parent = None
         self.selected = False
         BoxSprite.instance = self
+
+    def update(self):
+        self.rect.x = self.posx
+        self.rect.y = self.posy
 
     def draw(self, screen):
         pygame.draw.rect(self.surface,
