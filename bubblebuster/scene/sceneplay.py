@@ -93,11 +93,11 @@ class ScenePlay(sc.Scene):
             # update collision events
             self.collisionpair_manager.process()
 
-            # player
-            pl.PlayerMan.instance.update()
-
             # level
             le.LevelMan.instance.update()
+
+            # player
+            pl.PlayerMan.instance.update()
 
     def draw(self):
         # render sprites and stuff
@@ -136,10 +136,10 @@ class ScenePlay(sc.Scene):
         fonttime = self.font_manager.find(FontNames.TIME)
 
         time = le.LevelMan.instance.current_level.target_time
-        current_time = ti.TimerMan.instance.current_time
+        current_time = self.timer_manager.current_time
         if time:
             self.target_time = time + current_time
-            ti.TimerMan.instance.add(ti.SetGameOverCommand(), time)
+            self.timer_manager.add(ti.SetGameOverCommand(), time)
         else:
             self.target_time = 0
         fonttime.text = '%s.%s' % (time // 1000, str(time)[-3:-1])

@@ -26,6 +26,9 @@ class WeaponCarousel(Carousel):
     def click(self, window):
         for _ in self.rects:
             _.selected = False
+            # poopy butt
+            if _.observer:
+                InputMan.instance.lmouse.remove(_.observer)
         window.selected = True
 
     def add_weapons(self, weapons):
@@ -61,6 +64,7 @@ class WeaponCarousel(Carousel):
         '''
         self.weapons.append(weapon)
         window.parent = self
+        window.observer = None
 
         x, y = (window.posx, window.posy)
         w, h = (window.width, window.height)

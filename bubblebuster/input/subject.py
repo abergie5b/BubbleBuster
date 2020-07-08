@@ -19,18 +19,30 @@ class Subject(Link):
         return observer
 
     def remove(self, observer):
-        observer.subject = None
-        if observer.next and observer.prev: # middle
-            observer.next.prev = observer.prev
-            observer.prev.next = observer.next
-        elif not observer.prev: # first
-            if observer.next:
-                observer.next.prev = None
-            else:
-                self.head = observer = None
-        elif not observer.next: # first
-            observer.prev.next = None
+        self.base_remove(observer)
 
+    def base_remove_single(self, head):
+        if head.next and not head.prev:
+            head = head.next
+            head.prev = None
+            self.head = head
+        elif head.next and head.prev:
+            head.next.prev = head.prev
+            head.prev.next = head.next
+        else:
+            if not head.prev: # only one on list
+                self.head = None
+            else:
+                head.prev.next = None
+
+    def base_remove(self, link):
+        head = self.head
+        while head:
+            if head == link:
+                head.observer = None
+                self.base_remove_single(head)
+                return
+            head = head.next
 
 class CollisionSubject(Subject):
     def __init__(self):

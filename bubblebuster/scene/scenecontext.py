@@ -28,7 +28,7 @@ class SceneContext:
 
     def reset(self):
         #self.scene_menu = scmu.SceneMenu(sc.SceneNames.MENU, self.game)
-        #self.scene_play = scpl.ScenePlay(sc.SceneNames.PLAY, self.game)
+        self.scene_play = scpl.ScenePlay(sc.SceneNames.PLAY, self.game)
         #self.scene_over = scov.SceneOver(sc.SceneNames.OVER, self.game)
         #self.scene_rules = scru.SceneRules(sc.SceneNames.RULES, self.game)
         #self.scene_settings = scst.SceneSettings(sc.SceneNames.SETTINGS, self.game)

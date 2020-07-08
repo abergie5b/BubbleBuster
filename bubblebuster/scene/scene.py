@@ -64,7 +64,6 @@ class Scene:
         #self.bubble_image_manager.add(ImageNames.BUBBLE, 'resources/bubble.png')
         list(map(lambda x: self.bubble_image_manager.add(getattr(ImageNames, '%sBUBBLE' % x.upper()), 'resources/bubble-%s.png' % x), InterfaceSettings.BUBBLECOLORS))
         self.image_manager.add(ImageNames.REDBUBBLE, 'resources/bubble-red.png')
-        #self.bubble_image_manager.add(ImageNames.TESTMOUSE, 'resources/mouse.png')
 
         # all scenes have circle and wall groups
         self.circle_group = CircleGroup(GroupNames.CIRCLE)
@@ -113,8 +112,8 @@ class Scene:
         GroupMan.set_active(self.group_manager)
         cl.CollisionPairMan.set_active(self.collisionpair_manager)
         FontMan.set_active(self.font_manager)
-        TimerMan.set_active(self.timer_manager)
         SoundMan.set_active(self.sound_manager)
+        TimerMan.set_active(self.timer_manager)
 
     def handle(self):
         raise NotImplementedError("this is an abstract class")

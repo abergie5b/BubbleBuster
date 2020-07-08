@@ -96,7 +96,7 @@ class Player(Link):
                 sccxt.SceneContext.instance.reset()
 
                 # back to menu
-                timer.TimerMan.instance.add(timer.SwitchSceneCommand(sc.SceneNames.HIGHSCORES), 500)
+                timer.SwitchSceneCommand(sc.SceneNames.HIGHSCORES).execute(0)
 
     def reset(self):
         # reload and update stats

@@ -22,19 +22,33 @@ class LMouseClickRectObserver(inp.InputObserver):
             bubblepop.play()
 
             if not self.rectA.selected:
+                # click the rect, unclick others and remove observer
                 self.rectA.parent.click(self.rectA)
+
+                # equip the weapon
                 player = pl.PlayerMan.instance.find(pl.PlayerNames.PLAYERONE)
                 player.weapon = self.weapon
 
+                # update font
                 fontplay = FontMan.instance.find(FontNames.PLAY)
                 fontplay.text = 'Play!'
                 fontplay.observer.reset(fontplay.text)
 
-                self.observer = inp.InputMan.instance.lmouse.attach(inp.MouseClickObserver(fontplay, sc.SceneNames.SCENESWITCH))
+                # attach the observer for scene change
+                self.observer = inp.InputMan.instance.lmouse.attach(
+                                    inp.MouseClickObserver(fontplay, 
+                                                           sc.SceneNames.SCENESWITCH
+                                    )
+                )
+                self.rectA.observer = self.observer
             else:
+                # clear 
                 self.rectA.selected = False
+                self.rectA.observer = None
+
+                # clear font
                 fontplay = FontMan.instance.find(FontNames.PLAY)
                 fontplay.text = ''
+
                 # if this doesnt work, maybe set the fontsize to 0?
                 inp.InputMan.instance.lmouse.remove(self.observer)
-

@@ -4,6 +4,7 @@ import bubblebuster.font as ft
 import bubblebuster.settings as st
 import bubblebuster.input as inp
 import bubblebuster.highscores as hs
+import bubblebuster.sprite as sp
 
 class SceneHighScores(sc.Scene):
     def __init__(self, name, game):
@@ -12,6 +13,14 @@ class SceneHighScores(sc.Scene):
         # zounds
         self.sound_manager.add_music(SoundNames.MUSICMENU, 'resources/settings_bubbles.wav')
         self.sound_manager.add(SoundNames.BUBBLEPOP, 'resources/bubble_pop.wav')
+
+        # MAKE SOME BUBBLESSS
+        circle_factory = sp.CircleFactory(self.circle_group, self.boxsprite_manager)
+        circle_factory.generate_random(10,
+                                       max_xy=(st.InterfaceSettings.SCREEN_WIDTH,
+                                               st.InterfaceSettings.SCREEN_HEIGHT),
+                                       max_h=250
+                                       )
 
         self.font_manager.add(ft.Font(ft.FontNames.MENUTITLE, 
                                       st.InterfaceSettings.FONTSTYLE,
@@ -41,7 +50,7 @@ class SceneHighScores(sc.Scene):
             MENU_STARTY += OFFSETY
 
             # player data
-            for name, player in sorted(highscorejson.items(), key=lambda x: x[1]['score'], reverse=True):
+            for name, player in sorted(highscorejson.items(), key=lambda x: x[1]['score'], reverse=True)[:15]:
                 self.make_highscore_tablerow(name, player, MENU_STARTX, OFFSETX, MENU_STARTY)
                 MENU_STARTY += OFFSETY
 
