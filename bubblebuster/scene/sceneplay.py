@@ -7,6 +7,8 @@ from bubblebuster.sprite import CircleFactory, LineSpriteNames
 import bubblebuster.scene.scene as sc
 import bubblebuster.player as pl
 import bubblebuster.level as le
+import bubblebuster.timer as ti
+import bubblebuster.scene.sceneswitch as scsw
 
 
 import pygame
@@ -61,6 +63,9 @@ class ScenePlay(sc.Scene):
 
         self.font_manager.add(Font(FontNames.TOAST, InterfaceSettings.FONTSTYLE, 16, '', InterfaceSettings.FONTCOLOR, (SCREEN_WIDTH//24, SCREEN_HEIGHT-25)))
 
+        # maybe we'll use this
+        self.target_time = 0
+
     def update(self):
         time = pygame.time.get_ticks()
 
@@ -80,17 +85,19 @@ class ScenePlay(sc.Scene):
 
             # fonts
             # poo poo
-            self.font_timedisplay.text = '%s.%s' % (time // 1000, str(time)[-3:-1])
+            if self.target_time:
+                time = self.target_time - ti.TimerMan.instance.current_time
+                self.font_timedisplay.text = '%s.%s' % (time // 1000, str(time)[-3:-1])
             self.font_manager.update()
 
             # update collision events
             self.collisionpair_manager.process()
 
-            # player
-            pl.PlayerMan.instance.update()
-
             # level
             le.LevelMan.instance.update()
+
+            # player
+            pl.PlayerMan.instance.update()
 
     def draw(self):
         # render sprites and stuff
@@ -127,5 +134,13 @@ class ScenePlay(sc.Scene):
         fontexplosions = self.font_manager.find(FontNames.EXPLOSIONS)
         fontexplosions.text = self.player.weapon.stats_usedround
         fonttime = self.font_manager.find(FontNames.TIME)
-        fonttime.text = self.timer_manager.current_time
+
+        time = le.LevelMan.instance.current_level.target_time
+        current_time = self.timer_manager.current_time
+        if time:
+            self.target_time = time + current_time
+            self.timer_manager.add(ti.SetGameOverCommand(), time)
+        else:
+            self.target_time = 0
+        fonttime.text = '%s.%s' % (time // 1000, str(time)[-3:-1])
 

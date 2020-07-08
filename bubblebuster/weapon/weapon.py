@@ -111,6 +111,23 @@ class ExplodeWeapon(Weapon):
             self.ammo -= self.largecost
 
 
+class Sniper(ExplodeWeapon):
+    def __init__(self, name):
+        super().__init__(name)
+
+        # image
+        self.image = None
+
+        self.duration = 2
+        self.radius = 4
+        self.radius_delta = 1
+        self.max_ammo = 10
+        self.ammo = 10
+
+        self.smallcost = 1
+        self.largecost = 2
+
+
 class Finger(ExplodeWeapon):
     def __init__(self, name):
         super().__init__(name)

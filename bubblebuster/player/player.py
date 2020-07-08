@@ -38,7 +38,9 @@ class Player(Link):
     def update(self):
         if LevelMan.instance.current_level.is_complete:
             current_time = timer.TimerMan.instance.current_time
-            last_collision = sp.ExplosionSprite.instance.last_collision
+            explosionsprite = sp.ExplosionSprite.instance
+            last_collision = explosionsprite.last_collision if explosionsprite else -10000
+
             # let the current explosion finish and make sure no collisions happening
             if not self.weapon.is_active and current_time - last_collision > LevelMan.instance.current_level.bubble_popdelay:
 
@@ -69,9 +71,12 @@ class Player(Link):
                 timer.TimerMan.instance.add(timer.SwitchSceneCommand(sc.SceneNames.SCENESWITCH), 500)
 
         elif LevelMan.instance.current_level.defeat: # gg
+
             # stats
             current_time = timer.TimerMan.instance.current_time
-            last_collision = sp.ExplosionSprite.instance.last_collision
+            explosionsprite = sp.ExplosionSprite.instance
+            last_collision = explosionsprite.last_collision if explosionsprite else -10000
+
             # let the current explosion finish and make sure no collisions happening
             if not self.weapon.is_active and current_time - last_collision > LevelMan.instance.current_level.bubble_popdelay:
                 if DEBUG:
@@ -80,14 +85,18 @@ class Player(Link):
                     )
                 # high scores
                 hs.HighScores().write(self)
+
                 # reset player state / statistcs
                 self.reset()
+
                 # reset to level 1
                 LevelMan.instance.reset()
+
                 # reset all scenes -> is this necessary?
                 sccxt.SceneContext.instance.reset()
+
                 # back to menu
-                timer.TimerMan.instance.add(timer.SwitchSceneCommand(sc.SceneNames.MENU), 1000)
+                timer.SwitchSceneCommand(sc.SceneNames.HIGHSCORES).execute(0)
 
     def reset(self):
         # reload and update stats
@@ -151,3 +160,4 @@ class PlayerMan(LinkMan):
     @staticmethod
     def set_active(manager):
         PlayerMan.instance = manager
+

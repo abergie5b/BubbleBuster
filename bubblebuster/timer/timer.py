@@ -34,5 +34,8 @@ class TimerMan(LinkMan):
 
     @staticmethod
     def set_active(manager):
+        current_time = TimerMan.instance.current_time
         TimerMan.instance = manager
+        # hand-off
+        TimerMan.instance.current_time = current_time
 
