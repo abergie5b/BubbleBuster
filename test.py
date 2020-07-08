@@ -3,7 +3,7 @@ class Player:
     def __init__(self):
         self.stats_bubbles = 123
         self.stats_explosions = 456
-        self.playername = ''
+        self.playername = 'Georgey'
         self.score = 10000
         self.stats_maxmultiplier = 25
 

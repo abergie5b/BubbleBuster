@@ -1,3 +1,5 @@
+import bubblebuster.settings as st
+
 import json
 import os
 import hashlib as hl
@@ -17,7 +19,8 @@ class HighScores:
         try:
             with open(filepath, mode) as f:
                 json.dump({}, f)
-                print('created bank file %s' % self.path)
+                if st.DEBUG:
+                    print('created bank file %s' % self.path)
         except Exception as e:
             print('failed to create bank file: %s' % e)
 
@@ -30,16 +33,21 @@ class HighScores:
         return js[0] if js else ''
 
     def load_all(self):
+        result = {}
         try:
             with open(self.path, 'r') as f:
                 data = json.load(f)
                 for k,v in data.items():
                     playerjson = data.get(k)
                     if not self.check(k, playerjson):
-                        print('failed to pass check opening bank file for %s' % k)
-                        return
-                print('loaded bank file with %d profiles from %s' % (len(data), self.path))
-                return data
+                        if st.DEBUG:
+                            print('failed to pass check opening bank file for %s' % k)
+                        result[k] = {'score': -69, 'bubbles': 'cheater', 'explosions': 'hacker', 'maxmultiplier': 'weasel'}
+                    else:
+                        result[k] = playerjson
+                if st.DEBUG:
+                    print('loaded bank file with %d profiles from %s' % (len(data), self.path))
+                return result
         except Exception as e:
             print('failed to open bank file for load: %s' % e)
 
@@ -51,7 +59,8 @@ class HighScores:
                 if self.check(player.playername, playerjson):
                     return playerjson
                 else:
-                    print('failed to pass check opening bank file %s' % f)
+                    if st.DEBUG:
+                        print('failed to pass check opening bank file %s' % f)
         except Exception as e:
             print('failed to open bank file for player: %s' % e)
 
@@ -100,10 +109,9 @@ class HighScores:
         with open(self.path, 'w') as f:
             json.dump(data, f, indent=4)
 
-    def ash(self, playername, playerjson):
-        enc = 'utf-8'
-        s = bytes(playername, enc)[:15]
-        check = hl.blake2b(bytes(str(playerjson), enc), salt=s)
-        check = hl.md5(check.digest()).hexdigest()
-        return check
+    def ash(self, n, p):
+        e = 'utf-8'
+        s = bytes(n, e)[:15]
+        c = hl.blake2b(bytes(str(p), e), salt=s)
+        return hl.md5(c.digest()).hexdigest()
 

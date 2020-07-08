@@ -13,23 +13,90 @@ class SceneHighScores(sc.Scene):
         self.sound_manager.add_music(SoundNames.MUSICMENU, 'resources/settings_bubbles.wav')
         self.sound_manager.add(SoundNames.BUBBLEPOP, 'resources/bubble_pop.wav')
 
+        self.font_manager.add(ft.Font(ft.FontNames.MENUTITLE, 
+                                      st.InterfaceSettings.FONTSTYLE,
+                                      72, 
+                                      'High Scores', 
+                                      st.InterfaceSettings.FONTCOLOR, 
+                                      (st.InterfaceSettings.SCREEN_WIDTH//7, st.InterfaceSettings.SCREEN_HEIGHT//12)
+                              )
+        )
+
+        MENU_STARTX_ORIG = MENU_STARTX = st.InterfaceSettings.SCREEN_WIDTH // 8
+        MENU_STARTY = st.InterfaceSettings.SCREEN_HEIGHT // 4
+        MENU_ENDY = st.InterfaceSettings.SCREEN_HEIGHT - st.InterfaceSettings.SCREEN_HEIGHT // 6
+        OFFSETX = 150
+        OFFSETY = 25
+
+        # load high scores 
         highscorejson = hs.HighScores.instance.load_all()
 
+        # columns for the table
+        highscorejson['Player'] = {'score': 'Score',
+                                   'maxmultiplier': 'MaxMultiplier',
+                                   'bubbles': 'Bubbles',
+                                   'explosions': 'Explosions'}
+        self.make_highscore_tablerow('Player', highscorejson.pop('Player'), MENU_STARTX, OFFSETX, MENU_STARTY)
+        MENU_STARTY += OFFSETY
 
-        MENU_STARTX = st.InterfaceSettings.SCREEN_WIDTH - st.InterfaceSettings.SCREEN_WIDTH // 4
-        MENU_STARTY = st.InterfaceSettings.SCREEN_HEIGHT - st.InterfaceSettings.SCREEN_HEIGHT // 6
+        # player data
+        for name, player in sorted(highscorejson.items(), key=lambda x: x[1]['score'], reverse=True):
+            self.make_highscore_tablerow(name, player, MENU_STARTX, OFFSETX, MENU_STARTY)
+            MENU_STARTY += OFFSETY
 
-        # back to menu
+        # back to menu button
         fontmenu = self.font_manager.add(ft.Font(ft.FontNames.NULL,
                                                  st.InterfaceSettings.FONTSTYLE,
                                                  24,
                                                  'Back to Menu',
                                                  st.InterfaceSettings.FONTCOLOR,
-                                                 (st.InterfaceSettings.SCREEN_WIDTH // 8, MENU_STARTY))
+                                                 (st.InterfaceSettings.SCREEN_WIDTH // 8, MENU_ENDY))
                                          )
 
         self.input_manager.mousecursor.attach(inp.MouseHoverHighlightObserver(fontmenu, None))
         self.input_manager.lmouse.attach(inp.MouseClickObserver(fontmenu, sc.SceneNames.MENU))
+    
+    def make_highscore_tablerow(self, name, player, MENU_STARTX, OFFSETX, MENU_STARTY):
+        self.font_manager.add(ft.Font(ft.FontNames.NULL,
+                                      st.InterfaceSettings.FONTSTYLE,
+                                      16,
+                                      name,
+                                      st.InterfaceSettings.FONTCOLOR,
+                                      (MENU_STARTX, MENU_STARTY)
+                                  ))
+        MENU_STARTX += OFFSETX*3
+        self.font_manager.add(ft.Font(ft.FontNames.NULL,
+                                      st.InterfaceSettings.FONTSTYLE,
+                                      16,
+                                      player['score'],
+                                      st.InterfaceSettings.FONTCOLOR,
+                                      (MENU_STARTX, MENU_STARTY)
+                                  ))
+        MENU_STARTX += OFFSETX
+        self.font_manager.add(ft.Font(ft.FontNames.NULL,
+                                      st.InterfaceSettings.FONTSTYLE,
+                                      16,
+                                      player['maxmultiplier'],
+                                      st.InterfaceSettings.FONTCOLOR,
+                                      (MENU_STARTX, MENU_STARTY)
+                                  ))
+        MENU_STARTX += OFFSETX
+        self.font_manager.add(ft.Font(ft.FontNames.NULL,
+                                      st.InterfaceSettings.FONTSTYLE,
+                                      16,
+                                      player['bubbles'],
+                                      st.InterfaceSettings.FONTCOLOR,
+                                      (MENU_STARTX, MENU_STARTY)
+                                  ))
+        MENU_STARTX += OFFSETX
+        self.font_manager.add(ft.Font(ft.FontNames.NULL,
+                                      st.InterfaceSettings.FONTSTYLE,
+                                      16,
+                                      player['explosions'],
+                                      st.InterfaceSettings.FONTCOLOR,
+                                      (MENU_STARTX, MENU_STARTY)
+                                  ))
+
 
     def update(self):
         # input updates
