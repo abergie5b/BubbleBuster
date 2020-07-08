@@ -1,8 +1,8 @@
 import json
 import os
-import hashlib
+import hashlib as hl
 import time
-import requests
+import urllib.request
 
 class HighScores:
     instance = None
@@ -11,20 +11,23 @@ class HighScores:
         self.path = os.path.join(self.dir_, 'bank.bub')
         if not os.path.exists(self.path):
             self.safe_touch(self.path)
-            print('created bank file %s' % self.path)
         HighScores.instance = self
 
     def safe_touch(self, filepath, mode='w'):
         try:
             with open(filepath, mode) as f:
                 json.dump({}, f)
+                print('created bank file %s' % self.path)
         except Exception as e:
             print('failed to create bank file: %s' % e)
 
     def get_playername(self):
         url = 'http://names.drycodes.com/1?nameOptions=all'
-        js = requests.get(url).json()
-        return js.get(0)
+        weburl = urllib.request.urlopen(url)
+        data = weburl.read()
+        encoding = weburl.info().get_content_charset('utf-8')
+        js = json.loads(data.decode(encoding))
+        return js[0] if js else ''
 
     def load_all(self):
         try:
@@ -33,7 +36,7 @@ class HighScores:
                 for k,v in data.items():
                     playerjson = data.get(k)
                     if not self.check(k, playerjson):
-                        print('failed to pass check opening bank file %s' % f)
+                        print('failed to pass check opening bank file for %s' % k)
                         return
                 print('loaded bank file with %d profiles from %s' % (len(data), self.path))
                 return data
@@ -55,43 +58,52 @@ class HighScores:
     def check(self, playername, playerjson):
         a = playerjson.get('check')
         playerjson['check'] = None
-        b = self.secretsauce(playerjson)
+        b = self.ash(playername, playerjson)
         return a == b
 
     def write(self, player):
+        # fun
+        if not player.playername:
+            player.playername = self.get_playername()
+
         playerjson = {
             'score': player.score,
             'bubbles': player.stats_bubbles,
             'explosions': player.stats_explosions,
             'maxmultiplier': player.stats_maxmultiplier
         }
-        try:
-            with open(self.path, 'r') as f:
-                data = json.load(f)
-                playerdata = data.get(player)
 
-            if playerdata:
-                for k,v in playerdata.items():
-                    if playerjson[k] < playerdata[k]:
-                        playerjson[k] = playerdata[k]
-            # extra stuff
-            playerjson['rank'] = 1
-            playerjson['updated'] = time.time()
-            playerjson['check'] = None
-            # fun
-            if not player.playername:
-                player.playername = self.get_playername()
-            # top secret
-            sauce = self.secretsauce(player.playername, playerjson)
-            playerjson['check'] = sauce
-            data[player] = playerjson
-            with open(self.path, 'w') as f:
-                json.dump(data, f)
-        except Exception as e:
-            print('failed to open bank file for write: %s' % e)
+        with open(self.path, 'r') as f:
+            data = json.load(f)
 
-    def secretsauce(self, playername, playerjson):
-        check = hashlib.blake2b(bytes(str(playerjson), encoding='utf=8'), salt=playername)
-        check = hashlib.md5(check)
+        # update
+        playerdata = data.get(player.playername)
+        if not playerdata:
+            playerdata = playerjson
+        else:
+            playerdata['score'] += playerjson['score']
+            playerdata['bubbles'] += playerjson['bubbles']
+            playerdata['explosions'] += playerjson['explosions']
+            playerdata['maxmultiplier'] = max(playerjson['maxmultiplier'], playerdata['maxmultiplier'])
+
+        # extra stuff
+        playerdata['rank'] = 1
+        playerdata['updated'] = time.time()
+        playerdata['check'] = None
+
+        # top secret
+        sauce = self.ash(player.playername, playerdata)
+        playerdata['check'] = sauce
+
+        # write me
+        data[player.playername] = playerdata
+        with open(self.path, 'w') as f:
+            json.dump(data, f, indent=4)
+
+    def ash(self, playername, playerjson):
+        enc = 'utf-8'
+        s = bytes(playername, enc)[:15]
+        check = hl.blake2b(bytes(str(playerjson), enc), salt=s)
+        check = hl.md5(check.digest()).hexdigest()
         return check
 

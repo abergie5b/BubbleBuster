@@ -1,1 +1,38 @@
-{}
+{
+    "Dislike_Android": {
+        "score": 10000,
+        "bubbles": 123,
+        "explosions": 456,
+        "maxmultiplier": 25,
+        "rank": 1,
+        "updated": 1594169040.939118,
+        "check": "d41c87e198e50bcf285d785cb7f182b0"
+    },
+    "Soap_Clock": {
+        "score": 10000,
+        "bubbles": 123,
+        "explosions": 456,
+        "maxmultiplier": 25,
+        "rank": 1,
+        "updated": 1594169071.5928507,
+        "check": "1397dd21135eb7f0de0425df0f9e0cef"
+    },
+    "Rollers_Post_office": {
+        "score": 10000,
+        "bubbles": 123,
+        "explosions": 456,
+        "maxmultiplier": 25,
+        "rank": 1,
+        "updated": 1594169152.2105098,
+        "check": "3c5a3c6e5c2d57e4885eda4c41fdd121"
+    },
+    "Rollers_Comics": {
+        "score": 10000,
+        "bubbles": 123,
+        "explosions": 456,
+        "maxmultiplier": 25,
+        "rank": 1,
+        "updated": 1594169191.705984,
+        "check": "d150bbe3486f401cfec24aeb63b5bd89"
+    }
+}

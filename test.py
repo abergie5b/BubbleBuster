@@ -1,8 +1,27 @@
-from linkman import LinkMan
-from link import Link
+
+class Player:
+    def __init__(self):
+        self.stats_bubbles = 123
+        self.stats_explosions = 456
+        self.playername = ''
+        self.score = 10000
+        self.stats_maxmultiplier = 25
+
+def highscore_test():
+    import bubblebuster.highscores as hs
+    h = hs.HighScores()
+    h.load_all()
+    p = Player()
+    h.write(p)
+    print('wrote player %s to bank file' % p.playername)
+    with open('data/bank.bub') as f:
+        for line in f.readlines():
+            print(''.join(line))
 
 
 def test():
+    from linkman import LinkMan
+    from link import Link
     LinkMan.create()
 
     a = Link('a')
@@ -34,4 +53,5 @@ def test():
     LinkMan.print()
 
 if __name__ == '__main__':
-    test()
+    #test()
+    highscore_test()
