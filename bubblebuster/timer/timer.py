@@ -23,7 +23,7 @@ class TimerMan(LinkMan):
         self.base_remove(command)
 
     def update(self, game, time):
-        self.current_time = time
+        TimerMan.instance.current_time = self.current_time = time
         head = self.head
         while head:
             next_ = head.next

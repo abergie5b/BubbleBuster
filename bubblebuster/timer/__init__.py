@@ -11,3 +11,4 @@ from .colorchangebubblecommand import *
 from .addtocirclegroupcommand import *
 from .increasebubbleradiuscommand import *
 from .setbubbledeltacommand import *
+from .setgameovercommand import *

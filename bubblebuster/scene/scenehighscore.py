@@ -119,3 +119,4 @@ class SceneHighScores(sc.Scene):
     def handle(self):
         musicmenu = self.sound_manager.find(SoundNames.MUSICMENU)
         musicmenu.play()
+

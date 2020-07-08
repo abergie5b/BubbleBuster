@@ -171,4 +171,3 @@ class SceneSwitch(sc.Scene):
             fontstatsexplosionsusedval = self.font_manager.find(FontNames.STATS_EXPLOSIONSUSED)
             fontstatsexplosionsusedval.text = player.stats_explosions
 
-

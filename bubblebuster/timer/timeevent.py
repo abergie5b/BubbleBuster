@@ -15,6 +15,7 @@ class TimeEventNames(Enum):
     ADDTOCIRCLEGROUP = 9
     INCREASEBUBBLERADIUS = 10
     SETBUBBLEDELTA = 11
+    SETGAMEOVER = 12
 
 
 class TimeEvent(Link):

@@ -23,6 +23,7 @@ class Level(Link):
         self.bubble_popdelay = GameSettings.BUBBLEPOPDELAY
         self.bubble_maxdelta = GameSettings.BUBBLE_MAXDELTA
         self.time = 60
+        self.target_time = 0
 
         self.max_bubbles = GameSettings.NUMBER_OF_BUBBLES
         self.max_bubbl_maxh = GameSettings.BUBBLE_MAXH
@@ -121,13 +122,13 @@ class TimeLevel(Level):
     '''
     def __init__(self):
         super().__init__(LevelNames.TIME)
-        self.target_time = 1000
+        self.target_time = 10000
         self.target_bubbles = 10
 
-    def _update(self):
+    def update(self):
         if self.bubbles <= 0:
             self.is_complete = True
-        if (self.target_time <= 0 or not self.player.weapon.ammo) and not self.is_complete:
+        if not self.player.weapon.ammo and not self.is_complete:
             self.defeat = True
     
     def advance(self):
@@ -143,13 +144,13 @@ class SniperLevel(Level):
     '''
     def __init__(self):
         super().__init__(LevelNames.SNIPER)
-        self.target_time = 1000
+        self.target_time = 10000
         self.target_bubbles = 10
 
-    def _update(self):
+    def update(self):
         if self.bubbles <= 0:
             self.is_complete = True
-        if (self.target_time <= 0 or not self.player.weapon.ammo) and not self.is_complete:
+        if not self.player.weapon.ammo and not self.is_complete:
             self.defeat = True
     
     def advance(self):
@@ -167,10 +168,11 @@ class MultiplierLevel(Level):
         super().__init__(LevelNames.MULTIPLIER)
         self.target_multiplier = 10
 
-    def _update(self):
+    def update(self):
         if self.player.stats_maxmultiplier >= self.target_multiplier:
             self.is_complete = True
-        # no defeat
+        if (not self.bubbles or not self.player.weapon.ammo) and not self.is_complete:
+            self.defeat = True
 
     def advance(self):
         self.bubbles = self.max_bubbles + self.level * 2
