@@ -5,6 +5,7 @@ import bubblebuster.timer as timer
 import bubblebuster.sprite as sp
 import bubblebuster.scene.scene as sc
 import bubblebuster.scene.scenecontext as sccxt
+import bubblebuster.highscores as hs
 
 from math import inf
 from enum import Enum
@@ -20,6 +21,9 @@ class Player(Link):
         super().__init__()
         self.name = name
         self.weapon = weapon
+
+        # from input
+        self.playername = ''
 
         # stats
         self.stats_bubbles = 0
@@ -38,14 +42,17 @@ class Player(Link):
             # let the current explosion finish and make sure no collisions happening
             if not self.weapon.is_active and current_time - last_collision > LevelMan.instance.current_level.bubble_popdelay:
 
-                # update for next level
-                LevelMan.instance.advance()
-
                 # stats
                 if self.weapon.ammo and self.weapon.ammo != inf:
                     self.score -= self.stats_scoreround
                     self.stats_scoreround *= self.weapon.ammo
                     self.score += self.stats_scoreround
+
+                # high score
+                hs.HighScores.instance.write(self)
+
+                # update for next level
+                LevelMan.instance.advance()
 
                 if DEBUG:
                     print('next level activated %d with %d bubbles and %d max height' % (
@@ -60,6 +67,7 @@ class Player(Link):
 
                 # next scene
                 timer.TimerMan.instance.add(timer.SwitchSceneCommand(sc.SceneNames.SCENESWITCH), 500)
+
         elif LevelMan.instance.current_level.defeat: # gg
             # stats
             current_time = timer.TimerMan.instance.current_time
@@ -70,6 +78,8 @@ class Player(Link):
                     print('game over, switching back to menu current_time: %d last_collision: %d diff: %d' %
                         (current_time, last_collision, current_time - last_collision)
                     )
+                # high scores
+                hs.HighScores().write(self)
                 # reset player state / statistcs
                 self.reset()
                 # reset to level 1

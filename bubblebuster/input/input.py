@@ -4,6 +4,7 @@ from bubblebuster.input import InputSubject
 import bubblebuster.scene.scene as sc
 import bubblebuster.scene.scenecontext as sccxt
 import bubblebuster.player as pl
+import bubblebuster.highscores as hs
 
 import pygame
 from enum import Enum
@@ -49,11 +50,13 @@ class InputMan(LinkMan):
 
             if event.key == pygame.K_ESCAPE:
                 current_scene_name = game.scene_context.scene_state.name
-                player = pl.PlayerMan.instance.find(pl.PlayerNames.PLAYERONE)
-                if player:
-                    player.reset()
+
                 if current_scene_name != sc.SceneNames.SETTINGS:
                     GameSettings.init()
+                    player = pl.PlayerMan.instance.find(pl.PlayerNames.PLAYERONE)
+                    if player:
+                        hs.HighScores.instance.write(player)
+                        player.reset()
                 sccxt.SceneContext.instance.reset()
                 sccxt.SceneContext.instance.set_state(sc.SceneNames.MENU)
 
@@ -63,6 +66,9 @@ class InputMan(LinkMan):
 
         # move dis
         if event.type == pygame.QUIT:
+            player = pl.PlayerMan.instance.find(pl.PlayerNames.PLAYERONE)
+            if player:
+                hs.HighScores.instance.write(player)
             game.running = False
 
         return event

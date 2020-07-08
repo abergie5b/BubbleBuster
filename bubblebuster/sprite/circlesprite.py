@@ -91,9 +91,15 @@ class CircleSprite(BoxSprite):
         self.collision_enabled = False
         self.has_collided = True
 
-        # blow up
-        command = timer.IncreaseBubbleRadiusCommand(self, GameSettings.BUBBLEPOPDELAY//2)
-        timer.TimerMan.instance.add(command, GameSettings.BUBBLEPOPDELAY//2)
+        # this IncreaseBubbleRadiusCommand.duration is quite random
+        # since the timerman is based on time not frames ideally we could have
+        # something that runs more consistently
+        command = timer.IncreaseBubbleRadiusCommand(self, GameSettings.BUBBLEPOPDELAY//25)
+        timer.TimerMan.instance.add(command, 0)
+
+        # stop the bubble
+        command = timer.SetBubbleDeltaCommand(self, 0, 0)
+        timer.TimerMan.instance.add(command, GameSettings.BUBBLEPOPDELAY-GameSettings.BUBBLEPOPDELAY//4)
 
         # destroy
         command = timer.DestroySpriteCommand(self, explosion=explosion)

@@ -2,11 +2,11 @@ from bubblebuster.image import ImageMan, ImageNames, BubbleImageMan
 from bubblebuster.timer import TimerMan
 from bubblebuster.group import CircleGroup, Group, GroupMan, GroupNames
 from bubblebuster.font import FontMan
-from bubblebuster.player import PlayerMan, PlayerNames, Player
+from bubblebuster.player import PlayerMan
 from bubblebuster.settings import InterfaceSettings
 from bubblebuster.sound import SoundMan
 from bubblebuster.input import InputMan, Simulation
-from bubblebuster.level import LevelMan, LevelNames
+from bubblebuster.level import LevelMan
 from bubblebuster.sprite.bubble import (
     BubbleMan, 
     IronBubble, 
@@ -18,6 +18,7 @@ from bubblebuster.sprite.bubble import (
 )
 import bubblebuster.sprite as sp
 import bubblebuster.collision as cl
+import bubblebuster.highscores as hs
 
 from enum import Enum
 
@@ -55,6 +56,9 @@ class Scene:
 
         # one level man to rule them all
         self.level_manager = LevelMan.create()
+
+        # one high score to rule them all
+        self.highscores = hs.HighScores()
 
         # bubbles are ubiquitous !!
         #self.bubble_image_manager.add(ImageNames.BUBBLE, 'resources/bubble.png')
@@ -115,18 +119,4 @@ class Scene:
     def handle(self):
         raise NotImplementedError("this is an abstract class")
 
-
-
-class SceneOver(Scene):
-    def __init__(self, name, game):
-        super().__init__(name, game)
-
-    def update(self):
-        pass
-
-    def draw(self):
-        pass
-
-    def handle(self):
-        pass
 

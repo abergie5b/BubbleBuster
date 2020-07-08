@@ -83,7 +83,6 @@ class SceneWeapon(sc.Scene):
         # lets do a random level
         LevelMan.instance.current_level = LevelMan.instance.get_random()
         LevelMan.instance.current_level.is_active = True
-        #LevelMan.instance.current_level.player = self.player
 
         # 
         carousel.attach(LMouseClickRectObserver)
