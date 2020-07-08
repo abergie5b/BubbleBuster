@@ -66,6 +66,9 @@ class InputMan(LinkMan):
 
         # move dis
         if event.type == pygame.QUIT:
+            player = pl.PlayerMan.instance.find(pl.PlayerNames.PLAYERONE)
+            if player:
+                hs.HighScores.instance.write(player)
             game.running = False
 
         return event
