@@ -31,18 +31,19 @@ class SceneHighScores(sc.Scene):
         # load high scores 
         highscorejson = hs.HighScores.instance.load_all()
 
-        # columns for the table
-        highscorejson['Player'] = {'score': 'Score',
-                                   'maxmultiplier': 'MaxMultiplier',
-                                   'bubbles': 'Bubbles',
-                                   'explosions': 'Explosions'}
-        self.make_highscore_tablerow('Player', highscorejson.pop('Player'), MENU_STARTX, OFFSETX, MENU_STARTY)
-        MENU_STARTY += OFFSETY
-
-        # player data
-        for name, player in sorted(highscorejson.items(), key=lambda x: x[1]['score'], reverse=True):
-            self.make_highscore_tablerow(name, player, MENU_STARTX, OFFSETX, MENU_STARTY)
+        if highscorejson:
+            # columns for the table
+            highscorejson['Player'] = {'score': 'Score',
+                                       'maxmultiplier': 'MaxMultiplier',
+                                       'bubbles': 'Bubbles',
+                                       'explosions': 'Explosions'}
+            self.make_highscore_tablerow('Player', highscorejson.pop('Player'), MENU_STARTX, OFFSETX, MENU_STARTY)
             MENU_STARTY += OFFSETY
+
+            # player data
+            for name, player in sorted(highscorejson.items(), key=lambda x: x[1]['score'], reverse=True):
+                self.make_highscore_tablerow(name, player, MENU_STARTX, OFFSETX, MENU_STARTY)
+                MENU_STARTY += OFFSETY
 
         # back to menu button
         fontmenu = self.font_manager.add(ft.Font(ft.FontNames.NULL,
