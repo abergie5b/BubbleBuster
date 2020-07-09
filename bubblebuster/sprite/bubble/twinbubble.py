@@ -62,7 +62,7 @@ class TwinBubble(csp.CircleSprite):
             
             # adjust bubbles for level
             player = pl.PlayerMan.instance.find(pl.PlayerNames.PLAYERONE)
-            le.LevelMan.instance.current_level.bubbles += 2
+            le.LevelMan.instance.current_level.target_bubbles += 2
 
             return True
         return False

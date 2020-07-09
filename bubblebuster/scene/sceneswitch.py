@@ -10,6 +10,7 @@ import bubblebuster.scene.scene as sc
 import bubblebuster.scene.scenecontext as sccxt
 import bubblebuster.scene.sceneplay as scpl
 import bubblebuster.level as le
+import bubblebuster.input as inp
 
 from math import inf
 import pygame
@@ -34,7 +35,7 @@ class SceneSwitch(sc.Scene):
         # collision pairs
         self.collisionpair_manager.add_groups(self.wall_group, self.circle_group, CollisionRectPair)
 
-        MENU_STARTX = InterfaceSettings.SCREEN_WIDTH // 8
+        MENU_STARTX = InterfaceSettings.SCREEN_WIDTH // 16
         MENU_STARTY = InterfaceSettings.SCREEN_HEIGHT // 3
         MENU_OFFSETY = 45
         MENU_OFFSETX = InterfaceSettings.SCREEN_WIDTH // 3
@@ -57,6 +58,24 @@ class SceneSwitch(sc.Scene):
                                         (InterfaceSettings.SCREEN_WIDTH-InterfaceSettings.SCREEN_WIDTH // 2, InterfaceSettings.SCREEN_HEIGHT // 8)
                                         )
                                    )
+
+        self.font_manager.add(Font(FontNames.LEVELDESCRIPTION,
+                                        InterfaceSettings.FONTSTYLE,
+                                        16,
+                                        '',
+                                        InterfaceSettings.FONTCOLOR,
+                                        (InterfaceSettings.SCREEN_WIDTH // 2, InterfaceSettings.SCREEN_HEIGHT // 4)
+                                        )
+                                   )
+        self.font_manager.add(Font(FontNames.LEVELHINT,
+                                        InterfaceSettings.FONTSTYLE,
+                                        16,
+                                        '',
+                                        InterfaceSettings.FONTCOLOR,
+                                        (InterfaceSettings.SCREEN_WIDTH // 2, InterfaceSettings.SCREEN_HEIGHT // 3)
+                                        )
+                                   )
+
 
         self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 20, 'Round Score', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
 
@@ -87,10 +106,17 @@ class SceneSwitch(sc.Scene):
         self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 20, 'Total Explosions', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
         self.font_manager.add(Font(FontNames.STATS_EXPLOSIONSUSED, InterfaceSettings.FONTSTYLE, 20, 0, InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX, MENU_STARTY)))
 
-        MENU_STARTY += MENU_OFFSETY*2
-        self.font_manager.add(Font(FontNames.SCENESWITCH_PRESSANYKEY, InterfaceSettings.FONTSTYLE, 20, 'Press any key ...', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
-
-        self.timer_manager.add(SwitchSceneCommand(sc.SceneNames.PLAY, onkeypress=True), 1)
+        MENU_STARTX = InterfaceSettings.SCREEN_WIDTH - InterfaceSettings.SCREEN_WIDTH // 4
+        MENU_STARTY = InterfaceSettings.SCREEN_HEIGHT - InterfaceSettings.SCREEN_HEIGHT // 6
+        fontplay = self.font_manager.instance.add(Font(FontNames.PLAY,
+                                                  InterfaceSettings.FONTSTYLE,
+                                                  32,
+                                                  'Play!',
+                                                  InterfaceSettings.FONTCOLOR,
+                                                  (MENU_STARTX, MENU_STARTY))
+                                             )
+        self.input_manager.mousecursor.attach(inp.MouseHoverHighlightObserver(fontplay, None))
+        self.input_manager.lmouse.attach(inp.MouseClickObserver(fontplay, sc.SceneNames.PLAY))
 
     def update(self):
         time = pygame.time.get_ticks()
@@ -128,7 +154,13 @@ class SceneSwitch(sc.Scene):
             menutitle = self.font_manager.find(FontNames.LEVELTYPE)
             menutitle.text = le.LevelMan.instance.current_level.name.name
 
-            MENU_STARTX = InterfaceSettings.SCREEN_WIDTH // 8
+            leveldesc = self.font_manager.find(FontNames.LEVELDESCRIPTION)
+            leveldesc.text = le.LevelMan.instance.current_level.description
+
+            levelhint = self.font_manager.find(FontNames.LEVELHINT)
+            levelhint.text = le.LevelMan.instance.current_level.hint
+
+            MENU_STARTX = InterfaceSettings.SCREEN_WIDTH // 16
             MENU_STARTY = InterfaceSettings.SCREEN_HEIGHT // 3
             MENU_OFFSETX = InterfaceSettings.SCREEN_WIDTH // 3
             MENU_OFFSETX_ARROW = 50

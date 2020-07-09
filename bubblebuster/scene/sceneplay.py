@@ -69,35 +69,38 @@ class ScenePlay(sc.Scene):
     def update(self):
         time = pygame.time.get_ticks()
 
-        Simulation.instance.update(time)
+        # for debug
+        #Simulation.instance.update(time)
 
         # input updates
         self.input_manager.update(self.game)
 
-        if Simulation.instance.time_step > 0:
+        #if Simulation.instance.time_step > 0:
+        #if  not le.LevelMan.instance.current_level.is_complete \
+        #    and not le.LevelMan.instance.current_level.defeat: # freeze
 
-            # update the sprites
-            self.sprite_manager.update()
-            self.boxsprite_manager.update()
+        # update the sprites
+        self.sprite_manager.update()
+        self.boxsprite_manager.update()
 
-            # update the timer events
-            self.timer_manager.update(self, time)
+        # update the timer events
+        self.timer_manager.update(self, time)
 
-            # fonts
-            # poo poo
-            if self.target_time:
-                time = self.target_time - ti.TimerMan.instance.current_time
-                self.font_timedisplay.text = '%s.%s' % (time // 1000, str(time)[-3:-1])
-            self.font_manager.update()
+        # fonts
+        # poo poo
+        if self.target_time:
+            time = self.target_time - ti.TimerMan.instance.current_time
+            self.font_timedisplay.text = '%s.%s' % (time // 1000, str(time)[-3:-1])
+        self.font_manager.update()
 
-            # update collision events
-            self.collisionpair_manager.process()
+        # update collision events
+        self.collisionpair_manager.process()
 
-            # level
-            le.LevelMan.instance.update()
+        # level
+        le.LevelMan.instance.update()
 
-            # player
-            pl.PlayerMan.instance.update()
+        # player
+        pl.PlayerMan.instance.update()
 
     def draw(self):
         # render sprites and stuff
@@ -130,7 +133,7 @@ class ScenePlay(sc.Scene):
         fontscore = self.font_manager.find(FontNames.SCORE)
         fontscore.text = self.player.score
         fontbubbles = self.font_manager.find(FontNames.BUBBLES)
-        fontbubbles.text = le.LevelMan.instance.current_level.bubbles
+        fontbubbles.text = le.LevelMan.instance.current_level.target_bubbles
         fontexplosions = self.font_manager.find(FontNames.EXPLOSIONS)
         fontexplosions.text = self.player.weapon.stats_usedround
         fonttime = self.font_manager.find(FontNames.TIME)

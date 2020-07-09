@@ -106,6 +106,13 @@ class BoxSpriteMan(LinkMan):
     def remove(self, sprite):
         self.base_remove(sprite)
 
+    def remove_all_type(self, spritetype):
+        head = self.head
+        while head:
+            if head.type == spritetype:
+                self.base_remove_single(head)
+            head = head.next
+
     def find(self, sprite):
         return self.base_find(sprite)
 

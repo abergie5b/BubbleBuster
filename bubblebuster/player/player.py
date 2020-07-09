@@ -58,7 +58,7 @@ class Player(Link):
 
                 if DEBUG:
                     print('next level activated %d with %d bubbles and %d max height' % (
-                          LevelMan.instance.current_level.level, LevelMan.instance.current_level.bubbles, LevelMan.instance.current_level.bubble_maxh)
+                          LevelMan.instance.current_level.level, LevelMan.instance.current_level.target_bubbles, LevelMan.instance.current_level.bubble_maxh)
                     )
                     print('scoreround: %d scoreround_raw: %d score %d stats_explosionsround: %d' % (
                           self.stats_scoreround, self.stats_scoreround//self.stats_explosionsround, self.score, self.stats_explosionsround)
@@ -83,14 +83,15 @@ class Player(Link):
                     print('game over, switching back to menu current_time: %d last_collision: %d diff: %d' %
                         (current_time, last_collision, current_time - last_collision)
                     )
+                    
                 # high scores
                 hs.HighScores().write(self)
 
                 # reset player state / statistcs
                 self.reset()
 
-                # reset to level 1
-                LevelMan.instance.reset()
+                # reset all levels
+                LevelMan.instance.init()
 
                 # reset all scenes -> is this necessary?
                 sccxt.SceneContext.instance.reset()
@@ -113,13 +114,13 @@ class Player(Link):
     def update_score(self, circle, multiplier=1):
         self.stats_bubbles += 1
         self.update_max_multiplier(multiplier)
-        LevelMan.instance.current_level.bubbles -= 1
+        LevelMan.instance.current_level.target_bubbles -= 1
         points = multiplier * LevelMan.instance.current_level.bubble_maxh//circle.height
         self.score += points
         self.stats_scoreround += points
         if DEBUG:
             print('updating score %d, round: %d circleh: %d mult: %d points: %d bubbles: %d is_complete: %d' % (
-                  self.score, self.stats_scoreround, circle.height, multiplier, points, LevelMan.instance.current_level.bubbles, LevelMan.instance.current_level.is_complete)
+                  self.score, self.stats_scoreround, circle.height, multiplier, points, LevelMan.instance.current_level.target_bubbles, LevelMan.instance.current_level.is_complete)
             )
         return points
 

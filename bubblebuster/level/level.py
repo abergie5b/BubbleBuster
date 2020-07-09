@@ -1,6 +1,8 @@
 from bubblebuster.link import LinkMan, Link
 from bubblebuster.settings import GameSettings
 import bubblebuster.player as pl
+import bubblebuster.timer as ti
+import bubblebuster.sprite as sp
 
 from enum import Enum
 
@@ -23,11 +25,10 @@ class Level(Link):
         self.bubble_popdelay = GameSettings.BUBBLEPOPDELAY
         self.bubble_maxdelta = GameSettings.BUBBLE_MAXDELTA
         self.time = 60
-        self.target_time = 0
 
         self.max_bubbles = GameSettings.NUMBER_OF_BUBBLES
         self.max_bubbl_maxh = GameSettings.BUBBLE_MAXH
-        self.max_time = 60
+        self.target_time = self.max_time = 30000
 
         # back pointer
         self.player = pl.PlayerMan.instance.find(pl.PlayerNames.PLAYERONE)
@@ -36,6 +37,16 @@ class Level(Link):
         self.is_active = False
         self.is_complete = False
         self.defeat = False
+
+        # more stuff
+        self.description = self.get_desc()
+        self.hint = self.get_hint()
+
+    def get_desc(self):
+        return ''
+
+    def get_hint(self):
+        return ''
 
     def update(self):
         '''
@@ -51,49 +62,9 @@ class Level(Link):
         self.is_complete = False
         self.defeat = False
         self.is_active = False
-
-    def reset(self):
-        '''
-        reset the level after game over
-        '''
-        self.level = 1
-        self.bubbles = self.max_bubbles
-        self.bubble_maxh = self.max_bubbl_maxh
-        self.time = self.max_time
-        self.is_complete = False
-        self.defeat = False
-
-    def transition(self, level):
-        '''
-        transition to a different type of level
-        with a different win condition
-        '''
-        self.bubbles = level.bubbles
-        self.bubble_maxh = level.bubble_maxh
-        self.bubble_popdelay = level.bubble_popdelay
-        self.bubble_maxdelta = level.bubble_maxdelta
-        self.time = level.time
-
-        self.max_bubbles = level.max_bubbles
-        self.max_bubbl_maxh = level.bubble_maxh
-        self.max_time = level.max_time
-
-        self.is_complete = level.is_complete
-        self.defeat = level.defeat
-
-
-class ActiveLevel(Level):
-    '''
-    generic level (destroy all bubbles)
-    '''
-    def __init__(self):
-        super().__init__(LevelNames.ACTIVE)
-
-    def advance(self):
-        self.bubbles = self.max_bubbles + self.level * 2
-        self.bubble_maxh = self.max_bubbl_maxh - self.level * 2
-        self.time = self.max_time - self.level * 2
-        super().advance()
+        self.description = self.get_desc()
+        self.hint = self.get_hint()
+        ti.TimerMan.instance.remove(ti.TimeEventNames.SETGAMEOVER)
 
 
 class PointsLevel(Level):
@@ -101,15 +72,25 @@ class PointsLevel(Level):
     get a certain number of points
     '''
     def __init__(self):
+        self.target_score = 25 # should be a GameSetting
+        self.target_time = 0
         super().__init__(LevelNames.POINTS)
-        self.target_score = 1000
+        # not used this level
+        self.target_bubbles = self.bubbles
 
-    def _update(self):
+    def get_desc(self):
+        return 'Get %d points!' % self.target_score
+
+    def get_hint(self):
+        return 'You might have to use multipliers wisely!'
+
+    def update(self):
         if self.player.score >= self.target_score:
             self.is_complete = True
         # no defeat condition
 
     def advance(self):
+        self.target_score = 25 + self.level * 2
         self.bubbles = self.max_bubbles + self.level * 2
         self.bubble_maxh = self.max_bubbl_maxh - self.level * 2
         self.time = self.max_time - self.level * 2
@@ -121,21 +102,28 @@ class TimeLevel(Level):
     destroy all the bubbles before the time limit
     '''
     def __init__(self):
+        self.target_bubbles = 10 # should be a GameSetting
         super().__init__(LevelNames.TIME)
-        self.target_time = 10000
-        self.target_bubbles = 10
+
+    def get_desc(self):
+        return 'Pop %d bubbles in %d seconds!' % (self.target_bubbles, int(self.target_time//1000))
+
+    def get_hint(self):
+        return 'Move quickly! Watch the clock!'
 
     def update(self):
-        if self.bubbles <= 0:
+        if self.target_bubbles <= 0:
             self.is_complete = True
         if not self.player.weapon.ammo and not self.is_complete:
             self.defeat = True
     
     def advance(self):
         self.bubbles = self.max_bubbles + self.level * 2
+        self.target_bubbles = 10 + self.level * 2
         self.bubble_maxh = self.max_bubbl_maxh - self.level * 2
-        self.time = self.max_time - self.level * 2
+        self.target_time = max(self.max_time - self.level * 1000, 10000)
         super().advance()
+
 
 
 class SniperLevel(Level):
@@ -143,20 +131,25 @@ class SniperLevel(Level):
     destroy all the bubbles before the time limit
     '''
     def __init__(self):
+        self.target_bubbles = 10 # should be a GameSetting
         super().__init__(LevelNames.SNIPER)
-        self.target_time = 10000
-        self.target_bubbles = 10
+
+    def get_desc(self):
+        return 'Pop %d bubbles in %d seconds using the sniper!' % (self.target_bubbles, int(self.target_time/1000))
+
+    def get_hint(self):
+        return 'This round gives extra points. Show off your skills!'
 
     def update(self):
-        if self.bubbles <= 0:
+        if self.target_bubbles <= 0:
             self.is_complete = True
         if not self.player.weapon.ammo and not self.is_complete:
             self.defeat = True
     
     def advance(self):
-        self.bubbles = self.max_bubbles + self.level * 2
+        self.target_bubbles = 10 + self.level * 2
         self.bubble_maxh = self.max_bubbl_maxh - self.level * 2
-        self.time = self.max_time - self.level * 2
+        self.target_time = max(self.max_time - self.level * 1000, 10000)
         super().advance()
 
 
@@ -165,20 +158,30 @@ class MultiplierLevel(Level):
     get a high enough multiplier to pass the level
     '''
     def __init__(self):
+        self.target_multiplier = 3
+        self.target_time = 0
         super().__init__(LevelNames.MULTIPLIER)
-        self.target_multiplier = 10
+        self.target_bubbles = self.bubbles
+
+    def get_desc(self):
+        return 'Get a %dx pop multiplier!' % (self.target_multiplier)
+
+    def get_hint(self):
+        return 'Take your time and wait for the bubbles to group up!'
 
     def update(self):
         if self.player.stats_maxmultiplier >= self.target_multiplier:
             self.is_complete = True
-        if (not self.bubbles or not self.player.weapon.ammo) and not self.is_complete:
+        if (not self.target_bubbles or not self.player.weapon.ammo) and not self.is_complete:
             self.defeat = True
 
     def advance(self):
+        self.target_multiplier += 1
         self.bubbles = self.max_bubbles + self.level * 2
+        self.target_bubbles = self.bubbles
         self.bubble_maxh = self.max_bubbl_maxh - self.level * 2
-        self.time = self.max_time - self.level * 2
         super().advance()
+
 
 
 class LevelMan(LinkMan):
@@ -196,6 +199,13 @@ class LevelMan(LinkMan):
     def __init__(self):
         raise NotImplementedError('this is a singleton class')
 
+    def init(self):
+        self.head = None
+        self.add(LevelNames.POINTS)
+        self.add(LevelNames.TIME)
+        self.add(LevelNames.MULTIPLIER)
+        self.add(LevelNames.SNIPER)
+
     def compare(self, a, b):
         return a.name == b
 
@@ -210,9 +220,7 @@ class LevelMan(LinkMan):
         self.base_remove(level)
 
     def add(self, name):
-        if name == LevelNames.ACTIVE:
-            level = ActiveLevel()
-        elif name == LevelNames.POINTS:
+        if name == LevelNames.POINTS:
             level = PointsLevel()
         elif name == LevelNames.TIME:
             level = TimeLevel()
@@ -245,6 +253,11 @@ class LevelMan(LinkMan):
             head = head.next
         self.current_level = self.get_random()
         self.current_level.is_active = True
+
         # do this
         GameSettings.BUBBLE_PROCPROBA += 0.01
+
+        # clean up
+        ti.TimerMan.instance.remove_all()
+        sp.BoxSpriteMan.instance.remove_all_type(sp.SpriteTypes.BUBBLE)
         

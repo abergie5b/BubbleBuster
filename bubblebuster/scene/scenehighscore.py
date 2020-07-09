@@ -5,6 +5,7 @@ import bubblebuster.settings as st
 import bubblebuster.input as inp
 import bubblebuster.highscores as hs
 import bubblebuster.sprite as sp
+import bubblebuster.collision as cl
 
 class SceneHighScores(sc.Scene):
     def __init__(self, name, game):
@@ -21,6 +22,8 @@ class SceneHighScores(sc.Scene):
                                                st.InterfaceSettings.SCREEN_HEIGHT),
                                        max_h=250
                                        )
+        # collision pairs
+        self.collisionpair_manager.add_groups(self.wall_group, self.circle_group, cl.CollisionRectPair)
 
         self.font_manager.add(ft.Font(ft.FontNames.MENUTITLE, 
                                       st.InterfaceSettings.FONTSTYLE,

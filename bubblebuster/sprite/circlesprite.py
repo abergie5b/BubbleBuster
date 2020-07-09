@@ -12,7 +12,7 @@ import bubblebuster.player as pl
 import bubblebuster.level as le
 
 import pygame
-from random import randint, choice
+from random import randint
 
 
 class CircleSprite(BoxSprite):
@@ -167,8 +167,10 @@ class CircleSprite(BoxSprite):
         timer.TimerMan.instance.add(timer.RemoveFontCommand(font_pointsvalue), 500)
 
         # bubble texts
-        font_bubbles = FontMan.instance.find(FontNames.BUBBLES)
-        font_bubbles.text = le.LevelMan.instance.current_level.bubbles
+        target_bubbles = le.LevelMan.instance.current_level.target_bubbles
+        if target_bubbles >= 0:
+            font_bubbles = FontMan.instance.find(FontNames.BUBBLES)
+            font_bubbles.text = target_bubbles
         font = FontMan.instance.find(FontNames.SCORE)
         font.text = player.score
         font = FontMan.instance.find(FontNames.SCOREROUND)

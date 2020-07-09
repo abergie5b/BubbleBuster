@@ -75,10 +75,7 @@ class SceneWeapon(sc.Scene):
         )
 
         # add teh levels mate, for jimmy
-        LevelMan.instance.add(LevelNames.POINTS)
-        LevelMan.instance.add(LevelNames.TIME)
-        LevelMan.instance.add(LevelNames.MULTIPLIER)
-        LevelMan.instance.add(LevelNames.SNIPER)
+        LevelMan.instance.init()
 
         # lets do a random level
         LevelMan.instance.current_level = LevelMan.instance.get_random()

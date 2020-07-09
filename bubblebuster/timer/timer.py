@@ -19,6 +19,12 @@ class TimerMan(LinkMan):
     def find(self, command):
         return self.base_find(command)
 
+    def remove_all(self):
+        head = self.head
+        while head:
+            self.base_remove(head)
+            head = head.next
+
     def remove(self, command):
         self.base_remove(command)
 
