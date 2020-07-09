@@ -5,3 +5,4 @@ from .linesprite import *
 from .wallsprite import *
 from .explosionsprite import *
 from .factory import *
+from .background import *

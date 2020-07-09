@@ -64,6 +64,12 @@ class Scene:
         # one scene man to rule them all
         self.scene_manager = SceneMan.create()
 
+        # background
+        background = self.image_manager.add(ImageNames.BEACHDIGITALBACKGROUND, 
+                                            'resources/beach.png')
+        # all scenes start with same background
+        self.background = sp.Background(background)
+
         # bubbles are ubiquitous !!
         #self.bubble_image_manager.add(ImageNames.BUBBLE, 'resources/bubble.png')
         list(map(lambda x: self.bubble_image_manager.add(getattr(ImageNames, '%sBUBBLE' % x.upper()), 'resources/bubble-%s.png' % x), InterfaceSettings.BUBBLECOLORS))

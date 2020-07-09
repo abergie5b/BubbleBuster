@@ -18,6 +18,7 @@ class ImageNames(Enum):
     THUMB = 12
     HAND = 13
     BUBBLE = 14
+    BEACHDIGITALBACKGROUND = 15
 
 
 class Image(Link):
@@ -44,6 +45,7 @@ class ImageMan(LinkMan):
     def add(self, name, data):
         image = Image(name, data)
         self.base_add(image)
+        return image
 
     def find(self, image):
         return self.base_find(image)

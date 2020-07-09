@@ -106,6 +106,8 @@ class ScenePlay(sc.Scene):
         sc.SceneMan.instance.update()
 
     def draw(self):
+        self.background.draw(self.screen)
+
         # render sprites and stuff
         self.sprite_manager.draw(self.screen)
         self.boxsprite_manager.draw(self.screen)

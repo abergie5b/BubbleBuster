@@ -89,6 +89,7 @@ class SceneRules(sc.Scene):
         sc.SceneMan.instance.update()
 
     def draw(self):
+        self.background.draw(self.screen)
         self.boxsprite_manager.draw(self.screen)
         self.font_manager.draw(self.screen)
 

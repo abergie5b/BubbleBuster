@@ -5,6 +5,7 @@ from bubblebuster.input import MouseClickObserver, MouseHoverHighlightObserver, 
 from bubblebuster.sprite import CircleFactory
 from bubblebuster.collision import CollisionRectPair
 import bubblebuster.scene.scene as sc
+import bubblebuster.image as im
 
 class SceneMenu(sc.Scene):
     def __init__(self, name, game):
@@ -84,6 +85,8 @@ class SceneMenu(sc.Scene):
         sc.SceneMan.instance.update()
 
     def draw(self):
+        self.background.draw(self.screen)
+
         self.boxsprite_manager.draw(self.screen)
 
         self.font_manager.draw(self.screen)
