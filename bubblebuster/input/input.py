@@ -58,7 +58,7 @@ class InputMan(LinkMan):
                         hs.HighScores.instance.write(player)
                         player.reset()
                 sccxt.SceneContext.instance.reset()
-                sccxt.SceneContext.instance.set_state(sc.SceneNames.MENU)
+                sc.SceneMan.instance.set_scene(sc.SceneNames.MENU)
 
             self.keypress.notify(game.screen, xcurs, ycurs)
                 

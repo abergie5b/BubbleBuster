@@ -19,6 +19,7 @@ from bubblebuster.sprite.bubble import (
 import bubblebuster.sprite as sp
 import bubblebuster.collision as cl
 import bubblebuster.highscores as hs
+import bubblebuster.scene.scenecontext as sccxt
 
 from enum import Enum
 
@@ -59,6 +60,9 @@ class Scene:
 
         # one high score to rule them all
         self.highscores = hs.HighScores()
+
+        # one scene man to rule them all
+        self.scene_manager = SceneMan.create()
 
         # bubbles are ubiquitous !!
         #self.bubble_image_manager.add(ImageNames.BUBBLE, 'resources/bubble.png')
@@ -118,4 +122,32 @@ class Scene:
     def handle(self):
         raise NotImplementedError("this is an abstract class")
 
+
+class SceneMan:
+    instance = None
+    @staticmethod
+    def create():
+        if not SceneMan.instance:
+            SceneMan.instance = SceneMan.__new__(SceneMan)
+            SceneMan.instance.head = None # SceneNames
+            SceneMan.instance.length = 0
+        return SceneMan.instance
+
+    def __init__(self):
+        raise NotImplementedError('this is a singleton class')
+
+    def set_scene(self, scenename):
+        self.head = scenename
+        self.length = 1
+
+    def update(self):
+        if self.head:
+            head = self.head
+            self.head = None # pop
+            self.length = 0
+            sccxt.SceneContext.instance.set_state(head)
+
+    def remove(self, scene):
+        self.head = None
+        self.length = 0
 

@@ -85,6 +85,9 @@ class SceneRules(sc.Scene):
         # collisions
         self.collisionpair_manager.process()
 
+        # scene transition
+        sc.SceneMan.instance.update()
+
     def draw(self):
         self.boxsprite_manager.draw(self.screen)
         self.font_manager.draw(self.screen)

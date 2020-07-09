@@ -136,6 +136,9 @@ class SceneSwitch(sc.Scene):
         # time
         self.timer_manager.update(self, time)
 
+        # scene transition
+        sc.SceneMan.instance.update()
+
     def draw(self):
         self.boxsprite_manager.draw(self.screen)
 

@@ -1,7 +1,7 @@
 from bubblebuster.input import InputObserver
 import bubblebuster.collision as collision
 from bubblebuster.sound import SoundMan, SoundNames
-import bubblebuster.scene.scenecontext as sc
+import bubblebuster.scene.scene as sc
 
 import pygame
 
@@ -33,5 +33,5 @@ class MouseClickObserver(InputObserver):
         if collision.intersect(self.rectA, self.rectB):
             bubblepop = SoundMan.instance.find(SoundNames.BUBBLEPOP)
             bubblepop.play()
-            sc.SceneContext.instance.set_state(self.scene_change)
+            sc.SceneMan.instance.set_scene(self.scene_change)
 

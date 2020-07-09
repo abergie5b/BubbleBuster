@@ -102,6 +102,9 @@ class ScenePlay(sc.Scene):
         # player
         pl.PlayerMan.instance.update()
 
+        # scene transition
+        sc.SceneMan.instance.update()
+
     def draw(self):
         # render sprites and stuff
         self.sprite_manager.draw(self.screen)

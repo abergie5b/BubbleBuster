@@ -40,6 +40,9 @@ class SceneOver(sc.Scene):
         # fonts ...
         self.font_manager.update()
 
+        # scene transition
+        sc.SceneMan.instance.update()
+
     def draw(self):
         self.boxsprite_manager.draw(self.screen)
 
