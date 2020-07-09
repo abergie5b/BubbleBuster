@@ -28,6 +28,7 @@ class Player(Link):
         # stats
         self.stats_bubbles = 0
         self.stats_maxmultiplier = 0
+        self.stats_maxmultiplierround = 0
         self.score = 0
         self.stats_explosions = 0
         self.stats_explosionsround = 0
@@ -57,8 +58,8 @@ class Player(Link):
                 LevelMan.instance.advance()
 
                 if DEBUG:
-                    print('next level activated %d with %d bubbles and %d max height' % (
-                          LevelMan.instance.current_level.level, LevelMan.instance.current_level.target_bubbles, LevelMan.instance.current_level.bubble_maxh)
+                    print('next level %s activated %d with %d bubbles and %d max height' % (
+                          LevelMan.instance.current_level.name.name, LevelMan.instance.current_level.level, LevelMan.instance.current_level.target_bubbles, LevelMan.instance.current_level.bubble_maxh)
                     )
                     print('scoreround: %d scoreround_raw: %d score %d stats_explosionsround: %d' % (
                           self.stats_scoreround, self.stats_scoreround//self.stats_explosionsround, self.score, self.stats_explosionsround)
@@ -68,7 +69,7 @@ class Player(Link):
                 self.reset()
 
                 # next scene
-                timer.TimerMan.instance.add(timer.SwitchSceneCommand(sc.SceneNames.SCENESWITCH), 500)
+                timer.TimerMan.instance.add(timer.SwitchSceneCommand(sc.SceneNames.SCENESWITCH), 250)
 
         elif LevelMan.instance.current_level.defeat: # gg
 
@@ -106,14 +107,16 @@ class Player(Link):
         self.stats_scoreroundprev = self.stats_scoreround
         self.stats_scoreround = 0
         self.stats_explosionsround = 0
+        self.stats_maxmultiplierround = 0
 
-    def update_max_multiplier(self, multiplier):
-        if multiplier and multiplier > self.stats_maxmultiplier:
-            self.stats_maxmultiplier = multiplier
+    def update_maxmultiplier(self, multiplier, maxmultiplier):
+        if multiplier and multiplier > getattr(self, maxmultiplier):
+            setattr(self, maxmultiplier, multiplier)
 
     def update_score(self, circle, multiplier=1):
         self.stats_bubbles += 1
-        self.update_max_multiplier(multiplier)
+        self.update_maxmultiplier(multiplier, 'stats_maxmultiplier')
+        self.update_maxmultiplier(multiplier, 'stats_maxmultiplierround')
         LevelMan.instance.current_level.target_bubbles -= 1
         points = multiplier * LevelMan.instance.current_level.bubble_maxh//circle.height
         self.score += points

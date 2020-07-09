@@ -85,13 +85,14 @@ class PointsLevel(Level):
         return 'You might have to use multipliers wisely!'
 
     def update(self):
-        if self.player.score >= self.target_score:
+        if self.player.stats_scoreround >= self.target_score:
             self.is_complete = True
         # no defeat condition
 
     def advance(self):
         self.target_score = 25 + self.level * 2
         self.bubbles = self.max_bubbles + self.level * 2
+        self.target_bubbles = self.bubbles
         self.bubble_maxh = self.max_bubbl_maxh - self.level * 2
         self.time = self.max_time - self.level * 2
         super().advance()
@@ -170,7 +171,7 @@ class MultiplierLevel(Level):
         return 'Take your time and wait for the bubbles to group up!'
 
     def update(self):
-        if self.player.stats_maxmultiplier >= self.target_multiplier:
+        if self.player.stats_maxmultiplierround >= self.target_multiplier:
             self.is_complete = True
         if (not self.target_bubbles or not self.player.weapon.ammo) and not self.is_complete:
             self.defeat = True
