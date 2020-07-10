@@ -17,6 +17,9 @@ class BoxSprite(SpriteLink):
     def __init__(self, name, width, height, x, y, color=(255, 255, 255, 25), fill_width=2):
         super().__init__()
         self.name = name
+        self.type = sp.SpriteTypes.NULL
+
+        #
         self.surface = pygame.Surface((width, height), pygame.SRCALPHA)
         self.rect = self.surface.get_rect()
 

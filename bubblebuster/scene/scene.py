@@ -20,6 +20,7 @@ import bubblebuster.sprite as sp
 import bubblebuster.collision as cl
 import bubblebuster.highscores as hs
 import bubblebuster.scene.scenecontext as sccxt
+import bubblebuster.timer as ti
 
 from enum import Enum
 
