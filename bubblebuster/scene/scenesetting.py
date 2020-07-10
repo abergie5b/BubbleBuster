@@ -17,13 +17,6 @@ class SceneSettings(sc.Scene):
         self.sound_manager.add(SoundNames.BUBBLEPOP, 'resources/bubble_pop.wav')
         self.sound_manager.add_music(SoundNames.MUSICMENU, 'resources/settings_bubbles.wav')
 
-        # make some bubbles
-        circle_factory = CircleFactory(self.circle_group, self.boxsprite_manager)
-        circle_factory.generate_random(10,
-                                       max_xy=(SCREEN_WIDTH,
-                                               SCREEN_HEIGHT),
-                                       max_h=250
-        )
 
         self.font_manager.add(Font(FontNames.MENUTITLE, 
                                    InterfaceSettings.FONTSTYLE,
@@ -57,8 +50,15 @@ class SceneSettings(sc.Scene):
         bubblepopdelayup = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, '+', InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX+MENU_OFFSETX_ARROW, MENU_STARTY)))
         bubblepopdelaydown = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, '-', InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX+MENU_OFFSETX_ARROW, MENU_STARTY+20)))
 
-        MENU_STARTY += MENU_OFFSETY
-        fontmenu = self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 24, 'Back to Menu', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
+        MENU_ENDY = InterfaceSettings.SCREEN_HEIGHT - InterfaceSettings.SCREEN_HEIGHT // 6
+        # back to menu button
+        fontmenu = self.font_manager.add(Font(FontNames.NULL,
+                                                 InterfaceSettings.FONTSTYLE,
+                                                 24,
+                                                 'Back to Menu',
+                                                 InterfaceSettings.FONTCOLOR,
+                                                 (InterfaceSettings.SCREEN_WIDTH // 8, MENU_ENDY))
+                                         )
 
         self.input_manager.mousecursor.attach(MouseHoverHighlightObserver(fontmenu, None))
         self.input_manager.lmouse.attach(MouseClickObserver(fontmenu, sc.SceneNames.MENU))
@@ -72,8 +72,6 @@ class SceneSettings(sc.Scene):
         self.input_manager.lmouse.attach(MouseClickSettingsObserver(bubblepopdelayup, 'BUBBLEPOPDELAY', FontNames.BUBBLEPOPDELAY, 10))
         self.input_manager.lmouse.attach(MouseClickSettingsObserver(bubblepopdelaydown, 'BUBBLEPOPDELAY', FontNames.BUBBLEPOPDELAY, -10))
 
-        # collision pairs
-        self.collisionpair_manager.add_groups(self.wall_group, self.circle_group, CollisionRectPair)
 
 
     def update(self):

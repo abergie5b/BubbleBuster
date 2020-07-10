@@ -40,16 +40,6 @@ class SceneWeapon(sc.Scene):
                                              )
         self.input_manager.mousecursor.attach(MouseHoverHighlightObserver(fontplay, None))
 
-        # make some bubbles
-        circle_factory = CircleFactory(self.circle_group, self.boxsprite_manager)
-        circle_factory.generate_random(10,
-                                       max_xy=(InterfaceSettings.SCREEN_WIDTH,
-                                               InterfaceSettings.SCREEN_HEIGHT),
-                                       max_h=250
-                                       )
-
-        # collision pairs
-        self.collisionpair_manager.add_groups(self.wall_group, self.circle_group, CollisionRectPair)
 
         # make a carousel
         carousel = WeaponCarousel((InterfaceSettings.SCREEN_WIDTH//8, InterfaceSettings.SCREEN_HEIGHT//8),
@@ -84,14 +74,15 @@ class SceneWeapon(sc.Scene):
         # 
         carousel.attach(LMouseClickRectObserver)
 
-        # back to menu
+        MENU_ENDY = InterfaceSettings.SCREEN_HEIGHT - InterfaceSettings.SCREEN_HEIGHT // 6
+        # back to menu button
         fontmenu = self.font_manager.add(Font(FontNames.NULL,
-                                              InterfaceSettings.FONTSTYLE,
-                                              24,
-                                              'Back to Menu',
-                                              InterfaceSettings.FONTCOLOR,
-                                              (InterfaceSettings.SCREEN_WIDTH // 8, MENU_STARTY))
-        )
+                                                 InterfaceSettings.FONTSTYLE,
+                                                 24,
+                                                 'Back to Menu',
+                                                 InterfaceSettings.FONTCOLOR,
+                                                 (InterfaceSettings.SCREEN_WIDTH // 8, MENU_ENDY))
+                                         )
 
         self.input_manager.mousecursor.attach(MouseHoverHighlightObserver(fontmenu, None))
         self.input_manager.lmouse.attach(MouseClickObserver(fontmenu, sc.SceneNames.MENU))

@@ -22,6 +22,8 @@ class TimerMan(LinkMan):
     def remove_all(self):
         head = self.head
         while head:
+            if head.command.name == timer.TimeEventNames.REMOVEFONT:
+                head.process() # clear the fonts
             self.base_remove(head)
             head = head.next
 

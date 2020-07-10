@@ -59,8 +59,8 @@ class Player(Link):
                 LevelMan.instance.advance()
 
                 if DEBUG:
-                    print('next level %s activated %d with %d bubbles and %d max height' % (
-                          LevelMan.instance.current_level.name.name, LevelMan.instance.current_level.level, LevelMan.instance.current_level.target_bubbles, LevelMan.instance.current_level.bubble_maxh)
+                    print('next level %s activated %d with %d target_bubbles %d bubbles %d max height' % (
+                          LevelMan.instance.current_level.name.name, LevelMan.instance.current_level.level, LevelMan.instance.current_level.target_bubbles, LevelMan.instance.current_level.bubbles, LevelMan.instance.current_level.bubble_maxh)
                     )
                     print('scoreround: %d scoreround_raw: %d score %d stats_explosionsround: %d' % (
                           self.stats_scoreround, self.stats_scoreround//self.stats_explosionsround, self.score, self.stats_explosionsround)
@@ -102,10 +102,12 @@ class Player(Link):
                 timer.SwitchSceneCommand(sc.SceneNames.HIGHSCORES).execute(0)
 
     def reset(self):
+        if DEBUG:
+            print('reseting player %s and weapon %s' % (self.name, self.weapon.name))
         # reload and update stats
         if self.weapon:
             self.weapon.reset()
-        self.stats_explosionsprev = self.weapon.ammo
+            self.stats_explosionsprev = self.weapon.ammo
         self.stats_scoreroundprev = self.stats_scoreround
         self.stats_bubblesround = 0
         self.stats_scoreround = 0
@@ -126,8 +128,8 @@ class Player(Link):
         self.score += points
         self.stats_scoreround += points
         if DEBUG:
-            print('updating score %d, round: %d circleh: %d mult: %d points: %d bubbles: %d is_complete: %d' % (
-                  self.score, self.stats_scoreround, circle.height, multiplier, points, LevelMan.instance.current_level.target_bubbles, LevelMan.instance.current_level.is_complete)
+            print('updating score %d, round: %d circleh: %d mult: %d points: %d explosionsround: %d bubblesround: %d is_complete: %d' % (
+                  self.score, self.stats_scoreround, circle.height, multiplier, points, self.stats_explosionsround, self.stats_bubbles, LevelMan.instance.current_level.is_complete)
             )
         return points
 

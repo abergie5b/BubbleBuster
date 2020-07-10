@@ -3,7 +3,7 @@ from bubblebuster.timer import TimerMan
 from bubblebuster.group import CircleGroup, Group, GroupMan, GroupNames
 from bubblebuster.font import FontMan
 from bubblebuster.player import PlayerMan
-from bubblebuster.settings import InterfaceSettings
+from bubblebuster.settings import InterfaceSettings, DEBUG
 from bubblebuster.sound import SoundMan
 from bubblebuster.input import InputMan, Simulation
 from bubblebuster.level import LevelMan
@@ -137,6 +137,7 @@ class SceneMan:
         if not SceneMan.instance:
             SceneMan.instance = SceneMan.__new__(SceneMan)
             SceneMan.instance.head = None # SceneNames
+            SceneMan.instance.prev = None # SceneNames
             SceneMan.instance.length = 0
         return SceneMan.instance
 
@@ -144,6 +145,7 @@ class SceneMan:
         raise NotImplementedError('this is a singleton class')
 
     def set_scene(self, scenename):
+        self.prev = self.head
         self.head = scenename
         self.length = 1
 
@@ -155,10 +157,12 @@ class SceneMan:
 
             # clean up
             ti.TimerMan.instance.remove_all()
+
             sp.BoxSpriteMan.instance.remove_all_type(sp.SpriteTypes.BUBBLE)
             sp.BoxSpriteMan.instance.remove_all_type(sp.SpriteTypes.EXPLOSION)
 
-            # what about fonts?
+            if DEBUG:
+                print('changing scene from %s to %s' % (self.prev, head))
 
             sccxt.SceneContext.instance.set_state(head)
 

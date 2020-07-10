@@ -81,7 +81,9 @@ class ExplodeWeapon(Weapon):
             click_explode = ClickExplodeCommand(self.rect)
             TimerMan.instance.add(click_explode, 0)
 
+            # this is also tracked by the player ...
             self.stats_usedround += self.smallcost
+
             self.ammo -= self.smallcost
 
     def rshoot(self, xcurs, ycurs):
@@ -107,7 +109,9 @@ class ExplodeWeapon(Weapon):
             click_explode = ClickExplodeCommand(self.rect)
             TimerMan.instance.add(click_explode, 0)
 
+            # this is also tracked by the player ...
             self.stats_usedround += self.largecost
+
             self.ammo -= self.largecost
 
 

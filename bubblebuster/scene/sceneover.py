@@ -15,13 +15,14 @@ class SceneOver(sc.Scene):
         MENU_STARTX = st.InterfaceSettings.SCREEN_WIDTH - st.InterfaceSettings.SCREEN_WIDTH // 4
         MENU_STARTY = st.InterfaceSettings.SCREEN_HEIGHT - st.InterfaceSettings.SCREEN_HEIGHT // 6
 
-        # back to menu
+        MENU_ENDY = st.InterfaceSettings.SCREEN_HEIGHT - st.InterfaceSettings.SCREEN_HEIGHT // 6
+        # back to menu button
         fontmenu = self.font_manager.add(ft.Font(ft.FontNames.NULL,
-                                              st.InterfaceSettings.FONTSTYLE,
-                                              24,
-                                              'Back to Menu',
-                                              st.InterfaceSettings.FONTCOLOR,
-                                              (st.InterfaceSettings.SCREEN_WIDTH // 8, MENU_STARTY))
+                                                 st.InterfaceSettings.FONTSTYLE,
+                                                 24,
+                                                 'Back to Menu',
+                                                 st.InterfaceSettings.FONTCOLOR,
+                                                 (st.InterfaceSettings.SCREEN_WIDTH // 8, MENU_ENDY))
                                          )
 
         self.input_manager.mousecursor.attach(inp.MouseHoverHighlightObserver(fontmenu, None))

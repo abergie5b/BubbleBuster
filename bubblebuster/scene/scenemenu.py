@@ -17,13 +17,6 @@ class SceneMenu(sc.Scene):
         self.sound_manager.add(SoundNames.BUBBLEPOP, 'resources/bubble_pop.wav')
         self.sound_manager.add_music(SoundNames.MUSICMENU, 'resources/bubbling.wav')
 
-        # make some bubbles
-        circle_factory = CircleFactory(self.circle_group, self.boxsprite_manager)
-        circle_factory.generate_random(10,
-                                       max_xy=(SCREEN_WIDTH, 
-                                               SCREEN_HEIGHT), 
-                                       max_h=250
-        )
 
         self.font_manager.add(Font(FontNames.MENUTITLE,
                                    InterfaceSettings.FONTSTYLE,

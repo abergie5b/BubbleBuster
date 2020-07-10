@@ -15,16 +15,6 @@ class SceneHighScores(sc.Scene):
         self.sound_manager.add_music(SoundNames.MUSICMENU, 'resources/settings_bubbles.wav')
         self.sound_manager.add(SoundNames.BUBBLEPOP, 'resources/bubble_pop.wav')
 
-        # MAKE SOME BUBBLESSS
-        circle_factory = sp.CircleFactory(self.circle_group, self.boxsprite_manager)
-        circle_factory.generate_random(10,
-                                       max_xy=(st.InterfaceSettings.SCREEN_WIDTH,
-                                               st.InterfaceSettings.SCREEN_HEIGHT),
-                                       max_h=250
-                                       )
-        # collision pairs
-        self.collisionpair_manager.add_groups(self.wall_group, self.circle_group, cl.CollisionRectPair)
-
         self.font_manager.add(ft.Font(ft.FontNames.MENUTITLE, 
                                       st.InterfaceSettings.FONTSTYLE,
                                       72, 

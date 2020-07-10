@@ -113,6 +113,8 @@ class BoxSpriteMan(LinkMan):
         head = self.head
         while head:
             if head.type == spritetype:
+                if head.type == sp.SpriteTypes.EXPLOSION:
+                    head.weapon.is_active = False # for explosions
                 self.base_remove_single(head)
             head = head.next
 

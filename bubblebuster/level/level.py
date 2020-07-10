@@ -64,6 +64,7 @@ class Level(Link):
         self.is_active = False
         self.description = self.get_desc()
         self.hint = self.get_hint()
+        # redundant methinks (handled in scene.py)
         ti.TimerMan.instance.remove(ti.TimeEventNames.SETGAMEOVER)
 
 
