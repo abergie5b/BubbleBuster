@@ -151,6 +151,14 @@ class SceneMan:
             head = self.head
             self.head = None # pop
             self.length = 0
+
+            # clean up
+            ti.TimerMan.instance.remove_all()
+            sp.BoxSpriteMan.instance.remove_all_type(sp.SpriteTypes.BUBBLE)
+            sp.BoxSpriteMan.instance.remove_all_type(sp.SpriteTypes.EXPLOSION)
+
+            # what about fonts?
+
             sccxt.SceneContext.instance.set_state(head)
 
     def remove(self, scene):

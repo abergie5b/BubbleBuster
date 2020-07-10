@@ -257,8 +257,3 @@ class LevelMan(LinkMan):
 
         # do this
         GameSettings.BUBBLE_PROCPROBA += 0.01
-
-        # clean up
-        ti.TimerMan.instance.remove_all()
-        sp.BoxSpriteMan.instance.remove_all_type(sp.SpriteTypes.BUBBLE)
-        

@@ -27,6 +27,7 @@ class Player(Link):
 
         # stats
         self.stats_bubbles = 0
+        self.stats_bubblesround = 0
         self.stats_maxmultiplier = 0
         self.stats_maxmultiplierround = 0
         self.score = 0
@@ -102,9 +103,11 @@ class Player(Link):
 
     def reset(self):
         # reload and update stats
-        self.weapon.reset()
+        if self.weapon:
+            self.weapon.reset()
         self.stats_explosionsprev = self.weapon.ammo
         self.stats_scoreroundprev = self.stats_scoreround
+        self.stats_bubblesround = 0
         self.stats_scoreround = 0
         self.stats_explosionsround = 0
         self.stats_maxmultiplierround = 0
@@ -115,6 +118,7 @@ class Player(Link):
 
     def update_score(self, circle, multiplier=1):
         self.stats_bubbles += 1
+        self.stats_bubblesround += 1
         self.update_maxmultiplier(multiplier, 'stats_maxmultiplier')
         self.update_maxmultiplier(multiplier, 'stats_maxmultiplierround')
         LevelMan.instance.current_level.target_bubbles -= 1

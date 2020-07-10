@@ -76,9 +76,9 @@ class HighScores:
             player.playername = self.get_playername()
 
         playerjson = {
-            'score': player.score,
-            'bubbles': player.stats_bubbles,
-            'explosions': player.stats_explosions,
+            'score': player.stats_scoreround,
+            'bubbles': player.stats_bubblesround,
+            'explosions': player.stats_explosionsround,
             'maxmultiplier': player.stats_maxmultiplier
         }
 

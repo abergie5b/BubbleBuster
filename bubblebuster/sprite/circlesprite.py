@@ -27,10 +27,13 @@ class CircleSprite(BoxSprite):
                                                                           (self.height, self.height)
         )
 
+        # heres our bubble
         self.base_image = BubbleImageMan.instance.get_random()
         self.original_image = self.image = pygame.transform.scale(self.base_image.surface, 
                                                                   (self.height, self.height)
         )
+        # make the bubble a little easier to see -o-
+        self.image.fill((175, 175, 175), special_flags=pygame.BLEND_RGBA_MULT)
 
         # for movement
         self.delta = GameSettings.BUBBLE_MAXDELTA
@@ -44,7 +47,7 @@ class CircleSprite(BoxSprite):
         # for scoring
         self.hratio = self.height / GameSettings.BUBBLE_MAXH
 
-        # gifts
+        # gifts!
         self.proba_gift = GameSettings.BUBBLE_GIFTPROCPROBA <= randint(0, 100)/100
 
         # bubble procs
@@ -57,7 +60,7 @@ class CircleSprite(BoxSprite):
 
         # state
         self.bubble_collision_disabled = False
-        # has collided with another circle
+        # has collided with another circle 
         self.has_collided = False
 
     def move(self):
@@ -206,12 +209,6 @@ class CircleSprite(BoxSprite):
         procd = circle.proc()
         if not procd: # destroy me
             circle.prepare_explode()
-
-            # this bubble can collide with others now (except for self)
-            #circle_group = group.GroupMan.instance.find(group.GroupNames.CIRCLE)
-            #cl.CollisionPairMan.instance.attach_to_group(circle_group, circle, cl.CollisionCirclePair, except_type=SpriteTypes.EXPLOSION)
-
-            #circle.destroy(explosion=self)
 
 
 class CircleSpriteMan(LinkMan):
