@@ -42,6 +42,10 @@ class SpriteNodeMan(Manager):
 
     def add(self, sprite):
         spritenode = SpriteNode(sprite)
+
+        # assign the back pointer here
+        sprite.pSpriteNode = spritenode
+
         self.base_add(spritenode)
         return spritenode
 

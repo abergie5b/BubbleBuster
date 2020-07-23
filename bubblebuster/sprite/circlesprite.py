@@ -35,6 +35,9 @@ class CircleSprite(BoxSprite):
         # make the bubble a little easier to see -o-
         self.image.fill((175, 175, 175), special_flags=pygame.BLEND_RGBA_MULT)
 
+        # back pointer to SpriteNode for removing / finding in Group
+        self.pSpriteNode = None
+
         # for movement
         self.delta = GameSettings.BUBBLE_MAXDELTA
         self.deltax = randint(-self.delta, self.delta)//100
@@ -186,10 +189,10 @@ class CircleSprite(BoxSprite):
         BoxSpriteMan.instance.remove(self)
         cl.CollisionPairMan.instance.remove(self)
 
+        # remove from circle group
         group_manager = group.GroupMan.instance.find(group.GroupNames.CIRCLE)
-        node = group_manager.find(self)
-        if node:  # what the
-            group_manager.remove(node)
+        node = group_manager.find(self.pSpriteNode) # use the back pointer
+        group_manager.remove(node)
 
         # collisions
         self.destroy_colliding_circles(explosion)

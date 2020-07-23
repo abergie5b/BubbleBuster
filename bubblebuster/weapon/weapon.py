@@ -58,6 +58,15 @@ class ExplodeWeapon(Weapon):
     def __init__(self, name):
         super().__init__(name)
 
+    def explode(self):
+        # collision pairs for bubbles
+        circle_group = GroupMan.instance.find(GroupNames.CIRCLE)
+        cl.CollisionPairMan.instance.attach_to_group_asobja(circle_group, self.rect, cl.CollisionCirclePair)
+
+        # start the explosion
+        click_explode = ClickExplodeCommand(self.rect)
+        TimerMan.instance.add(click_explode, 0)
+
     def lshoot(self, xcurs, ycurs):
         if not self.is_active:
             self.is_active = True
@@ -73,13 +82,8 @@ class ExplodeWeapon(Weapon):
                                                   )
             self.rect.weapon = self
 
-            # collision pairs for bubbles
-            circle_group = GroupMan.instance.find(GroupNames.CIRCLE)
-            cl.CollisionPairMan.instance.attach_to_group_asobja(circle_group, self.rect, cl.CollisionCirclePair)
-
-            # start the explosion
-            click_explode = ClickExplodeCommand(self.rect)
-            TimerMan.instance.add(click_explode, 0)
+            # add to collision, timer groups
+            self.explode()
 
             # this is also tracked by the player ...
             self.stats_usedround += self.smallcost
@@ -101,13 +105,8 @@ class ExplodeWeapon(Weapon):
                                                   )
             self.rect.weapon = self
 
-            # collision pairs for bubbles
-            circle_group = GroupMan.instance.find(GroupNames.CIRCLE)
-            cl.CollisionPairMan.instance.attach_to_group_asobja(circle_group, self.rect, cl.CollisionCirclePair)
-
-            # start the explosion
-            click_explode = ClickExplodeCommand(self.rect)
-            TimerMan.instance.add(click_explode, 0)
+            # add to collision, timer groups
+            self.explode()
 
             # this is also tracked by the player ...
             self.stats_usedround += self.largecost

@@ -15,8 +15,8 @@ class Group(LinkMan):
         self.name = name
         self.nodeman = sp.SpriteNodeMan()
 
-    def add(self, spritenode):
-        self.nodeman.add(spritenode)
+    def add(self, sprite):
+        self.nodeman.add(sprite)
 
     def remove(self, spritenode):
         self.nodeman.remove(spritenode)
@@ -32,24 +32,11 @@ class CircleGroup(Group):
     def __init__(self, name):
         super().__init__(name)
 
-    def add(self, circle):
-        # circles can collide with explosions
-        # so add the new circle to the collision man
-        head = self.nodeman.head
-        while head:
-            sprite = head.pSprite
-            # its not a spritenode yet...
-            if circle.name == sp.BoxSpriteNames.EXPLOSION and sprite.type == sp.SpriteTypes.BUBBLE:
-                # explosions and bubbles may collide
-                collision.CollisionPairMan.instance.add(collision.CollisionCirclePair(circle, sprite))
-            head = head.next
-        # now it is
-        spritenode = self.nodeman.add(circle)
+    def add(self, sprite):
+        spritenode = self.nodeman.add(sprite)
         return spritenode
 
     def remove(self, spritenode):
-        if spritenode.pSprite.name == sp.BoxSpriteNames.EXPLOSION:
-            collision.CollisionPairMan.instance.remove(spritenode.pSprite)
         self.nodeman.remove(spritenode)
 
     def find(self, circle):

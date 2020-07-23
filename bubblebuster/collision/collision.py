@@ -71,17 +71,28 @@ class CollisionPairMan(LinkMan):
             self.base_add(collision_pair)
 
     def add_groups(self, groupA, groupB, pair_function):
+        '''
+        attach collision pairs for each member of each group
+        '''
         for a in groupA:
             for b in groupB:
                 self.add(pair_function(a, b))
 
     def attach_to_group(self, group, sprite, pair_function, except_type=None):
+        '''
+        attach collision pairs for each (group[x], sprite) 
+        '''
         for obj in group:
+            # sprite cant collide with itself or exception type
             if obj != sprite and obj.type != except_type:
                 self.add(pair_function(obj, sprite))
 
     def attach_to_group_asobja(self, group, sprite, pair_function, except_type=None):
+        '''
+        attach collision pairs for each (sprite, group[x]) 
+        '''
         for obj in group:
+            # sprite cant collide with itself or exception type
             if obj != sprite and obj.type != except_type:
                 self.add(pair_function(sprite, obj))
 
