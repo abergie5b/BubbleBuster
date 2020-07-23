@@ -16,7 +16,7 @@ class LineSprite(SpriteLink):
     def __init__(self, name, start_xy, end_xy, color=(255, 255, 255), width=2):
         super().__init__()
         self.name = name
-        self.type = sp.SpriteTypes.NULL
+
         self.start_xy = start_xy
         self.end_xy = end_xy
         self.color = color

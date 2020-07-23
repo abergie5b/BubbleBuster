@@ -27,7 +27,14 @@ class InputMan(LinkMan):
         self.rmouse = InputSubject()
         self.rmouse_prev = False
 
+        # `
+        self.backquote = InputSubject()
+        self.backquoteprev = False
+
+        # any key
         self.keypress = InputSubject()
+
+        # mouse cursor
         self.mousecursor = InputSubject()
         InputMan.instance = self
 
@@ -37,9 +44,11 @@ class InputMan(LinkMan):
 
         if event.type == pygame.MOUSEBUTTONDOWN:
 
+            # left click
             if event.button == BUTTON.LEFT.value:
                 self.lmouse.notify(game.screen, xcurs, ycurs)
 
+            # right click
             if event.button == BUTTON.RIGHT.value:
                 self.rmouse.notify(game.screen, xcurs, ycurs)
 
@@ -48,6 +57,7 @@ class InputMan(LinkMan):
 
         if event.type == pygame.KEYDOWN:
 
+            # escape key go to menu
             if event.key == pygame.K_ESCAPE:
                 current_scene_name = game.scene_context.scene_state.name
 
@@ -60,11 +70,17 @@ class InputMan(LinkMan):
                 sccxt.SceneContext.instance.reset()
                 sc.SceneMan.instance.set_scene(sc.SceneNames.MENU)
 
+            # back quote
+            if event.key == pygame.K_BACKQUOTE:
+                self.backquote.notify(game.screen, xcurs, ycurs)
+
+            # pressed anything
             self.keypress.notify(game.screen, xcurs, ycurs)
                 
+        # mouse movements
         self.mousecursor.notify(game.screen, xcurs, ycurs)
 
-        # move dis
+        # move dis code
         if event.type == pygame.QUIT:
             player = pl.PlayerMan.instance.find(pl.PlayerNames.PLAYERONE)
             if player:

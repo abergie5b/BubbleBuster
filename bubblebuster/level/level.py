@@ -20,15 +20,27 @@ class Level(Link):
         self.name = name
 
         self.level = 1
-        self.bubbles = GameSettings.NUMBER_OF_BUBBLES
-        self.bubble_maxh = GameSettings.BUBBLE_MAXH
-        self.bubble_popdelay = GameSettings.BUBBLEPOPDELAY
-        self.bubble_maxdelta = GameSettings.BUBBLE_MAXDELTA
-        self.time = 60
 
+        # the number of bubbles generated on this level
+        self.bubbles = GameSettings.NUMBER_OF_BUBBLES
+
+        # maximum bubble height
+        self.bubble_maxh = GameSettings.BUBBLE_MAXH
+
+        # duration before bubble pops after click
+        self.bubble_popdelay = GameSettings.BUBBLEPOPDELAY
+
+        # maximum bubble velocity
+        self.bubble_maxdelta = GameSettings.BUBBLE_MAXDELTA
+
+        # the number of bubbles generated on this level
         self.max_bubbles = GameSettings.NUMBER_OF_BUBBLES
+
+        # maximum bubble height
         self.max_bubbl_maxh = GameSettings.BUBBLE_MAXH
-        self.target_time = self.max_time = 30000
+
+        self.time = 60
+        self.target_time = self.max_time = 25000
 
         # back pointer
         self.player = pl.PlayerMan.instance.find(pl.PlayerNames.PLAYERONE)
@@ -46,7 +58,7 @@ class Level(Link):
         return ''
 
     def get_hint(self):
-        return ''
+        return HintMan.instance.get_random()
 
     def update(self):
         '''
@@ -58,6 +70,9 @@ class Level(Link):
             self.defeat = True
 
     def advance(self):
+        '''
+        define how the level scales here
+        '''
         self.level += 1
         self.is_complete = False
         self.defeat = False
@@ -73,7 +88,7 @@ class PointsLevel(Level):
     get a certain number of points
     '''
     def __init__(self):
-        self.target_score = 25 # should be a GameSetting
+        self.target_score = 50 # should be a GameSetting
         self.target_time = 0
         super().__init__(LevelNames.POINTS)
         # not used this level
@@ -88,10 +103,11 @@ class PointsLevel(Level):
     def update(self):
         if self.player.stats_scoreround >= self.target_score:
             self.is_complete = True
-        # no defeat condition
+        elif self.target_bubbles <= 0 and not self.is_complete:
+            self.defeat = True
 
     def advance(self):
-        self.target_score = 25 + self.level * 2
+        self.target_score = 50 * self.level
         self.bubbles = self.max_bubbles + self.level * 2
         self.target_bubbles = self.bubbles
         self.bubble_maxh = self.max_bubbl_maxh - self.level * 2
@@ -104,11 +120,11 @@ class TimeLevel(Level):
     destroy all the bubbles before the time limit
     '''
     def __init__(self):
-        self.target_bubbles = 10 # should be a GameSetting
+        self.target_bubbles = GameSettings.NUMBER_OF_BUBBLES // 2
         super().__init__(LevelNames.TIME)
 
     def get_desc(self):
-        return 'Pop %d bubbles in %d seconds!' % (self.target_bubbles, int(self.target_time//1000))
+        return 'Pop %d bubbles within the time limit!' % (self.target_bubbles)
 
     def get_hint(self):
         return 'Move quickly! Watch the clock!'
@@ -121,7 +137,7 @@ class TimeLevel(Level):
     
     def advance(self):
         self.bubbles = self.max_bubbles + self.level * 2
-        self.target_bubbles = 10 + self.level * 2
+        self.target_bubbles = self.bubbles // 2
         self.bubble_maxh = self.max_bubbl_maxh - self.level * 2
         self.target_time = max(self.max_time - self.level * 1000, 10000)
         super().advance()
@@ -137,7 +153,7 @@ class SniperLevel(Level):
         super().__init__(LevelNames.SNIPER)
 
     def get_desc(self):
-        return 'Pop %d bubbles in %d seconds using the sniper!' % (self.target_bubbles, int(self.target_time/1000))
+        return 'Pop %d bubbles within the time limit using the sniper!' % (self.target_bubbles)
 
     def get_hint(self):
         return 'This round gives extra points. Show off your skills!'
@@ -149,6 +165,7 @@ class SniperLevel(Level):
             self.defeat = True
     
     def advance(self):
+        self.bubbles = self.max_bubbles + self.level * 2
         self.target_bubbles = 10 + self.level * 2
         self.bubble_maxh = self.max_bubbl_maxh - self.level * 2
         self.target_time = max(self.max_time - self.level * 1000, 10000)
@@ -230,6 +247,8 @@ class LevelMan(LinkMan):
             level = MultiplierLevel()
         elif name == LevelNames.SNIPER:
             level = SniperLevel()
+        else:
+            raise ValueError('invalid level %s' % name)
         self.base_add(level)
         return level
 

@@ -47,6 +47,14 @@ class FontNames(Enum):
     LEVELTYPE = 40
     LEVELDESCRIPTION = 41
     LEVELHINT = 42
+    SCENESWITCHHINT = 43
+    SCOREROUNDLABEL = 44
+    SCORELABEL = 45
+    EXPLOSIONSLABEL = 46
+    TIMELABEL = 47
+    BUBBLESLABEL = 48
+
+    
 
 class Font(Link):
     def __init__(self, font_name, font_style, font_size, text, color, posxy):
@@ -60,6 +68,7 @@ class Font(Link):
         self.posxy = posxy
         self.posx, self.posy = posxy
         self.surface = self.font.render(str(self.text), True, self.color)
+        self.is_draw_enabled = True
 
     def draw(self, screen):
         self.surface = self.font.render(str(self.text), True, self.color)
@@ -85,6 +94,7 @@ class AlphaFont(Link):
         self.alpha_surf = pygame.Surface(self.surface.get_size(), pygame.SRCALPHA)
         self.alpha_surf.fill(self.alpha)
         self.surface.blit(self.alpha_surf, (0, 0), special_flags=pygame.BLEND_RGBA_MULT)
+        self.is_draw_enabled = True
 
     def set_text(self, text):
         self.text = text
@@ -144,7 +154,8 @@ class FontMan(LinkMan):
     def draw(self, screen):
         head = self.head
         while head:
-            head.draw(screen)
+            if head.is_draw_enabled:
+                head.draw(screen)
             head = head.next
 
     def find(self, font):

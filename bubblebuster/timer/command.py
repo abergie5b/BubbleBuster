@@ -1,6 +1,6 @@
-from bubblebuster.link import Link
+import bubblebuster.link as li
 
-class Command(Link):
+class Command(li.Link):
     def __init__(self):
         raise NotImplementedError('this is a singleton class')
 

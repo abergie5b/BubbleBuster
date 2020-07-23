@@ -1,6 +1,6 @@
+import bubblebuster.collision as cl
 from bubblebuster.link import Link, LinkMan
 from bubblebuster.image import ImageMan
-import bubblebuster.collision as cl
 
 import pygame
 from enum import Enum
@@ -19,6 +19,8 @@ class Sprite(Link):
     def __init__(self, name, image_name, width, height, x, y):
         super().__init__()
         self.name = name
+        self.type = SpriteTypes.NULL
+        
         self.image = ImageMan.instance.find(image_name)
         self.image.surface = pygame.transform.scale(self.image.surface, (width, height))
         self.rect = self.image.surface.get_rect()

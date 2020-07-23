@@ -1,3 +1,8 @@
+import bubblebuster.sprite as sp
+import bubblebuster.collision as cl
+import bubblebuster.highscores as hs
+import bubblebuster.scene.scenecontext as sccxt
+import bubblebuster.timer as ti
 from bubblebuster.image import ImageMan, ImageNames, BubbleImageMan
 from bubblebuster.timer import TimerMan
 from bubblebuster.group import CircleGroup, Group, GroupMan, GroupNames
@@ -6,7 +11,7 @@ from bubblebuster.player import PlayerMan
 from bubblebuster.settings import InterfaceSettings, DEBUG
 from bubblebuster.sound import SoundMan
 from bubblebuster.input import InputMan, Simulation
-from bubblebuster.level import LevelMan
+from bubblebuster.level import LevelMan, HintMan
 from bubblebuster.sprite.bubble import (
     BubbleMan, 
     IronBubble, 
@@ -16,12 +21,6 @@ from bubblebuster.sprite.bubble import (
     SpottedBubble, 
     TwinBubble
 )
-import bubblebuster.sprite as sp
-import bubblebuster.collision as cl
-import bubblebuster.highscores as hs
-import bubblebuster.scene.scenecontext as sccxt
-import bubblebuster.timer as ti
-
 from enum import Enum
 
 class SceneNames(Enum):
@@ -64,6 +63,9 @@ class Scene:
 
         # one scene man to rule them all
         self.scene_manager = SceneMan.create()
+
+        # one hint man to rule them all
+        self.hint_manager = HintMan.create()
 
         # background
         background = self.image_manager.add(ImageNames.BEACHDIGITALBACKGROUND, 
@@ -160,6 +162,9 @@ class SceneMan:
 
             sp.BoxSpriteMan.instance.remove_all_type(sp.SpriteTypes.BUBBLE)
             sp.BoxSpriteMan.instance.remove_all_type(sp.SpriteTypes.EXPLOSION)
+
+            cl.CollisionPairMan.instance.remove_all_type(sp.SpriteTypes.BUBBLE)
+            cl.CollisionPairMan.instance.remove_all_type(sp.SpriteTypes.EXPLOSION)
 
             if DEBUG:
                 print('changing scene from %s to %s' % (self.prev, head))

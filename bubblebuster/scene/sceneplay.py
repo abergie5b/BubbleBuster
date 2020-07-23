@@ -1,4 +1,4 @@
-from bubblebuster.input import LMouseClickShootObserver, RMouseClickShootObserver, Simulation
+from bubblebuster.input import LMouseClickShootObserver, RMouseClickShootObserver, Simulation, ToggleStatsObserver
 from bubblebuster.sound import SoundNames
 from bubblebuster.settings import GameSettings, InterfaceSettings
 from bubblebuster.font import FontNames, Font
@@ -46,22 +46,31 @@ class ScenePlay(sc.Scene):
         self.font_manager.add(Font(FontNames.LEVEL, InterfaceSettings.FONTSTYLE, 16, 'Level: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
         self.font_manager.add(Font(FontNames.CURRENTLEVEL, InterfaceSettings.FONTSTYLE, 16, '', InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_STARTY)))
         MENU_OFFSETY += MENU_STARTY
-        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, 'Round: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
+        self.font_manager.add(Font(FontNames.SCOREROUNDLABEL, InterfaceSettings.FONTSTYLE, 16, 'RoundScore: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
         self.font_manager.add(Font(FontNames.SCOREROUND, InterfaceSettings.FONTSTYLE, 16, '', InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_OFFSETY)))
         MENU_OFFSETY += MENU_STARTY
-        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, 'Score: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
+        self.font_manager.add(Font(FontNames.SCORELABEL, InterfaceSettings.FONTSTYLE, 16, 'TotalScore: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
         self.font_manager.add(Font(FontNames.SCORE, InterfaceSettings.FONTSTYLE, 16, '', InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_OFFSETY)))
         MENU_OFFSETY += MENU_STARTY
-        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, 'Bubbles: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
+        self.font_manager.add(Font(FontNames.BUBBLESLABEL, InterfaceSettings.FONTSTYLE, 16, 'Bubbles: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
         self.font_manager.add(Font(FontNames.BUBBLES, InterfaceSettings.FONTSTYLE, 16, '', InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_OFFSETY)))
         MENU_OFFSETY += MENU_STARTY
-        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, 'Explosions: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
+        self.font_manager.add(Font(FontNames.EXPLOSIONSLABEL, InterfaceSettings.FONTSTYLE, 16, 'Ammo: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
         self.font_manager.add(Font(FontNames.EXPLOSIONS, InterfaceSettings.FONTSTYLE, 16, '', InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_OFFSETY)))
         MENU_OFFSETY += MENU_STARTY
-        self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 16, 'Time: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
+        self.font_manager.add(Font(FontNames.TIMELABEL, InterfaceSettings.FONTSTYLE, 16, 'Time: ', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
         self.font_timedisplay = self.font_manager.add(Font(FontNames.TIME, InterfaceSettings.FONTSTYLE, 16, '', InterfaceSettings.FONTCOLOR, (MENU_OFFSETX, MENU_OFFSETY)))
 
+        MENU_STARTX = InterfaceSettings.SCREEN_WIDTH // 2
+        MENU_STARTY = 15
+        MENU_OFFSETY = 20
+        MENU_OFFSETX = 150
+
+        self.font_leveldesc = self.font_manager.add(Font(FontNames.LEVELDESCRIPTION, InterfaceSettings.FONTSTYLE, 16, le.LevelMan.instance.current_level.description, InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_OFFSETY)))
+
         self.font_manager.add(Font(FontNames.TOAST, InterfaceSettings.FONTSTYLE, 16, '', InterfaceSettings.FONTCOLOR, (SCREEN_WIDTH//24, SCREEN_HEIGHT-25)))
+
+        self.input_manager.backquote.attach(ToggleStatsObserver())
 
         # maybe we'll use this
         self.target_time = 0
@@ -142,6 +151,8 @@ class ScenePlay(sc.Scene):
         fontexplosions = self.font_manager.find(FontNames.EXPLOSIONS)
         fontexplosions.text = self.player.weapon.stats_usedround
         fonttime = self.font_manager.find(FontNames.TIME)
+
+        self.font_leveldesc.text = le.LevelMan.instance.current_level.description
 
         time = le.LevelMan.instance.current_level.target_time
         current_time = self.timer_manager.current_time

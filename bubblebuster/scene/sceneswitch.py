@@ -96,6 +96,10 @@ class SceneSwitch(sc.Scene):
         self.font_manager.add(Font(FontNames.NULL, InterfaceSettings.FONTSTYLE, 20, 'Total Explosions', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
         self.font_manager.add(Font(FontNames.STATS_EXPLOSIONSUSED, InterfaceSettings.FONTSTYLE, 20, 0, InterfaceSettings.FONTCOLOR, (MENU_STARTX+MENU_OFFSETX, MENU_STARTY)))
 
+
+        MENU_STARTY += MENU_OFFSETY*2
+        self.font_manager.add(Font(FontNames.SCENESWITCHHINT, InterfaceSettings.FONTSTYLE, 16, '', InterfaceSettings.FONTCOLOR, (MENU_STARTX, MENU_STARTY)))
+
         MENU_STARTX = InterfaceSettings.SCREEN_WIDTH - InterfaceSettings.SCREEN_WIDTH // 4
         MENU_STARTY = InterfaceSettings.SCREEN_HEIGHT - InterfaceSettings.SCREEN_HEIGHT // 6
         fontplay = self.font_manager.instance.add(Font(FontNames.PLAY,
@@ -195,4 +199,7 @@ class SceneSwitch(sc.Scene):
             fontstatsexplosionsusedprevval.text = player.weapon.stats_usedroundprev
             fontstatsexplosionsusedval = self.font_manager.find(FontNames.STATS_EXPLOSIONSUSED)
             fontstatsexplosionsusedval.text = player.stats_explosions
+
+            fonthint = self.font_manager.find(FontNames.SCENESWITCHHINT)
+            fonthint.text = le.HintMan.instance.get_random()
 

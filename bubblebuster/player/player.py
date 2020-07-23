@@ -1,11 +1,11 @@
-from bubblebuster.link import Link, LinkMan
-from bubblebuster.settings import DEBUG
-from bubblebuster.level import LevelMan, LevelNames
 import bubblebuster.timer as timer
 import bubblebuster.sprite as sp
 import bubblebuster.scene.scene as sc
 import bubblebuster.scene.scenecontext as sccxt
 import bubblebuster.highscores as hs
+from bubblebuster.link import Link, LinkMan
+from bubblebuster.settings import DEBUG
+import bubblebuster.level as le
 
 from math import inf
 from enum import Enum
@@ -38,13 +38,13 @@ class Player(Link):
         self.stats_scoreroundprev = 0
 
     def update(self):
-        if LevelMan.instance.current_level.is_complete:
+        if le.LevelMan.instance.current_level.is_complete:
             current_time = timer.TimerMan.instance.current_time
             explosionsprite = sp.ExplosionSprite.instance
             last_collision = explosionsprite.last_collision if explosionsprite else -10000
 
             # let the current explosion finish and make sure no collisions happening
-            if not self.weapon.is_active and current_time - last_collision > LevelMan.instance.current_level.bubble_popdelay:
+            if not self.weapon.is_active and current_time - last_collision > le.LevelMan.instance.current_level.bubble_popdelay:
 
                 # stats
                 if self.weapon.ammo and self.weapon.ammo != inf:
@@ -56,12 +56,13 @@ class Player(Link):
                 hs.HighScores.instance.write(self)
 
                 # update for next level
-                LevelMan.instance.advance()
+                le.LevelMan.instance.advance()
 
                 if DEBUG:
                     print('next level %s activated %d with %d target_bubbles %d bubbles %d max height' % (
-                          LevelMan.instance.current_level.name.name, LevelMan.instance.current_level.level, LevelMan.instance.current_level.target_bubbles, LevelMan.instance.current_level.bubbles, LevelMan.instance.current_level.bubble_maxh)
+                          le.LevelMan.instance.current_level.name.name, le.LevelMan.instance.current_level.level, le.LevelMan.instance.current_level.target_bubbles, le.LevelMan.instance.current_level.bubbles, le.LevelMan.instance.current_level.bubble_maxh)
                     )
+                    # div by zero (this still happens)
                     print('scoreround: %d scoreround_raw: %d score %d stats_explosionsround: %d' % (
                           self.stats_scoreround, self.stats_scoreround//self.stats_explosionsround, self.score, self.stats_explosionsround)
                     )
@@ -70,9 +71,9 @@ class Player(Link):
                 self.reset()
 
                 # next scene
-                timer.TimerMan.instance.add(timer.SwitchSceneCommand(sc.SceneNames.SCENESWITCH), 250)
+                timer.SwitchSceneCommand(sc.SceneNames.SCENESWITCH).execute(0)
 
-        elif LevelMan.instance.current_level.defeat: # gg
+        elif le.LevelMan.instance.current_level.defeat: # gg
 
             # stats
             current_time = timer.TimerMan.instance.current_time
@@ -80,7 +81,7 @@ class Player(Link):
             last_collision = explosionsprite.last_collision if explosionsprite else -10000
 
             # let the current explosion finish and make sure no collisions happening
-            if not self.weapon.is_active and current_time - last_collision > LevelMan.instance.current_level.bubble_popdelay:
+            if not self.weapon.is_active and current_time - last_collision > le.LevelMan.instance.current_level.bubble_popdelay:
                 if DEBUG:
                     print('game over, switching back to menu current_time: %d last_collision: %d diff: %d' %
                         (current_time, last_collision, current_time - last_collision)
@@ -93,7 +94,7 @@ class Player(Link):
                 self.reset()
 
                 # reset all levels
-                LevelMan.instance.init()
+                le.LevelMan.instance.init()
 
                 # reset all scenes -> is this necessary?
                 sccxt.SceneContext.instance.reset()
@@ -103,7 +104,7 @@ class Player(Link):
 
     def reset(self):
         if DEBUG:
-            print('reseting player %s and weapon %s' % (self.name, self.weapon.name))
+            print('reseting player %s and weapon %s' % (self.name, self.weapon))
         # reload and update stats
         if self.weapon:
             self.weapon.reset()
@@ -123,13 +124,14 @@ class Player(Link):
         self.stats_bubblesround += 1
         self.update_maxmultiplier(multiplier, 'stats_maxmultiplier')
         self.update_maxmultiplier(multiplier, 'stats_maxmultiplierround')
-        LevelMan.instance.current_level.target_bubbles -= 1
-        points = multiplier * LevelMan.instance.current_level.bubble_maxh//circle.height
+        le.LevelMan.instance.current_level.target_bubbles -= 1
+        le.LevelMan.instance.current_level.bubbles -= 1
+        points = multiplier * le.LevelMan.instance.current_level.bubble_maxh//circle.height
         self.score += points
         self.stats_scoreround += points
         if DEBUG:
             print('updating score %d, round: %d circleh: %d mult: %d points: %d explosionsround: %d bubblesround: %d is_complete: %d' % (
-                  self.score, self.stats_scoreround, circle.height, multiplier, points, self.stats_explosionsround, self.stats_bubbles, LevelMan.instance.current_level.is_complete)
+                  self.score, self.stats_scoreround, circle.height, multiplier, points, self.stats_explosionsround, self.stats_bubbles, le.LevelMan.instance.current_level.is_complete)
             )
         return points
 

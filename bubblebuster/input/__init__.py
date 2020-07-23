@@ -10,4 +10,5 @@ from .mouseclicksettingsobserver import MouseClickSettingsObserver
 from .mousehoverhighlightobserver import MouseHoverHighlightObserver, MouseHoverHighlightRectObserver
 from .keypressobserver import KeyPressObserver
 from .mouseclickexitobserver import MouseClickExitObserver
+from .togglestatsobserver import ToggleStatsObserver
 import bubblebuster.input.subject

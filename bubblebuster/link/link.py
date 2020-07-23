@@ -1,9 +1,12 @@
 import pygame
+import bubblebuster.sprite as sp
 from random import randint
 
 class SpriteLink(pygame.sprite.DirtySprite):
     def __init__(self):
         pygame.sprite.DirtySprite.__init__(self)
+        self.type = sp.SpriteTypes.NULL
+
         self.next = None
         self.prev = None
         self.collision_enabled = True
@@ -62,6 +65,7 @@ class Manager:
     def base_add(self, link):
         if not self.head:
             self.head = link
+            self.length = 1
             return
         link.prev = None
         link.next = self.head
@@ -125,7 +129,8 @@ class LinkMan(Manager):
     def get_random(self):
         head = self.head
         while head:
-            if 1 / self.length >= randint(0, 100)/100:
+            val = randint(0, 100)/100
+            if 1 / self.length >= val:
                 return head
             head = head.next
         return self.get_random()

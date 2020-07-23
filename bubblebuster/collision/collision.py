@@ -92,6 +92,14 @@ class CollisionPairMan(LinkMan):
                 self.base_remove_single(pair)
             head = head.next
 
+    def remove_all_type(self, type):
+        head = self.head
+        while head:
+            pair = head
+            if type == head.objA.type or type == head.objB.type:
+                self.base_remove_single(pair)
+            head = head.next
+
     def remove(self, sprite):
         head = self.head
         while head:
