@@ -11,7 +11,7 @@ from bubblebuster.player import PlayerMan
 from bubblebuster.settings import InterfaceSettings, DEBUG
 from bubblebuster.sound import SoundMan
 from bubblebuster.input import InputMan, Simulation
-from bubblebuster.level import LevelMan, HintMan
+import bubblebuster.level as le
 from bubblebuster.sprite.bubble import (
     BubbleMan, 
     IronBubble, 
@@ -56,7 +56,7 @@ class Scene:
         self.player_manager = PlayerMan.create()
 
         # one level man to rule them all
-        self.level_manager = LevelMan.create()
+        self.level_manager = le.LevelMan.create()
 
         # one high score to rule them all
         self.highscores = hs.HighScores()
@@ -65,7 +65,7 @@ class Scene:
         self.scene_manager = SceneMan.create()
 
         # one hint man to rule them all
-        self.hint_manager = HintMan.create()
+        self.hint_manager = le.HintMan.create()
 
         # background
         background = self.image_manager.add(ImageNames.BEACHDIGITALBACKGROUND, 

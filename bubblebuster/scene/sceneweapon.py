@@ -10,7 +10,7 @@ from bubblebuster.weapon import Finger, Thumb, Hand, WeaponNames
 from bubblebuster.player import Player, PlayerNames, PlayerMan
 from bubblebuster.font import FontNames, Font
 from bubblebuster.image import ImageNames
-from bubblebuster.level import LevelNames, LevelMan
+import bubblebuster.level as le
 import bubblebuster.scene.scene as sc
 
 import pygame
@@ -65,11 +65,11 @@ class SceneWeapon(sc.Scene):
         )
 
         # add teh levels mate, for jimmy
-        LevelMan.instance.init()
+        le.LevelMan.instance.init()
 
         # lets do a random level
-        LevelMan.instance.current_level = LevelMan.instance.get_random()
-        LevelMan.instance.current_level.is_active = True
+        le.LevelMan.instance.current_level = le.LevelMan.instance.get_random()
+        le.LevelMan.instance.current_level.is_active = True
 
         # 
         carousel.attach(LMouseClickRectObserver)
@@ -122,5 +122,5 @@ class SceneWeapon(sc.Scene):
 
         # this is bad,
         # but need to set in case changed from scenesettings
-        LevelMan.instance.current_level.bubbles = GameSettings.NUMBER_OF_BUBBLES
+        le.LevelMan.instance.current_level.bubbles = GameSettings.NUMBER_OF_BUBBLES
 
