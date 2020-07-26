@@ -88,7 +88,7 @@ class PointsLevel(Level):
     get a certain number of points
     '''
     def __init__(self):
-        self.target_score = 50 # should be a GameSetting
+        self.target_score = GameSettings.POINTSLEVEL_TARGETSCORE
         self.target_time = 0
         super().__init__(LevelNames.POINTS)
         # not used this level

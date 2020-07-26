@@ -39,6 +39,16 @@ class CircleGroup(Group):
     def remove(self, spritenode):
         self.nodeman.remove(spritenode)
 
+    def remove_all_type(self, spritetype):
+        head = self.nodeman.head
+        while head:
+            # get the sprite for this node
+            sprite = head.pSprite
+            tmp = head
+            if sprite.type == spritetype:
+                self.remove(head)
+            head = tmp.next
+
     def find(self, circle):
         return self.nodeman.base_find(circle)
 

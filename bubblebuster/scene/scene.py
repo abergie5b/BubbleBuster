@@ -160,11 +160,19 @@ class SceneMan:
             # clean up
             ti.TimerMan.instance.remove_all()
 
+            # remove the bubbles from sprite managers
             sp.BoxSpriteMan.instance.remove_all_type(sp.SpriteTypes.BUBBLE)
             sp.BoxSpriteMan.instance.remove_all_type(sp.SpriteTypes.EXPLOSION)
 
+            # remove all bubbles from the collision group
             cl.CollisionPairMan.instance.remove_all_type(sp.SpriteTypes.BUBBLE)
+
+            # remove all active explosions from the collisino group
             cl.CollisionPairMan.instance.remove_all_type(sp.SpriteTypes.EXPLOSION)
+
+            # remove all bubbles from the circle group
+            circle_group = GroupMan.instance.find(GroupNames.CIRCLE)
+            circle_group.remove_all_type(sp.SpriteTypes.BUBBLE)
 
             if DEBUG:
                 print('changing scene from %s to %s' % (self.prev, head))
