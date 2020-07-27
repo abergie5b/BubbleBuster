@@ -63,8 +63,8 @@ class SceneSettings(sc.Scene):
         self.input_manager.mousecursor.attach(MouseHoverHighlightObserver(fontmenu, None))
         self.input_manager.lmouse.attach(MouseClickObserver(fontmenu, sc.SceneNames.MENU))
 
-        self.input_manager.lmouse.attach(MouseClickSettingsObserver(numberofbubblesup, 'NUMBER_OF_BUBBLES', FontNames.NUMBEROFBUBBLES, 10))
-        self.input_manager.lmouse.attach(MouseClickSettingsObserver(numberofbubblesdown, 'NUMBER_OF_BUBBLES', FontNames.NUMBEROFBUBBLES, -10))
+        self.input_manager.lmouse.attach(MouseClickSettingsObserver(numberofbubblesup, 'NUMBER_OF_BUBBLES', FontNames.NUMBEROFBUBBLES, 5))
+        self.input_manager.lmouse.attach(MouseClickSettingsObserver(numberofbubblesdown, 'NUMBER_OF_BUBBLES', FontNames.NUMBEROFBUBBLES, -5))
 
         self.input_manager.lmouse.attach(MouseClickSettingsObserver(bubblesmaxheightup, 'BUBBLE_MAXH', FontNames.BUBBLESMAXH, 10))
         self.input_manager.lmouse.attach(MouseClickSettingsObserver(bubblesmaxheightdown, 'BUBBLE_MAXH', FontNames.BUBBLESMAXH, -10))

@@ -82,6 +82,10 @@ class Level(li.Link):
         self.is_active = False
         self.description = self.get_desc()
         self.hint = self.get_hint()
+
+        # update the bubble velocity
+        self.bubble_maxdelta += se.GameSettings.BUBBLE_MAXDELTA_DELTA
+
         # redundant methinks (handled in scene.py)
         ti.TimerMan.instance.remove(ti.TimeEventNames.SETGAMEOVER)
 

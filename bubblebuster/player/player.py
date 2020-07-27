@@ -120,15 +120,31 @@ class Player(Link):
             setattr(self, maxmultiplier, multiplier)
 
     def update_score(self, circle, multiplier=1):
+        # update stats
         self.stats_bubbles += 1
         self.stats_bubblesround += 1
+
+        # update max multiplier stats
         self.update_maxmultiplier(multiplier, 'stats_maxmultiplier')
         self.update_maxmultiplier(multiplier, 'stats_maxmultiplierround')
+
+        # update the level stats
         le.LevelMan.instance.current_level.target_bubbles -= 1
         le.LevelMan.instance.current_level.bubbles -= 1
+
+        # calculate the points for this bubble
         points = multiplier * le.LevelMan.instance.current_level.bubble_maxh//circle.height
+
+        # get at least one point for each bubble
+        if not points:
+            points = 1
+
+        # update the score
         self.score += points
+
+        # update the score for this round
         self.stats_scoreround += points
+
         if DEBUG:
             print('updating score %d, round: %d circleh: %d mult: %d points: %d explosionsround: %d bubblesround: %d is_complete: %d' % (
                   self.score, self.stats_scoreround, circle.height, multiplier, points, self.stats_explosionsround, self.stats_bubbles, le.LevelMan.instance.current_level.is_complete)

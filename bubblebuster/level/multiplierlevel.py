@@ -7,7 +7,7 @@ class MultiplierLevel(le.Level):
     get a high enough multiplier to pass the level
     '''
     def __init__(self):
-        self.target_multiplier = 3 # should be a GameSettings
+        self.target_multiplier = se.GameSettings.MULTIPLIERLEVEL_TARGETMULTIPLIER
         self.target_time = 0
         super().__init__(le.LevelNames.MULTIPLIER)
         self.target_bubbles = self.bubbles

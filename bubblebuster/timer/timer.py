@@ -16,8 +16,8 @@ class TimerMan(LinkMan):
     def compare(self, a, b):
         return a.command.name == b
 
-    def find(self, command):
-        return self.base_find(command)
+    def find(self, commandname):
+        return self.base_find(commandname)
 
     def remove_all(self):
         head = self.head

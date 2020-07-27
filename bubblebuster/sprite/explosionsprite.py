@@ -34,10 +34,18 @@ class ExplosionSprite(sp.BoxSprite):
         self.has_collided = False # always
 
     def draw(self, screen):
+        # get the radius 
+        radius = self.height // 2
+
+        # fix for simulation when timerman does not run in the loop
+        # (width greater than radius exception)
+        while radius < self.width:
+            radius += 1
+
         self.rect = pygame.draw.circle(screen,
                                        self.color,
                                        (self.posx, self.posy),
-                                       self.height//2,
+                                       radius,
                                        self.width)
 
     def update(self):
@@ -59,6 +67,17 @@ class ExplosionSprite(sp.BoxSprite):
             #cl.CollisionPairMan.instance.attach_to_group(circle_group, circle, cl.CollisionCirclePair)
 
             #circle.destroy(explosion=self)
+
+        # when explosion collides with circle, destroy the explosion
+        command = timer.TimerMan.instance.find(timer.TimeEventNames.CLICKEXPLODE)
+        timer.TimerMan.instance.remove(command)
+
+        # reset the explosion for next time
+        self.reset()
+
+        # remove it from groups after collision with a bubble
+        sp.BoxSpriteMan.instance.remove(self)
+        cl.CollisionPairMan.instance.remove(self)
 
     def inc(self):
         if DEBUG and self.duration % 5 == 0:
