@@ -1,4 +1,4 @@
-# ChainReaction
+# Bubble Buster
 
 a 2d bubble busting game with pygame
 
