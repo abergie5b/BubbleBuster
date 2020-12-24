@@ -1,10 +1,10 @@
 # ChainReaction
 a 2d chain reaction bubble busting game with pygame
 
-![alt text](data/screenshot2.PNG)
+![](data/screenshot2.PNG)
 
-![alt text](data/screenshot1.PNG)
+![](data/screenshot1.PNG)
 
-![alt text](data/screenshot3.PNG)
+![](data/screenshot3.PNG)
 
-![alt text](data/screenshot4.PNG)
+![](data/screenshot4.PNG)
