@@ -1,7 +1,5 @@
 # Bubble Buster
 
-a 2d bubble busting game with pygame
-
 <img src="data/screenshot2.PNG" width=600 height=500/>
 
 pop bubbles to gain points within the time limit
