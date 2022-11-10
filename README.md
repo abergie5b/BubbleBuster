@@ -1,5 +1,3 @@
-# Bubble Buster
-
 <img src="data/screenshot2.PNG" width=600 height=500/>
 
 pop bubbles to gain points within the time limit
