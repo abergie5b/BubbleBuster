@@ -8,7 +8,7 @@ get multipliers for bubbles colliding with other bubbles when they explode.
 
 some bubbles have special abilities that may increase or decrease your chances 
 
-the levels get harder as you progress. watch the timer!
+the levels get harder as you progress
 
 <img src="data/screenshot3.PNG" width=600 height=500/>
 
